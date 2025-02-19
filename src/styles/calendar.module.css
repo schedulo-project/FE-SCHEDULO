@@ -1,0 +1,10 @@
+.fc .fc-daygrid-day {
+  border: 1px solid #ddd;
+}
+
+.fc .fc-event {
+  background-color: #4a90e2;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+}
