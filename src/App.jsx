@@ -13,7 +13,6 @@ function App() {
       <Routes>
         <Route path="/checkschedule" element={<CheckSchedule />} />
         <Route path="/scheduleedit" element={<ScheduleEdit />} />
-        <Route path="/tag" element={<Tag />} />
       </Routes>
     </Router>
   );
