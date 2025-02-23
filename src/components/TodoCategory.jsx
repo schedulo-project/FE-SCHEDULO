@@ -16,6 +16,7 @@ function TodoCategory({ category, onCheck }) {
           onCheck={onCheck}
         />
       ))}
+      <br />
     </div>
   );
 }
