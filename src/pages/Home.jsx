@@ -15,6 +15,17 @@ const Home = () => {
     setSelectedEvent(clickInfo.event);
   };
 
+  // 날짜 클릭 시 해당 날짜의 일정 띄우기
+  const handleDateClick = (date) => {
+    const eventOnDate = events.find((event) => event.date === date);
+    if (eventOnDate) {
+      setSelectedEvent(eventOnDate);
+    } else {
+      setSelectedEvent(null);
+    }
+  };
+
+  // 새로운 이벤트 추가
   const addEvent = (newEvent) => {
     setEvents([...events, newEvent]);
   };
@@ -25,7 +36,11 @@ const Home = () => {
       <EventForm addEvent={addEvent} />
       <div className="flex gap-5">
         <div className="w-3/4">
-          <Calendar events={events} onEventClick={handleEventClick} />
+          <Calendar
+            events={events}
+            onEventClick={handleEventClick}
+            onDateClick={handleDateClick}
+          />
         </div>
         {selectedEvent && (
           <div className="w-1/4 mr-5">
