@@ -1,7 +1,6 @@
 import { useState } from "react";
 import TodoCategory from "../components/TodoCategory";
 import CompletedTasks from "../components/CompletedTasks";
-import "../styles/CheckSchedule.css";
 
 function CheckSchedule() {
   //더미 데이터
@@ -93,7 +92,7 @@ function CheckSchedule() {
   };
 
   return (
-    <div className="schedule_container">
+    <div className="mt-5 p-5 bg-blue-50 rounded-2xl w-68">
       {todoList.map((category, index) => (
         <TodoCategory
           key={index}
