@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Calendar from "../components/Calendar";
 import EventForm from "../components/EventForm";
-import EventModal from "../components/EventModal";
+import CheckSchedule from "../components/CheckSchedule";
 
 const Home = () => {
   const [events, setEvents] = useState([
@@ -24,12 +24,7 @@ const Home = () => {
       <h2 className="text-2xl font-bold mb-4">📅 내 일정</h2>
       <EventForm addEvent={addEvent} />
       <Calendar events={events} onEventClick={handleEventClick} />
-      {selectedEvent && (
-        <EventModal
-          event={selectedEvent}
-          onClose={() => setSelectedEvent(null)}
-        />
-      )}
+      {selectedEvent && <CheckSchedule />}
     </div>
   );
 };
