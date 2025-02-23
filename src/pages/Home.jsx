@@ -23,8 +23,16 @@ const Home = () => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">📅 내 일정</h2>
       <EventForm addEvent={addEvent} />
-      <Calendar events={events} onEventClick={handleEventClick} />
-      {selectedEvent && <CheckSchedule />}
+      <div className="flex gap-5">
+        <div className="w-3/4">
+          <Calendar events={events} onEventClick={handleEventClick} />
+        </div>
+        {selectedEvent && (
+          <div className="w-1/4 mr-5">
+            <CheckSchedule selectedEvent={selectedEvent} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
