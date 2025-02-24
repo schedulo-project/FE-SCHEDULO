@@ -18,7 +18,10 @@ MVP 단계 최소 기능:
 - **상태 관리:** `useState`와 `useReducer` (필요 시 Redux)
 - **UI 라이브러리:** 일단은 CSS
 - **캘린더 라이브러리:**
-  - `react-calendar` (간단한 기능)
+  - `@fullcalendar/react` (간단한 기능)
+    - 강력한 이벤트 관리 기능 🎯
+    - 일정 추가, 드래그 앤 드롭 가능
+    - 다양한 뷰(월/주/일) 제공
 
 ---
 
