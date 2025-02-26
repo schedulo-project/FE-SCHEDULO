@@ -1,21 +1,21 @@
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
 } from "react-router-dom";
-import CheckSchedule from "./pages/CheckSchedule";
-import ScheduleEdit from "./pages/ScheduleEdit";
-import Tag from "./components/Tag";
+import Home from "./pages/Home";
+import Settings from "./pages/Settings";
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/checkschedule" element={<CheckSchedule />} />
-        <Route path="/scheduleedit" element={<ScheduleEdit />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types"; // PropTypes를 추가합니다.
 import "../styles/TagSelect.css";
 
-const Tag = ({ selectedTags, tagOptions, onChange }) => {
+const Tag = ({ selectedTags = [], tagOptions = [], onChange }) => {
+  // 기본값을 빈 배열로 설정
   const [isOpen, setIsOpen] = useState(false);
 
   // 태그 추가
@@ -57,6 +59,13 @@ const Tag = ({ selectedTags, tagOptions, onChange }) => {
       )}
     </div>
   );
+};
+
+// PropTypes로 검증
+Tag.propTypes = {
+  selectedTags: PropTypes.array, // selectedTags가 배열인지 확인
+  tagOptions: PropTypes.array, // tagOptions가 배열인지 확인
+  onChange: PropTypes.func.isRequired, // onChange는 함수여야 함
 };
 
 export default Tag;
