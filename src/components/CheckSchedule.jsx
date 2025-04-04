@@ -58,19 +58,30 @@ function CheckSchedule({ selectedEvents }) {
     }
   };
 
+  if (selectedEvents.length === 0) {
+    return (
+      <div className="mt-5 p-5 bg-blue-50 rounded-2xl w-80">
+        오늘 일정이 없습니다.
+      </div>
+    );
+  }
+
   return (
     <div className="mt-5 p-5 bg-blue-50 rounded-2xl w-80">
-      {todoList.map((category, index) => (
-        <TodoCategory
-          key={index}
-          category={category}
+      <section>오늘 날짜 들어갈거임</section>
+      <section>
+        {todoList.map((category, index) => (
+          <TodoCategory
+            key={index}
+            category={category}
+            onCheck={handleCheck}
+          />
+        ))}
+        <CompletedTasks
+          completedTasks={completedTasks}
           onCheck={handleCheck}
         />
-      ))}
-      <CompletedTasks
-        completedTasks={completedTasks}
-        onCheck={handleCheck}
-      />
+      </section>
     </div>
   );
 }
