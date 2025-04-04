@@ -48,17 +48,27 @@ const Home = () => {
       tagName: "캡스톤디자인",
       date: "2025-04-05",
       checklist: [
-        { name: "개발하기", completed: false },
+        { name: "과제하기", completed: false },
         { name: "영상 시청", completed: false },
       ],
     },
   ]);
 
   const [selectedEvents, setSelectedEvents] = useState([]);
-  const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 불러오기
+  const today = (() => {
+    const date = new Date();
+    date.setDate(date.getDate() + 1); // 하루 더하기
+    return date.toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 변환
+  })();
 
   // 컴포넌트가 처음 렌더링될 때 오늘 날짜의 이벤트를 설정
   useEffect(() => {
+    console.log("오늘 날짜:", today);
+    console.log(
+      "이벤트 날짜들:",
+      events.map((event) => event.date)
+    );
+
     const eventsOnToday = events.filter(
       (event) => event.date === today
     );

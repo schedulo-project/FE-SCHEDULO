@@ -68,7 +68,10 @@ function CheckSchedule({ selectedEvents }) {
 
   return (
     <div className="mt-5 p-5 bg-blue-50 rounded-2xl w-80">
-      <section>오늘 날짜 들어갈거임</section>
+      <section className="text-[24px] font-bold">
+        오늘 날짜 들어갈거임
+      </section>
+      <br />
       <section>
         {todoList.map((category, index) => (
           <TodoCategory
