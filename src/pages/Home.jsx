@@ -46,9 +46,7 @@ const Home = () => {
         schedules.map((schedule) => ({
           id: schedule.id,
           title: schedule.title || "제목 없음", // 일정의 제목 설정 (없으면 "제목 없음")
-          tagName: schedule.tag
-            .map((tag) => tag.name)
-            .join(", "), // 태그 이름 합치기
+          tagName: schedule.tag.map((tag) => tag.name).join(", "), // 태그 이름 합치기
           date: date, // 날짜 설정
           is_completed: schedule.is_completed,
           checklist: [], // checklist는 API 응답에 없으므로 빈 배열로 설정
@@ -83,10 +81,7 @@ const Home = () => {
 
   // 새로운 이벤트 추가
   const addEvent = (newEvent) => {
-    setEvents([
-      ...events,
-      { ...newEvent, id: events.length + 1 },
-    ]);
+    setEvents([...events, { ...newEvent, id: events.length + 1 }]);
   };
 
   console.log("new event", events);
@@ -102,6 +97,16 @@ const Home = () => {
   console.log("calendarEvents", calendarEvents);
   console.log("selectedEvents", selectedEvents);
 
+  const handleCheck = (id) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.id === id
+          ? { ...event, is_completed: !event.is_completed }
+          : event
+      )
+    );
+  };
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">📅 내 일정</h2>
@@ -115,7 +120,10 @@ const Home = () => {
         </div>
 
         <div className="w-100">
-          <CheckSchedule selectedEvents={selectedEvents} />
+          <CheckSchedule
+            selectedEvents={selectedEvents}
+            onCheck={handleCheck}
+          />
         </div>
       </div>
     </div>

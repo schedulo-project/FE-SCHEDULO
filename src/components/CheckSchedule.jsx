@@ -1,41 +1,25 @@
 import { useState, useEffect } from "react";
 import TodoCategory from "../components/TodoCategory";
-//import CompletedTasks from "../components/CompletedTasks";
 import ScheduleAddBtn from "../components/ScheduleAddBtn";
 
-function CheckSchedule({ selectedEvents }) {
+function CheckSchedule({ selectedEvents, onCheck }) {
   const [todoList, setTodoList] = useState([]);
-  const [completedTasks, setCompletedTasks] = useState([]);
 
   useEffect(() => {
     if (selectedEvents && selectedEvents.length > 0) {
-      const newTodoList = selectedEvents.map((event) => ({
-        id: event.id,
-        date: event.date,
-        title: event.title,
-        tagName: event.tagName,
-      }));
-      setTodoList(newTodoList);
-      setCompletedTasks([]);
+      setTodoList(selectedEvents);
     }
   }, [selectedEvents]);
 
-  const handleCheck = (id, isCompleted) => {
-    if (isCompleted) {
-      // 체크 해제 시 원래 리스트로 복구
-      const completedTask = completedTasks.find(
-        (task) => task.id === id
-      );
-      setCompletedTasks((prev) =>
-        prev.filter((task) => task.id !== id)
-      );
-      setTodoList((prev) => [...prev, completedTask]);
-    } else {
-      // 체크 시 완료 리스트로 이동
-      const taskToComplete = todoList.find((task) => task.id === id);
-      setTodoList((prev) => prev.filter((task) => task.id !== id));
-      setCompletedTasks((prev) => [...prev, taskToComplete]);
-    }
+  const handleCheck = (id) => {
+    setTodoList((prev) =>
+      prev.map((task) =>
+        task.id === id
+          ? { ...task, is_completed: !task.is_completed }
+          : task
+      )
+    );
+    onCheck(id);
   };
 
   if (selectedEvents.length === 0) {
@@ -46,7 +30,7 @@ function CheckSchedule({ selectedEvents }) {
                 border-4 w-80 max-w-[17.34519rem] min-h-[26.1875rem]"
       >
         <span className="text-[#1A1A1A] text-[0.73925rem] font-semibold font-[Inter]">
-          오늘 일정이 없습니다.
+          일정이 없습니다.
         </span>
       </div>
     );
@@ -74,16 +58,7 @@ function CheckSchedule({ selectedEvents }) {
         <ScheduleAddBtn />
       </section>
       <section>
-        <TodoCategory
-          todoList={todoList}
-          onCheck={handleCheck}
-          isCompleted={false}
-        />
-        <TodoCategory
-          todoList={completedTasks}
-          onCheck={handleCheck}
-          isCompleted={true}
-        />
+        <TodoCategory todoList={todoList} onCheck={handleCheck} />
       </section>
     </div>
   );
