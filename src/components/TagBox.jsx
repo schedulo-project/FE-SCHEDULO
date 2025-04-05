@@ -1,12 +1,19 @@
-const TagBox = ({ tagName }) => {
-  const tags = tagName
-    ? task.tagName.split(",").map((tag) => tag.trim())
+const TagBox = ({ tagNames }) => {
+  const tags = tagNames
+    ? tagNames.split(",").map((tag) => tag.trim())
     : [];
 
+  console.log(tagNames);
+  console.log(tags);
   return (
-    <div>
+    <div className="flex gap-[0.44rem] ">
       {tags.map((tag, index) => (
-        <div key={index}>{tag}</div>
+        <div
+          className="min-w-[2rem] pr-[0.75rem] pl-[0.75rem] rounded-[0.625rem] text-[0.375rem] text-[#656565] bg-yellow-300"
+          key={index}
+        >
+          {tag}
+        </div>
       ))}
     </div>
   );
