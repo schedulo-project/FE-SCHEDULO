@@ -14,7 +14,11 @@ function TodoItem({ task, onCheck, checked }) {
         </span>
         <TagBox tagNames={task.tagName} />
       </section>
-      <input type="checkbox" onChange={onCheck} checked={checked} />
+      <input
+        type="checkbox"
+        onChange={onCheck}
+        checked={checked}
+      />
     </div>
   );
 }
