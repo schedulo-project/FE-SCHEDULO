@@ -22,7 +22,7 @@ const Home = () => {
 
   // 일정 데이터 불러오기(api)
   const fetchSchedules = async () => {
-    const token = Logindata.token;
+    const token = Logindata.access;
 
     try {
       const response = await fetch(url, {
