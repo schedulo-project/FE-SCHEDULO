@@ -46,8 +46,11 @@ const Home = () => {
         schedules.map((schedule) => ({
           id: schedule.id,
           title: schedule.title || "제목 없음", // 일정의 제목 설정 (없으면 "제목 없음")
-          tagName: schedule.tag.map((tag) => tag.name).join(", "), // 태그 이름 합치기
+          tagName: schedule.tag
+            .map((tag) => tag.name)
+            .join(", "), // 태그 이름 합치기
           date: date, // 날짜 설정
+          is_completed: schedule.is_completed,
           checklist: [], // checklist는 API 응답에 없으므로 빈 배열로 설정
         }))
       );
@@ -80,16 +83,24 @@ const Home = () => {
 
   // 새로운 이벤트 추가
   const addEvent = (newEvent) => {
-    setEvents([...events, { ...newEvent, id: events.length + 1 }]);
+    setEvents([
+      ...events,
+      { ...newEvent, id: events.length + 1 },
+    ]);
   };
 
+  console.log("new event", events);
   // FullCalendar에 맞게 이벤트 형식 변환
   const calendarEvents = events.map((event) => ({
     id: event.id,
     title: event.title,
     date: event.date,
     tagName: event.tagName,
+    is_completed: event.is_completed,
   }));
+
+  console.log("calendarEvents", calendarEvents);
+  console.log("selectedEvents", selectedEvents);
 
   return (
     <div className="p-6">

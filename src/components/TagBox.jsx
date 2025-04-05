@@ -3,7 +3,7 @@ const TagBox = ({ tagNames }) => {
     ? tagNames.split(",").map((tag) => tag.trim())
     : [];
 
-  console.log(tagNames);
+  console.log("tagNames", tagNames);
   console.log(tags);
   return (
     <div className="flex gap-[0.44rem] ">
