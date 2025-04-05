@@ -1,16 +1,18 @@
 function CompletedTasks({ completedTasks, onCheck }) {
+  if (completedTasks.length === 0) return null;
+
   return (
     <div>
-      <h3>완료</h3>
+      <h3>완료된 일정</h3>
       <hr />
-      {completedTasks.map((task, idx) => (
-        <div key={idx}>
+      {completedTasks.map((task) => (
+        <div key={task.id}>
+          {task.title} ({task.tagName})
           <input
             type="checkbox"
             checked={true}
-            onChange={() => onCheck(task.tagName, task.name, true)}
+            onChange={() => onCheck(task.id, true)}
           />
-          {task.tagName} - {task.name}
         </div>
       ))}
     </div>

@@ -1,12 +1,8 @@
-function TodoItem({ tag, task, onCheck }) {
+function TodoItem({ task, onCheck }) {
   return (
     <div>
-      <input
-        type="checkbox"
-        checked={task.completed}
-        onChange={() => onCheck(tag, task.name, task.completed)}
-      />
-      {task.name}
+      {task.title} ({task.tagName})
+      <input type="checkbox" onChange={onCheck} />
     </div>
   );
 }

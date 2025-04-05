@@ -6,55 +6,38 @@ function CheckSchedule({ selectedEvents }) {
   const [todoList, setTodoList] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
 
-  console.log(selectedEvents);
   useEffect(() => {
     if (selectedEvents && selectedEvents.length > 0) {
       const newTodoList = selectedEvents.map((event) => ({
+        id: event.id,
+        date: event.date,
+        title: event.title,
         tagName: event.tagName,
-        checklist: event.checklist,
       }));
       setTodoList(newTodoList);
       setCompletedTasks([]);
     }
   }, [selectedEvents]);
 
-  const handleCheck = (tag, taskName, isCompleted) => {
+  const handleCheck = (id, isCompleted) => {
     if (isCompleted) {
-      // 체크 해제 시 원래 카테고리로 복구
+      // 체크 해제 시 원래 리스트로 복구
+      const completedTask = completedTasks.find(
+        (task) => task.id === id
+      );
       setCompletedTasks((prev) =>
-        prev.filter((task) => task.name !== taskName)
+        prev.filter((task) => task.id !== id)
       );
-      setTodoList((prev) =>
-        prev.map((category) =>
-          category.tagName === tag
-            ? {
-                ...category,
-                checklist: [
-                  ...category.checklist,
-                  { name: taskName, completed: false },
-                ],
-              }
-            : category
-        )
-      );
+      setTodoList((prev) => [...prev, completedTask]);
     } else {
-      // 체크 시 완료로 이동
-      setTodoList((prev) =>
-        prev.map((category) =>
-          category.tagName === tag
-            ? {
-                ...category,
-                checklist: category.checklist.filter(
-                  (task) => task.name !== taskName
-                ),
-              }
-            : category
-        )
+      // 체크 시 완료 리스트로 이동
+      const taskToComplete = todoList.find(
+        (task) => task.id === id
       );
-      setCompletedTasks((prev) => [
-        ...prev,
-        { tagName: tag, name: taskName },
-      ]);
+      setTodoList((prev) =>
+        prev.filter((task) => task.id !== id)
+      );
+      setCompletedTasks((prev) => [...prev, taskToComplete]);
     }
   };
 
@@ -69,17 +52,14 @@ function CheckSchedule({ selectedEvents }) {
   return (
     <div className="mt-5 p-5 bg-blue-50 rounded-2xl w-80">
       <section className="text-[24px] font-bold">
-        오늘 날짜 들어갈거임
+        오늘의 일정
       </section>
       <br />
       <section>
-        {todoList.map((category, index) => (
-          <TodoCategory
-            key={index}
-            category={category}
-            onCheck={handleCheck}
-          />
-        ))}
+        <TodoCategory
+          todoList={todoList}
+          onCheck={handleCheck}
+        />
         <CompletedTasks
           completedTasks={completedTasks}
           onCheck={handleCheck}
@@ -90,9 +70,3 @@ function CheckSchedule({ selectedEvents }) {
 }
 
 export default CheckSchedule;
-
-//ture면 위에 리스트에
-//false면 아래 리스트에
-//다 ture면 태그 이름과 <hr>이 사라져야 한다
-
-//1. useState를 2개 만들어서 completedTasks, todoList로 나눠서 사용

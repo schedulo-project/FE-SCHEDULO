@@ -1,19 +1,18 @@
 import React from "react";
 import TodoItem from "./TodoItem";
 
-function TodoCategory({ category, onCheck }) {
-  if (category.checklist.length === 0) return null;
+function TodoCategory({ todoList, onCheck }) {
+  if (todoList.length === 0) return null;
 
   return (
     <div>
-      <h3>{category.tagName}</h3>
+      <h3>할 일</h3>
       <hr />
-      {category.checklist.map((task, idx) => (
+      {todoList.map((task) => (
         <TodoItem
-          key={idx}
-          tag={category.tagName}
+          key={task.id}
           task={task}
-          onCheck={onCheck}
+          onCheck={() => onCheck(task.id, false)}
         />
       ))}
       <br />
