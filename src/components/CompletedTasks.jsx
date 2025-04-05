@@ -1,3 +1,5 @@
+//이제 필요 없음
+
 function CompletedTasks({ completedTasks, onCheck }) {
   if (completedTasks.length === 0) return null;
 
