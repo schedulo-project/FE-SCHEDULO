@@ -35,6 +35,7 @@ const Home = () => {
       }
 
       const data = await response.json();
+      console.log("data112241", data);
 
       // API 응답 데이터를 events 형식으로 변환
       const transformedEvents = Object.entries(
@@ -48,9 +49,12 @@ const Home = () => {
             .join(", "), // 태그 이름 합치기
           date: date, // 날짜 설정
           is_completed: schedule.is_completed,
-          checklist: [], // checklist는 API 응답에 없으므로 빈 배열로 설정
+          content: schedule.content || "", // content 추가 (없으면 빈 문자열)
+          deadline: schedule.deadline || null, // deadline 추가 (없으면 null)
         }))
       );
+
+      console.log("transformedEvents", transformedEvents);
 
       setEvents(transformedEvents);
     } catch (error) {
@@ -84,18 +88,19 @@ const Home = () => {
     ]);
   };
 
-  console.log("new event", events);
   // FullCalendar에 맞게 이벤트 형식 변환
-  const calendarEvents = events.map((event) => ({
-    id: event.id,
-    title: event.title,
-    date: event.date,
-    tagName: event.tagName,
-    is_completed: event.is_completed,
-  }));
-
+  const calendarEvents = events
+    .filter((event) => !event.is_completed)
+    .map((event) => ({
+      id: event.id,
+      title: event.title,
+      date: event.date,
+      tagName: event.tagName,
+      is_completed: event.is_completed,
+      content: event.content,
+      deadline: event.deadline,
+    }));
   console.log("calendarEvents", calendarEvents);
-  console.log("selectedEvents", selectedEvents);
 
   const handleCheck = (id) => {
     setEvents((prevEvents) =>
