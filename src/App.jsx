@@ -1,13 +1,22 @@
-import StudyPlanForm from "./components/StudyPlanForm";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import Settings from "./pages/Settings";
 import TimeTableForm from "./components/TimeTableForm";
 
-function App() {
+const App = () => {
   return (
-    <div>
-      <StudyPlanForm />
-      {/* <TimeTableForm /> */}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

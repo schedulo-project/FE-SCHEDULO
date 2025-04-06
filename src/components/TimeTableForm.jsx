@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PhotoMode from "./timetable/PhotoMode";
+import ECampusMode from "./timetable/ECampusMode";
 import ManualMode from "./timetable/ManualMode";
 import TimeTableGrid from "./TimeTableGrid";
 
@@ -19,10 +19,10 @@ const TimeTableForm = () => {
       {!mode && (
         <div className="flex justify-center space-x-4 mb-6">
           <button
-            onClick={() => setMode("photo")}
+            onClick={() => setMode("ecampus")}
             className="border py-2 px-4 rounded"
           >
-            사진으로 등록
+            시간표 불러오기
           </button>
           <button
             onClick={() => setMode("manual")}
@@ -32,8 +32,8 @@ const TimeTableForm = () => {
           </button>
         </div>
       )}
-      {mode === "photo" && (
-        <PhotoMode onSubmit={handleDataSubmit} setSchedule={setSchedule} />
+      {mode === "ecampus" && (
+        <ECampusMode onSubmit={handleDataSubmit} setSchedule={setSchedule} />
       )}
       {mode === "manual" && (
         <ManualMode onSubmit={handleDataSubmit} setSchedule={setSchedule} />

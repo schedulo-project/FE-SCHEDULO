@@ -1,6 +1,6 @@
 import React from "react";
 
-const days = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+const days = ["월", "화", "수", "목", "금", "토", "일"];
 const hours = Array.from({ length: 14 }, (_, i) => i + 9); // 9 ~ 22시
 const colors = [
   "bg-red-200", "bg-green-200", "bg-yellow-200", "bg-orange-200", "bg-blue-200"
