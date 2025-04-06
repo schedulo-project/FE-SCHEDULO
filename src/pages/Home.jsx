@@ -84,7 +84,6 @@ const Home = () => {
     ]);
   };
 
-  console.log("new event", events);
   // FullCalendar에 맞게 이벤트 형식 변환
   const calendarEvents = events.map((event) => ({
     id: event.id,
@@ -93,9 +92,6 @@ const Home = () => {
     tagName: event.tagName,
     is_completed: event.is_completed,
   }));
-
-  console.log("calendarEvents", calendarEvents);
-  console.log("selectedEvents", selectedEvents);
 
   const handleCheck = (id) => {
     setEvents((prevEvents) =>
