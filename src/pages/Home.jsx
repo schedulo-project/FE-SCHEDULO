@@ -9,13 +9,10 @@ const Home = () => {
   // 임시 데이터
   const [events, setEvents] = useState([]);
   const [selectedEvents, setSelectedEvents] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태 추가
 
   // 날짜 형식 맞추기
-  const today = (() => {
-    const date = new Date();
-    date.setDate(date.getDate() + 1); // 하루 더하기
-    return date.toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 변환
-  })();
+  const today = new Date().toISOString().split("T")[0];
 
   const url =
     "http://13.124.140.60/schedules/list/?first=2025-02-28&last=2025-04-30";
@@ -46,7 +43,9 @@ const Home = () => {
         schedules.map((schedule) => ({
           id: schedule.id,
           title: schedule.title || "제목 없음", // 일정의 제목 설정 (없으면 "제목 없음")
-          tagName: schedule.tag.map((tag) => tag.name).join(", "), // 태그 이름 합치기
+          tagName: schedule.tag
+            .map((tag) => tag.name)
+            .join(", "), // 태그 이름 합치기
           date: date, // 날짜 설정
           is_completed: schedule.is_completed,
           checklist: [], // checklist는 API 응답에 없으므로 빈 배열로 설정
@@ -63,25 +62,26 @@ const Home = () => {
     fetchSchedules();
   }, []);
 
-  // 컴포넌트가 처음 렌더링될 때 오늘 날짜의 이벤트를 설정
+  // 선택된 날짜의 일정 업데이트
   useEffect(() => {
-    const eventsOnToday = events.filter(
-      (event) => event.date === today
-    );
-    setSelectedEvents(eventsOnToday);
-  }, [events, today]);
-
-  // 날짜 클릭 시 해당 날짜의 일정 띄우기
-  const handleDateClick = (date) => {
+    const dateFilter = selectedDate || today; // 선택된 날짜가 없으면 오늘 날짜 사용
     const eventsOnDate = events.filter(
-      (event) => event.date === date
+      (event) => event.date === dateFilter
     );
     setSelectedEvents(eventsOnDate);
+  }, [events, selectedDate, today]);
+
+  // 날짜 클릭 시 선택된 날짜 업데이트
+  const handleDateClick = (date) => {
+    setSelectedDate(date);
   };
 
   // 새로운 이벤트 추가
   const addEvent = (newEvent) => {
-    setEvents([...events, { ...newEvent, id: events.length + 1 }]);
+    setEvents([
+      ...events,
+      { ...newEvent, id: events.length + 1 },
+    ]);
   };
 
   console.log("new event", events);
