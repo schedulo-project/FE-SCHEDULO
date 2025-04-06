@@ -1,7 +1,7 @@
 import React from "react";
 import TodoItem from "./TodoItem";
 
-function TodoCategory({ todoList, onCheck }) {
+function TodoCategory({ todoList, onCheck, onChange }) {
   if (todoList.length === 0) return null;
 
   return (
@@ -15,6 +15,7 @@ function TodoCategory({ todoList, onCheck }) {
             task={task}
             onCheck={() => onCheck(task.id)}
             checked={false}
+            onChange={onChange}
           />
         ))}
 
