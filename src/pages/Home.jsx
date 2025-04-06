@@ -49,8 +49,8 @@ const Home = () => {
             .join(", "), // 태그 이름 합치기
           date: date, // 날짜 설정
           is_completed: schedule.is_completed,
-          content: schedule.content,
-          deadline: schedule.deadline,
+          content: schedule.content || "", // content 추가 (없으면 빈 문자열)
+          deadline: schedule.deadline || null, // deadline 추가 (없으면 null)
         }))
       );
 
