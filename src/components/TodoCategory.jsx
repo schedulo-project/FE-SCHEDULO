@@ -1,22 +1,42 @@
 import React from "react";
 import TodoItem from "./TodoItem";
 
-function TodoCategory({ category, onCheck }) {
-  if (category.checklist.length === 0) return null;
+function TodoCategory({ todoList, onCheck }) {
+  if (todoList.length === 0) return null;
 
   return (
     <div>
-      <h3>{category.tagName}</h3>
-      <hr />
-      {category.checklist.map((task, idx) => (
-        <TodoItem
-          key={idx}
-          tag={category.tagName}
-          task={task}
-          onCheck={onCheck}
-        />
-      ))}
-      <br />
+      {/* 완료되지 않은 항목 */}
+      {todoList
+        .filter((task) => !task.is_completed)
+        .map((task) => (
+          <TodoItem
+            key={task.id}
+            task={task}
+            onCheck={() => onCheck(task.id)}
+            checked={false}
+          />
+        ))}
+
+      {/* 완료된 항목 */}
+      {todoList.some((task) => task.is_completed) && (
+        <section className="flex items-center mt-[0.69rem] mb-[0.69rem]">
+          <span className="text-[0.55444rem] text-[#656565] font-[Inter] font-normal">
+            complete
+          </span>
+          <div className="flex-grow h-[0.04619rem] bg-[#ABABAB] max-w-[12.33019rem] mx-[0.44rem]" />
+        </section>
+      )}
+      {todoList
+        .filter((task) => task.is_completed)
+        .map((task) => (
+          <TodoItem
+            key={task.id}
+            task={task}
+            onCheck={() => onCheck(task.id)}
+            checked={true}
+          />
+        ))}
     </div>
   );
 }
