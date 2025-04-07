@@ -14,21 +14,6 @@ const Calendar = ({ events, onDateClick }) => {
     }
   };
 
-  // const renderEventContent = (eventInfo) => {
-  //   // "..." 일정에만 특정 클래스 추가
-  //   const isDotsEvent = eventInfo.event.title === "...";
-  //   return (
-  //     <div
-  //       className={
-  //         isDotsEvent ? "event-item-dots" : "event-item"
-  //       }
-  //       title={eventInfo.event.title}
-  //     >
-  //       {eventInfo.event.title}
-  //     </div>
-  //   );
-  // };
-
   return (
     <FullCalendar
       plugins={[
@@ -45,7 +30,6 @@ const Calendar = ({ events, onDateClick }) => {
       events={events}
       dateClick={handleDateClick}
       height="auto"
-      // eventContent={renderEventContent} // 커스텀 이벤트 렌더링
     />
   );
 };
