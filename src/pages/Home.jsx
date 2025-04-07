@@ -150,7 +150,7 @@ const Home = () => {
       if (item.hasMore) {
         limitedEvents.push({
           id: `${item.date}`,
-          title: "ㅎㅎ",
+          title: "etc..",
           date: item.date,
           tagName: "",
           is_completed: false,
