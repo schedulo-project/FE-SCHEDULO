@@ -133,7 +133,6 @@ const Home = () => {
         is_completed: event.is_completed,
         content: event.content,
         deadline: event.deadline,
-        sortPriority: 0, // 일반 이벤트
       }));
 
       // "..."을 가장 위에 추가
@@ -146,14 +145,14 @@ const Home = () => {
           is_completed: false,
           content: "",
           deadline: null,
-          sortPriority: 1, // 우선순위 낮춰서 맨 아래로
+          classname: "event-item-dots",
         });
       }
 
       return limitedEvents;
     });
 
-  console.log("calendarEvents12121", calendarEvents);
+  console.log("calendarEvents", calendarEvents);
 
   return (
     <div className="p-6">
@@ -164,16 +163,6 @@ const Home = () => {
           <Calendar
             events={calendarEvents}
             onDateClick={handleDateClick}
-            eventOrder={(a, b) => {
-              const aIsDots = a.title === "...";
-              const bIsDots = b.title === "...";
-
-              if (aIsDots && !bIsDots) return -1;
-              if (!aIsDots && bIsDots) return 1;
-
-              // 한글 가나다순 정렬
-              return a.title.localeCompare(b.title, "ko");
-            }}
           />
         </div>
 
