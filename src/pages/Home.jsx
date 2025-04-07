@@ -88,20 +88,6 @@ const Home = () => {
     ]);
   };
 
-  // FullCalendar에 맞게 이벤트 형식 변환
-  const calendarEvents = events
-    .filter((event) => !event.is_completed)
-    .map((event) => ({
-      id: event.id,
-      title: event.title,
-      date: event.date,
-      tagName: event.tagName,
-      is_completed: event.is_completed,
-      content: event.content,
-      deadline: event.deadline,
-    }));
-  console.log("calendarEvents", calendarEvents);
-
   const handleCheck = (id) => {
     setEvents((prevEvents) =>
       prevEvents.map((event) =>
@@ -112,6 +98,63 @@ const Home = () => {
     );
   };
 
+  // FullCalendar에 맞게 이벤트 형식 변환 (3개까지만 표시, 초과 시 "..." 추가)
+  const calendarEvents = events
+    .filter((event) => !event.is_completed) // 완료되지 않은 일정만 포함
+    .reduce((acc, event) => {
+      const existingDate = acc.find(
+        (item) => item.date === event.date
+      );
+      if (existingDate) {
+        // 이미 해당 날짜가 있는 경우
+        if (existingDate.events.length < 3) {
+          existingDate.events.push(event);
+        } else if (!existingDate.hasMore) {
+          existingDate.hasMore = true; // 초과 일정 표시
+        }
+      } else {
+        // 새로운 날짜 추가
+        acc.push({
+          date: event.date,
+          events: [event],
+          hasMore: false,
+        });
+      }
+      return acc;
+    }, [])
+    // FullCalendar에 맞는 이벤트 배열로 변환
+    .flatMap((item) => {
+      // 날짜별로 일정과 "..." 추가
+      const limitedEvents = item.events.map((event) => ({
+        id: event.id,
+        title: event.title,
+        date: event.date,
+        tagName: event.tagName,
+        is_completed: event.is_completed,
+        content: event.content,
+        deadline: event.deadline,
+        sortPriority: 0, // 일반 이벤트
+      }));
+
+      // "..."을 가장 위에 추가
+      if (item.hasMore) {
+        limitedEvents.push({
+          id: `${item.date}`,
+          title: "...",
+          date: item.date,
+          tagName: "",
+          is_completed: false,
+          content: "",
+          deadline: null,
+          sortPriority: 1, // 우선순위 낮춰서 맨 아래로
+        });
+      }
+
+      return limitedEvents;
+    });
+
+  console.log("calendarEvents12121", calendarEvents);
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">📅 내 일정</h2>
@@ -121,6 +164,16 @@ const Home = () => {
           <Calendar
             events={calendarEvents}
             onDateClick={handleDateClick}
+            eventOrder={(a, b) => {
+              const aIsDots = a.title === "...";
+              const bIsDots = b.title === "...";
+
+              if (aIsDots && !bIsDots) return -1;
+              if (!aIsDots && bIsDots) return 1;
+
+              // 한글 가나다순 정렬
+              return a.title.localeCompare(b.title, "ko");
+            }}
           />
         </div>
 
