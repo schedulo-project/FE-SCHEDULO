@@ -200,7 +200,6 @@ const Home = () => {
           setIsModalOpen={setIsModalOpen}
           onChange={handleChange}
         />
-
         <div className="w-100">
           <CheckSchedule
             selectedEvents={selectedEvents}

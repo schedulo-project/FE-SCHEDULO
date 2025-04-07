@@ -22,7 +22,7 @@ const ScheduleModal = ({
     setIsModalOpen(false);
   };
 
-  const handleDateClick = () => {
+  const handleTrashClick = () => {
     console.log("지움");
   };
 
@@ -58,7 +58,7 @@ const ScheduleModal = ({
             </span>
             <button
               className="w-[1.5rem] h-[1.5rem]"
-              onClick={handleDateClick}
+              onClick={handleTrashClick}
             >
               <img src={trashImg} />
             </button>
