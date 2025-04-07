@@ -167,8 +167,6 @@ const Home = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">📅 내 일정</h2>
-      <EventForm addEvent={addEvent} />
       <div className="flex gap-8">
         <div className="w-3/4">
           <Calendar

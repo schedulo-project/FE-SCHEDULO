@@ -5,8 +5,11 @@
   color: #f0f0f0;
   /* 날짜 숫자 배경색(일) */
   .fc-daygrid-day-number {
+    width: 32px;
+    height: 32px;
     background-color: #608bc1;
     border-radius: 100px;
+    text-align: center;
   }
 }
 
@@ -14,7 +17,6 @@
 .fc-daygrid-day-events {
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
   gap: 3px;
   .fc-event-main {
     color: black;
@@ -32,7 +34,6 @@
   padding: 2px 6px;
   font-size: 0.8rem;
   border: none;
-  /* width: 80px; */
 }
 
 /* 일정들 표시되는 부분 */
