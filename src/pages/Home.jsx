@@ -44,7 +44,9 @@ const Home = () => {
         schedules.map((schedule) => ({
           id: schedule.id,
           title: schedule.title || "제목 없음", // 일정의 제목 설정 (없으면 "제목 없음")
-          tagName: schedule.tag.map((tag) => tag.name).join(", "), // 태그 이름 합치기
+          tagName: schedule.tag
+            .map((tag) => tag.name)
+            .join(", "), // 태그 이름 합치기
           date: date, // 날짜 설정
           is_completed: schedule.is_completed,
           content: schedule.content || "", // content 추가 (없으면 빈 문자열)
@@ -80,7 +82,10 @@ const Home = () => {
 
   // 새로운 이벤트 추가
   const addEvent = (newEvent) => {
-    setEvents([...events, { ...newEvent, id: events.length + 1 }]);
+    setEvents([
+      ...events,
+      { ...newEvent, id: events.length + 1 },
+    ]);
   };
 
   const handleCheck = (id) => {
@@ -92,7 +97,6 @@ const Home = () => {
       )
     );
   };
-
 
   // 일정 상세 페이지에서 일정 수정 시 사용될 함수 - data가 비어 있으면 state에서 지워야함 이건 추가 해야됨
   const handleChange = (data, id) => {
@@ -146,7 +150,7 @@ const Home = () => {
       if (item.hasMore) {
         limitedEvents.push({
           id: `${item.date}`,
-          title: "...",
+          title: "ㅎㅎ",
           date: item.date,
           tagName: "",
           is_completed: false,
@@ -160,7 +164,6 @@ const Home = () => {
     });
 
   console.log("calendarEvents", calendarEvents);
-
 
   return (
     <div className="p-6">
