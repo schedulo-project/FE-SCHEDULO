@@ -1,0 +1,45 @@
+/* 오늘 날짜 강조 */
+.fc-day-today {
+  background-color: #fff7d6; /* 연노랑 */
+  border: 2px solid #facc15;
+  color: #f0f0f0;
+  .fc-daygrid-day-number {
+    background-color: #608bc1;
+    border-radius: 43.35px;
+  }
+}
+
+.fc-daygrid-day-events {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  .fc-event-main {
+    color: black;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: left;
+  }
+}
+
+.fc-daygrid-day-frame {
+  background-color: #f0f0f0;
+}
+
+.fc-daygrid-day-top {
+  background-color: #f0f0f0;
+}
+/* 이벤트 색상 및 모양 */
+.fc-daygrid-event {
+  background-color: #ffffff; /* 파랑 */
+
+  /* border-radius: 8px; */
+  padding: 2px 6px;
+  font-size: 0.8rem;
+}
+
+/* 요일 헤더 스타일 */
+.fc-col-header-cell {
+  background-color: #f1f5f9;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
