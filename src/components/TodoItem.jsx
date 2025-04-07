@@ -5,6 +5,8 @@ import ScheduleModal from "./ScheduleModal";
 function TodoItem({ task, onCheck, checked, onChange }) {
   const bgColor = checked ? "bg-[#E0E0E0]" : "bg-[#F0F0F0]";
   const [isModalOpen, setModalOpen] = useState(false);
+  const size =
+    "min-w-[2rem] pr-[0.75rem] pl-[0.75rem] text-[0.375rem]";
 
   return (
     <>
@@ -16,9 +18,13 @@ function TodoItem({ task, onCheck, checked, onChange }) {
           <span className="text-[0.625rem] text-[#1A1A1A] font-semibold font-[Inter]">
             {task.title}
           </span>
-          <TagBox tagNames={task.tagName} />
+          <TagBox tagNames={task.tagName} size={size} />
         </section>
-        <input type="checkbox" onChange={onCheck} checked={checked} />
+        <input
+          type="checkbox"
+          onChange={onCheck}
+          checked={checked}
+        />
       </div>
       <ScheduleModal
         isModalOpen={isModalOpen && !checked}
