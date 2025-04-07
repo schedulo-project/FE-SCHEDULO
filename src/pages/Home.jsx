@@ -3,6 +3,7 @@ import Calendar from "../components/Calendar";
 import EventForm from "../components/EventForm";
 import CheckSchedule from "../components/CheckSchedule";
 import GetCookie from "../lib/GetCookie";
+import ScheduleModal from "../components/ScheduleModal";
 const Logindata = await GetCookie();
 
 const Home = () => {
@@ -10,6 +11,8 @@ const Home = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태 추가
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({});
 
   // 날짜 형식 맞추기
   const today = new Date().toISOString().split("T")[0];
@@ -78,6 +81,27 @@ const Home = () => {
   // 날짜 클릭 시 선택된 날짜 업데이트
   const handleDateClick = (date) => {
     setSelectedDate(date);
+  };
+
+  // 캘린더 일정 클릭 시 모달 켜기
+  const handleEventClick = (clickInfo) => {
+    const event = clickInfo.event;
+    console.log("clickInfo.event", event);
+    console.log("event.extendedProps", event.extendedProps);
+
+    const eventData = {
+      id: event.id,
+      title: event.title,
+      date: event.startStr,
+      content: event.extendedProps.content || "",
+      tagName: event.extendedProps.tagName || "",
+      is_completed: event.extendedProps.is_completed,
+      deadline: event.extendedProps.deadline || null,
+    };
+    console.log("eventData", eventData);
+
+    setModalData(eventData);
+    setIsModalOpen(true);
   };
 
   // 새로운 이벤트 추가
@@ -162,9 +186,10 @@ const Home = () => {
 
       return limitedEvents;
     });
+  console.log("selectedEvents", selectedEvents);
+  console.log("eventData", modalData);
 
   console.log("calendarEvents", calendarEvents);
-
   return (
     <div className="p-6">
       <div className="flex gap-8">
@@ -172,8 +197,15 @@ const Home = () => {
           <Calendar
             events={calendarEvents}
             onDateClick={handleDateClick}
+            onEventClick={handleEventClick}
           />
         </div>
+        <ScheduleModal
+          isModalOpen={isModalOpen}
+          data={modalData}
+          setIsModalOpen={setIsModalOpen}
+          onChange={handleChange}
+        />
 
         <div className="w-100">
           <CheckSchedule

@@ -6,8 +6,9 @@ import interactionPlugin from "@fullcalendar/interaction";
 // import koLocale from "@fullcalendar/core/locales/ko"; // 한글 로케일 추가
 import "./../styles/calendar.module.css"; // 스타일 적용
 import "./../styles/global.css";
+import ScheduleModal from "./ScheduleModal";
 
-const Calendar = ({ events, onDateClick }) => {
+const Calendar = ({ events, onDateClick, onEventClick }) => {
   // 날짜 클릭 이벤트 핸들러
   const handleDateClick = (info) => {
     if (onDateClick) {
@@ -38,6 +39,7 @@ const Calendar = ({ events, onDateClick }) => {
       dateClick={handleDateClick}
       dayCellContent={renderDayCellContent} // 날짜 셀 내용 커스터마이징
       height="auto"
+      eventClick={onEventClick}
     />
   );
 };
