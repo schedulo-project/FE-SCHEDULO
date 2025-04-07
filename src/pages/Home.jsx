@@ -88,20 +88,6 @@ const Home = () => {
     ]);
   };
 
-  // FullCalendar에 맞게 이벤트 형식 변환
-  const calendarEvents = events
-    .filter((event) => !event.is_completed)
-    .map((event) => ({
-      id: event.id,
-      title: event.title,
-      date: event.date,
-      tagName: event.tagName,
-      is_completed: event.is_completed,
-      content: event.content,
-      deadline: event.deadline,
-    }));
-  console.log("calendarEvents", calendarEvents);
-
   const handleCheck = (id) => {
     setEvents((prevEvents) =>
       prevEvents.map((event) =>
@@ -112,10 +98,75 @@ const Home = () => {
     );
   };
 
+  // 일정 상세 페이지에서 일정 수정 시 사용될 함수 - data가 비어 있으면 state에서 지워야함 이건 추가 해야됨
+  const handleChange = (data, id) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.id === id
+          ? { ...event, ...data } // data에 있는 값들로 덮어씀
+          : event
+      )
+    );
+  };
+
+  // FullCalendar에 맞게 이벤트 형식 변환 (3개까지만 표시, 초과 시 "..." 추가)
+  const calendarEvents = events
+    .filter((event) => !event.is_completed) // 완료되지 않은 일정만 포함
+    .reduce((acc, event) => {
+      const existingDate = acc.find(
+        (item) => item.date === event.date
+      );
+      if (existingDate) {
+        // 이미 해당 날짜가 있는 경우
+        if (existingDate.events.length < 3) {
+          existingDate.events.push(event);
+        } else if (!existingDate.hasMore) {
+          existingDate.hasMore = true; // 초과 일정 표시
+        }
+      } else {
+        // 새로운 날짜 추가
+        acc.push({
+          date: event.date,
+          events: [event],
+          hasMore: false,
+        });
+      }
+      return acc;
+    }, [])
+    // FullCalendar에 맞는 이벤트 배열로 변환
+    .flatMap((item) => {
+      // 날짜별로 일정과 "..." 추가
+      const limitedEvents = item.events.map((event) => ({
+        id: event.id,
+        title: event.title,
+        date: event.date,
+        tagName: event.tagName,
+        is_completed: event.is_completed,
+        content: event.content,
+        deadline: event.deadline,
+      }));
+
+      // "..."을 가장 위에 추가
+      if (item.hasMore) {
+        limitedEvents.push({
+          id: `${item.date}`,
+          title: "etc..",
+          date: item.date,
+          tagName: "",
+          is_completed: false,
+          content: "",
+          deadline: null,
+          classname: "event-item-dots",
+        });
+      }
+
+      return limitedEvents;
+    });
+
+  console.log("calendarEvents", calendarEvents);
+
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">📅 내 일정</h2>
-      <EventForm addEvent={addEvent} />
       <div className="flex gap-8">
         <div className="w-3/4">
           <Calendar
@@ -128,6 +179,7 @@ const Home = () => {
           <CheckSchedule
             selectedEvents={selectedEvents}
             onCheck={handleCheck}
+            onChange={handleChange}
           />
         </div>
       </div>

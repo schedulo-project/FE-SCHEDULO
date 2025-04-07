@@ -3,7 +3,7 @@ import TodoCategory from "../components/TodoCategory";
 import ScheduleAddBtn from "../components/ScheduleAddBtn";
 import GetCookie from "../lib/GetCookie";
 
-function CheckSchedule({ selectedEvents, onCheck }) {
+function CheckSchedule({ selectedEvents, onCheck, onChange }) {
   const [todoList, setTodoList] = useState([]);
 
   useEffect(() => {
@@ -70,7 +70,11 @@ function CheckSchedule({ selectedEvents, onCheck }) {
         <ScheduleAddBtn />
       </section>
       <section>
-        <TodoCategory todoList={todoList} onCheck={handleCheck} />
+        <TodoCategory
+          todoList={todoList}
+          onCheck={handleCheck}
+          onChange={onChange}
+        />
       </section>
     </div>
   );
