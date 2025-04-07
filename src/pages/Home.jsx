@@ -86,8 +86,6 @@ const Home = () => {
   // 캘린더 일정 클릭 시 모달 켜기
   const handleEventClick = (clickInfo) => {
     const event = clickInfo.event;
-    console.log("clickInfo.event", event);
-    console.log("event.extendedProps", event.extendedProps);
 
     const eventData = {
       id: event.id,
@@ -98,7 +96,6 @@ const Home = () => {
       is_completed: event.extendedProps.is_completed,
       deadline: event.extendedProps.deadline || null,
     };
-    console.log("eventData", eventData);
 
     setModalData(eventData);
     setIsModalOpen(true);
@@ -186,10 +183,7 @@ const Home = () => {
 
       return limitedEvents;
     });
-  console.log("selectedEvents", selectedEvents);
-  console.log("eventData", modalData);
 
-  console.log("calendarEvents", calendarEvents);
   return (
     <div className="p-6">
       <div className="flex gap-8">
