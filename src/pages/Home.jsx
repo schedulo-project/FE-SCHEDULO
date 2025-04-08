@@ -3,7 +3,7 @@ import Calendar from "../components/Calendar";
 import CheckSchedule from "../components/CheckSchedule";
 import GetCookie from "../lib/GetCookie";
 import ScheduleModal from "../components/ScheduleModal";
-import fetchSchedules from "../lib/api";
+import fetchSchedules from "../lib/checkScheduleApi";
 const Logindata = await GetCookie();
 
 const Home = () => {
