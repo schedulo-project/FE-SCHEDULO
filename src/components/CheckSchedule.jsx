@@ -3,14 +3,18 @@ import TodoCategory from "../components/TodoCategory";
 import ScheduleAddBtn from "../components/ScheduleAddBtn";
 import GetCookie from "../lib/GetCookie";
 
-function CheckSchedule({ selectedEvents, onCheck, onChange }) {
+function CheckSchedule({
+  selectedDateEvents,
+  onCheck,
+  onChange,
+}) {
   const [todoList, setTodoList] = useState([]);
 
   useEffect(() => {
-    if (selectedEvents && selectedEvents.length > 0) {
-      setTodoList(selectedEvents);
+    if (selectedDateEvents && selectedDateEvents.length > 0) {
+      setTodoList(selectedDateEvents);
     }
-  }, [selectedEvents]);
+  }, [selectedDateEvents]);
 
   const handleCheck = async (id) => {
     // 1. 변경될 task를 찾고, 상태 반전
@@ -34,7 +38,7 @@ function CheckSchedule({ selectedEvents, onCheck, onChange }) {
 
     onCheck(id);
   };
-  if (selectedEvents.length === 0) {
+  if (selectedDateEvents.length === 0) {
     return (
       <div
         className="flex justify-center pt-[0.75rem] pb-[0.75rem] pr-[0.8125rem] pl-[0.8125rem] 
@@ -59,7 +63,7 @@ function CheckSchedule({ selectedEvents, onCheck, onChange }) {
           일정
         </span>
         <span className="text-[#010669] text-[0.625rem] font-semibold font-[Inter]">
-          {selectedEvents[0].date}
+          {selectedDateEvents[0].date}
         </span>
       </section>
       <section className="flex items-center mt-[0.69rem] mb-[0.69rem]">

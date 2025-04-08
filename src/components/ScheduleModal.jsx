@@ -26,7 +26,6 @@ const ScheduleModal = ({
     console.log("지움");
   };
 
-  console.log("data", data);
   const size =
     "min-w-[4.8125rem] text-[0.90238rem] pr-[1.80469rem] pl-[1.80469rem] pt-[0.15038rem] pb-[0.15038rem]";
 
