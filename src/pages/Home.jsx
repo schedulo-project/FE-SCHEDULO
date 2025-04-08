@@ -3,6 +3,7 @@ import Calendar from "../components/Calendar";
 import EventForm from "../components/EventForm";
 import CheckSchedule from "../components/CheckSchedule";
 import GetCookie from "../lib/GetCookie";
+import ScheduleModal from "../components/ScheduleModal";
 const Logindata = await GetCookie();
 
 const Home = () => {
@@ -10,6 +11,8 @@ const Home = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태 추가
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({});
 
   // 날짜 형식 맞추기
   const today = new Date().toISOString().split("T")[0];
@@ -44,7 +47,9 @@ const Home = () => {
         schedules.map((schedule) => ({
           id: schedule.id,
           title: schedule.title || "제목 없음", // 일정의 제목 설정 (없으면 "제목 없음")
-          tagName: schedule.tag.map((tag) => tag.name).join(", "), // 태그 이름 합치기
+          tagName: schedule.tag
+            .map((tag) => tag.name)
+            .join(", "), // 태그 이름 합치기
           date: date, // 날짜 설정
           is_completed: schedule.is_completed,
           content: schedule.content || "", // content 추가 (없으면 빈 문자열)
@@ -78,9 +83,30 @@ const Home = () => {
     setSelectedDate(date);
   };
 
+  // 캘린더 일정 클릭 시 모달 켜기
+  const handleEventClick = (clickInfo) => {
+    const event = clickInfo.event;
+
+    const eventData = {
+      id: event.id,
+      title: event.title,
+      date: event.startStr,
+      content: event.extendedProps.content || "",
+      tagName: event.extendedProps.tagName || "",
+      is_completed: event.extendedProps.is_completed,
+      deadline: event.extendedProps.deadline || null,
+    };
+
+    setModalData(eventData);
+    setIsModalOpen(true);
+  };
+
   // 새로운 이벤트 추가
   const addEvent = (newEvent) => {
-    setEvents([...events, { ...newEvent, id: events.length + 1 }]);
+    setEvents([
+      ...events,
+      { ...newEvent, id: events.length + 1 },
+    ]);
   };
 
   const handleCheck = (id) => {
@@ -92,7 +118,6 @@ const Home = () => {
       )
     );
   };
-
 
   // 일정 상세 페이지에서 일정 수정 시 사용될 함수 - data가 비어 있으면 state에서 지워야함 이건 추가 해야됨
   const handleChange = (data, id) => {
@@ -146,7 +171,7 @@ const Home = () => {
       if (item.hasMore) {
         limitedEvents.push({
           id: `${item.date}`,
-          title: "...",
+          title: "etc..",
           date: item.date,
           tagName: "",
           is_completed: false,
@@ -159,21 +184,22 @@ const Home = () => {
       return limitedEvents;
     });
 
-  console.log("calendarEvents", calendarEvents);
-
-
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">📅 내 일정</h2>
-      <EventForm addEvent={addEvent} />
       <div className="flex gap-8">
         <div className="w-3/4">
           <Calendar
             events={calendarEvents}
             onDateClick={handleDateClick}
+            onEventClick={handleEventClick}
           />
         </div>
-
+        <ScheduleModal
+          isModalOpen={isModalOpen}
+          data={modalData}
+          setIsModalOpen={setIsModalOpen}
+          onChange={handleChange}
+        />
         <div className="w-100">
           <CheckSchedule
             selectedEvents={selectedEvents}
