@@ -1,3 +1,4 @@
+// 일정 조회 api
 import GetCookie from "./GetCookie";
 
 const fetchSchedules = async (firstDate, lastDate) => {

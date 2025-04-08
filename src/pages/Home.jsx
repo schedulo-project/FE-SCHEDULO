@@ -79,14 +79,22 @@ const Home = () => {
   };
 
   // 일정 상세 페이지에서 일정 수정 시 사용될 함수 - data가 비어 있으면 state에서 지워야함 이건 추가 해야됨
+  // onChange로 전달된 삭제된 일정의 ID를 기반으로 events 상태를 업데이트(4/8)
   const handleChange = (data, id) => {
-    setEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event.id === id
-          ? { ...event, ...data } // data에 있는 값들로 덮어씀
-          : event
-      )
-    );
+    if (data === null) {
+      setEvents((prevEvents) =>
+        prevEvents.filter((event) => event.id !== id)
+      );
+      console.log("삭제 후 events", events);
+    } else {
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event.id === id
+            ? { ...event, ...data } // data에 있는 값들로 덮어씀
+            : event
+        )
+      );
+    }
   };
 
   // FullCalendar에 맞게 이벤트 형식 변환 (3개까지만 표시, 초과 시 "..." 추가)
@@ -143,6 +151,7 @@ const Home = () => {
       return limitedEvents;
     });
 
+  console.log("삭제 전 events", events);
   return (
     <div className="p-6">
       <div className="flex gap-8">

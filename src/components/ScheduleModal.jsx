@@ -10,6 +10,7 @@ import TagBox from "./TagBox";
 import xImg from "../assets/src/x_sign.svg";
 import trashImg from "../assets/src/trash.svg";
 import calendarImg from "../assets/src/calendar_search.svg";
+import deleteSchedules from "../lib/deleteScheduleApi";
 
 const ScheduleModal = ({
   isModalOpen,
@@ -22,8 +23,17 @@ const ScheduleModal = ({
     setIsModalOpen(false);
   };
 
-  const handleTrashClick = () => {
-    console.log("지움");
+  const handleTrashClick = async (id) => {
+    // 삭제할 일정의 id를 받아 일정 삭제 api에 전달
+    try {
+      await deleteSchedules(id);
+      alert("삭제가 성공적으로 완료되었습니다.");
+      onChange(data, id); // 삭제된 일정의 id 전달, 부모 컴포넌트에서 events 상태 업데이트
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("삭제 중 오류 발생", error);
+      alert("삭제에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   const size =
@@ -57,7 +67,7 @@ const ScheduleModal = ({
             </span>
             <button
               className="w-[1.5rem] h-[1.5rem]"
-              onClick={handleTrashClick}
+              onClick={() => handleTrashClick(data.id)}
             >
               <img src={trashImg} />
             </button>
