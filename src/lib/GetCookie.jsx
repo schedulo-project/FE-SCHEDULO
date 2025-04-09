@@ -8,8 +8,8 @@ const GetCookie = async () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: "test@test.com",
-          password: "test",
+          email: "hyjoo0909@naver.com",
+          password: "0909",
         }), // ExData를 서버로 전송
       }
     );
