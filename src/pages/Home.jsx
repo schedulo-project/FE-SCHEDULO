@@ -6,8 +6,6 @@ import ScheduleModal from "../components/ScheduleModal";
 import SideBox from "../components/SideBox";
 import fetchSchedules from "../lib/checkScheduleApi";
 
-const Logindata = await GetCookie();
-
 const Home = () => {
   // 임시 데이터
   const [events, setEvents] = useState([]); // 일정조회 api로 불러온 일정 데이터들

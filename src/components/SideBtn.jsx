@@ -2,6 +2,7 @@ import calendarIcon from "../assets/src/calendar_btn.svg";
 import tagIcon from "../assets/src/tag_btn.svg";
 import clockIcon from "../assets/src/clock_btn.svg";
 import settingIcon from "../assets/src/setting_btn.svg";
+import timetableIcon from "../assets/src/timetable_btn.svg";
 
 const imgObject = {
   calendar: {
@@ -19,6 +20,10 @@ const imgObject = {
   setting: {
     src: settingIcon,
     alt: "설정",
+  },
+  timetable: {
+    src: timetableIcon,
+    alt: "시간표",
   },
 };
 

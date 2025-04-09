@@ -16,6 +16,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/timetable" element={<TimeTableForm />} />
       </Routes>
     </Router>
   );
