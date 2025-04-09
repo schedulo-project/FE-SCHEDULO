@@ -3,7 +3,9 @@ import Calendar from "../components/Calendar";
 import CheckSchedule from "../components/CheckSchedule";
 import GetCookie from "../lib/GetCookie";
 import ScheduleModal from "../components/ScheduleModal";
+import SideBox from "../components/SideBox";
 import fetchSchedules from "../lib/checkScheduleApi";
+
 const Logindata = await GetCookie();
 
 const Home = () => {
@@ -153,8 +155,9 @@ const Home = () => {
 
   console.log("삭제 전 events", events);
   return (
-    <div className="p-6">
+    <div className="w-full h-screen">
       <div className="flex gap-8">
+        <SideBox />
         <div className="w-3/4">
           <Calendar
             events={calendarEvents}

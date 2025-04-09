@@ -1,0 +1,8 @@
+/* index.css 혹은 main.css 파일 상단에 추가 */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overscroll-behavior: none;
+}
