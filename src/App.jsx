@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
+import TimeTableForm from "./components/TimeTableForm";
 
 const App = () => {
   return (
