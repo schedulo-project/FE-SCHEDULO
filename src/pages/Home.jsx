@@ -4,6 +4,7 @@ import EventForm from "../components/EventForm";
 import CheckSchedule from "../components/CheckSchedule";
 import GetCookie from "../lib/GetCookie";
 import ScheduleModal from "../components/ScheduleModal";
+import SideBox from "../components/SideBox";
 const Logindata = await GetCookie();
 
 const Home = () => {
@@ -185,8 +186,9 @@ const Home = () => {
     });
 
   return (
-    <div className="p-6">
+    <div className="w-full h-screen">
       <div className="flex gap-8">
+        <SideBox />
         <div className="w-3/4">
           <Calendar
             events={calendarEvents}
