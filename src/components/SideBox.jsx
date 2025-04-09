@@ -12,8 +12,13 @@ const SideBox = () => {
   const handleClick = (type) => {
     setSelected(type);
     switch (type) {
+      case "calendar":
+        nav("/");
+        break;
+
       case "timetable":
         nav("/timetable");
+        break;
     }
   };
 
