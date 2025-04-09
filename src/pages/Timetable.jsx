@@ -1,14 +1,13 @@
 import SideBox from "../components/SideBox";
 import TimeTableForm from "../components/TimeTableForm";
-import TimeTableGrid from "../components/TimeTableGrid";
 
-const TimeTable = () => {
+const Timetable = () => {
   return (
-    <div>
+    <div className="flex">
       <SideBox />
       <TimeTableForm />
     </div>
   );
 };
 
-export default TimeTable;
+export default Timetable;

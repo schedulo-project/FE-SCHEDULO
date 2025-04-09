@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
-import TimeTableForm from "./components/TimeTableForm";
+import Timetable from "./pages/Timetable";
 
 const App = () => {
   return (
@@ -16,7 +16,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/timetable" element={<TimeTableForm />} />
+        <Route path="/timetable" element={<Timetable />} />
       </Routes>
     </Router>
   );
