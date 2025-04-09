@@ -29,9 +29,12 @@ const SideBox = () => {
           className="w-[1.86506rem] h-[1.86506rem]"
           src={bookImg}
         />
-        <span className="text-[#010669] text-[1.49206rem] font-[Josefin Sans] font-semibold">
+        <button
+          className="text-[#010669] text-[1.49206rem] font-[Josefin Sans] font-semibold"
+          onClick={() => nav("/")}
+        >
           Schedulo
-        </span>
+        </button>
       </section>
       <section className="flex flex-col gap-[1.11906rem] mt-[2.41rem]">
         {[
