@@ -91,8 +91,10 @@ const TimeTableForm = () => {
   const [schedule, setSchedule] = useState([]);
   const nav = useNavigate();
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MTI3NDI1LCJpYXQiOjE3NDQxMDU4MjUsImp0aSI6IjM1N2U4ZjY3YWVjNDQ0MWJhMjhiNDk5ODk2NzkxY2FhIiwidXNlcl9pZCI6NH0.Og9x6IgnXlmc26jQLDdAFGxr9nBjXkdZhcYwo6FJSGQ";
+  // const token =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MTI3NDI1LCJpYXQiOjE3NDQxMDU4MjUsImp0aSI6IjM1N2U4ZjY3YWVjNDQ0MWJhMjhiNDk5ODk2NzkxY2FhIiwidXNlcl9pZCI6NH0.Og9x6IgnXlmc26jQLDdAFGxr9nBjXkdZhcYwo6FJSGQ";
+  const token = Logindata.access;
+  //임시 토큰 불러오기 코드
 
   useEffect(() => {
     const fetchInitialSchedule = async () => {

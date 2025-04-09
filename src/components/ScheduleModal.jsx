@@ -28,7 +28,7 @@ const ScheduleModal = ({
     try {
       await deleteSchedules(id);
       alert("삭제가 성공적으로 완료되었습니다.");
-      onChange(data, id); // 삭제된 일정의 id 전달, 부모 컴포넌트에서 events 상태 업데이트
+      onChange(null, id); // 삭제된 일정의 id 전달, 부모 컴포넌트에서 events 상태 업데이트
       setIsModalOpen(false);
     } catch (error) {
       console.error("삭제 중 오류 발생", error);
