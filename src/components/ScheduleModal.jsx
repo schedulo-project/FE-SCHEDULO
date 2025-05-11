@@ -6,6 +6,10 @@
 import React from "react";
 import TagBox from "./TagBox";
 
+//jotai
+import { useAtom } from "jotai";
+import { handleChangeAtom } from "../atoms/HomeAtoms";
+
 //이미지
 import xImg from "../assets/src/x_sign.svg";
 import trashImg from "../assets/src/trash.svg";
@@ -18,6 +22,9 @@ const ScheduleModal = ({
   setIsModalOpen,
   onChange,
 }) => {
+  //jotai
+  const [, sethandleChange] = useAtom(handleChangeAtom);
+
   if (!isModalOpen) return null;
   const handleClose = () => {
     setIsModalOpen(false);
@@ -28,7 +35,8 @@ const ScheduleModal = ({
     try {
       await deleteSchedules(id);
       alert("삭제가 성공적으로 완료되었습니다.");
-      onChange(null, id); // 삭제된 일정의 id 전달, 부모 컴포넌트에서 events 상태 업데이트
+      sethandleChange({ data: null, id });
+      // 삭제된 일정의 id 전달, 부모 컴포넌트에서 events 상태 업데이트
       setIsModalOpen(false);
     } catch (error) {
       console.error("삭제 중 오류 발생", error);

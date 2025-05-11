@@ -1,7 +1,7 @@
 import React from "react";
 import TodoItem from "./TodoItem";
 
-function TodoCategory({ todoList, onCheck, onChange }) {
+function TodoCategory({ todoList }) {
   if (todoList.length === 0) return null;
 
   return (
@@ -10,13 +10,7 @@ function TodoCategory({ todoList, onCheck, onChange }) {
       {todoList
         .filter((task) => !task.is_completed)
         .map((task) => (
-          <TodoItem
-            key={task.id}
-            task={task}
-            onCheck={() => onCheck(task.id)}
-            checked={false}
-            onChange={onChange}
-          />
+          <TodoItem key={task.id} task={task} checked={false} />
         ))}
 
       {/* 완료된 항목 */}
@@ -31,12 +25,7 @@ function TodoCategory({ todoList, onCheck, onChange }) {
       {todoList
         .filter((task) => task.is_completed)
         .map((task) => (
-          <TodoItem
-            key={task.id}
-            task={task}
-            onCheck={() => onCheck(task.id)}
-            checked={true}
-          />
+          <TodoItem key={task.id} task={task} checked={true} />
         ))}
     </div>
   );
