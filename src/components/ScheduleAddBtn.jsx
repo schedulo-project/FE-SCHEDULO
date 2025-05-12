@@ -1,4 +1,4 @@
-import img from "../assets/src/plus_btn.svg";
+import img from "../assets/checkschedule/plus_btn.svg";
 
 const ScheduleAddBtn = () => {
   return (

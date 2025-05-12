@@ -1,8 +1,8 @@
-import calendarIcon from "../assets/src/calendar_btn.svg";
-import tagIcon from "../assets/src/tag_btn.svg";
-import clockIcon from "../assets/src/clock_btn.svg";
-import settingIcon from "../assets/src/setting_btn.svg";
-import timetableIcon from "../assets/src/timetable_btn.svg";
+import calendarIcon from "../assets/sidebar/calendar_btn.svg";
+import tagIcon from "../assets/sidebar/tag_btn.svg";
+import clockIcon from "../assets/sidebar/clock_btn.svg";
+import settingIcon from "../assets/sidebar/setting_btn.svg";
+import timetableIcon from "../assets/sidebar/timetable_btn.svg";
 
 const imgObject = {
   calendar: {

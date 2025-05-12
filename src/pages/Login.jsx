@@ -1,6 +1,6 @@
-import loginimage from "../assets/src/login/loginimage.jpg";
-import loginicon from "../assets/src/login/loginicon.svg";
-import logoimage from "../assets/src/logo/logoimage.svg";
+import loginimage from "../assets/login/loginimage.jpg";
+import loginicon from "../assets/login/loginicon.svg";
+import logoimage from "../assets/logo/logoimage.svg";
 
 const Login = () => {
   return (

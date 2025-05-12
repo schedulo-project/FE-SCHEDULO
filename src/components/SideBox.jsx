@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import bookImg from "../assets/src/book_square.svg";
+import bookImg from "../assets/logo/book_square.svg";
 import SideBtn from "./SideBtn";
 import ChatbotBtn from "./ChatbotBtn";
 

@@ -5,7 +5,7 @@ import ECampusMode from "./timetable/ECampusMode";
 import ManualMode from "./timetable/ManualMode";
 import TimeTableGrid from "./TimeTableGrid";
 import GetCookie from "../api/GetCookie";
-import homeIcon from "../assets/src/home_btn.svg";
+import homeIcon from "../assets/timetableform/home_btn.svg";
 const Logindata = await GetCookie();
 
 const dayMap = {
