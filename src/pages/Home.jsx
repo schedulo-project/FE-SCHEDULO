@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Calendar from "../components/Calendar";
 import CheckSchedule from "../components/CheckSchedule";
-import GetCookie from "../api/GetCookie";
 import ScheduleModal from "../components/ScheduleModal";
-import SideBox from "../components/SideBox";
 import fetchSchedules from "../api/checkScheduleApi";
 
 //jotai
@@ -131,26 +129,22 @@ const Home = () => {
 
   console.log("삭제 전 events", events);
   return (
-    <div className="w-full h-screen">
-      <div className="flex gap-8">
-        <SideBox />
-        <div className="w-3/4">
-          <Calendar
-            events={calendarEvents}
-            onDateClick={handleDateClick}
-            onEventClick={handleEventClick}
-          />
-        </div>
-        <ScheduleModal
-          isModalOpen={isModalOpen}
-          data={modalData}
-          setIsModalOpen={setIsModalOpen}
+    <div className="flex gap-8 ml-10">
+      <div className="grow-[3]">
+        <Calendar
+          events={calendarEvents}
+          onDateClick={handleDateClick}
+          onEventClick={handleEventClick}
         />
-        <div className="w-100">
-          <CheckSchedule
-            selectedDateEvents={selectedDateEvents}
-          />
-        </div>
+      </div>
+      <ScheduleModal
+        isModalOpen={isModalOpen}
+        data={modalData}
+        setIsModalOpen={setIsModalOpen}
+      />
+      <div className="flex flex-col gap-2 grow-[1]">
+        <button>샘물 정보 불러오기</button>
+        <CheckSchedule selectedDateEvents={selectedDateEvents} />
       </div>
     </div>
   );
