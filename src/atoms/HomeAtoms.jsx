@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import GetCookie from "../lib/GetCookie";
+import GetCookie from "../api/GetCookie";
 
 export const eventsAtoms = atom([]);
 
