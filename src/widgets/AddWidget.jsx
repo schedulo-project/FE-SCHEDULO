@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import GetCookie from "../lib/GetCookie";
+import GetCookie from "../api/GetCookie";
 
 const Logindata = await GetCookie();
 const token = Logindata.access;

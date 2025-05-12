@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ECampusMode from "./timetable/ECampusMode";
 import ManualMode from "./timetable/ManualMode";
 import TimeTableGrid from "./TimeTableGrid";
-import GetCookie from "../lib/GetCookie";
+import GetCookie from "../api/GetCookie";
 import homeIcon from "../assets/src/home_btn.svg";
 const Logindata = await GetCookie();
 

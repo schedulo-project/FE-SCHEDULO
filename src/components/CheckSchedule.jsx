@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import TodoCategory from "../components/TodoCategory";
 import ScheduleAddBtn from "../components/ScheduleAddBtn";
-import GetCookie from "../lib/GetCookie";
+import GetCookie from "../api/GetCookie";
 
 function CheckSchedule({
   selectedDateEvents,
