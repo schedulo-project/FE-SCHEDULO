@@ -6,14 +6,21 @@ import ScheduleModal from "../components/ScheduleModal";
 import SideBox from "../components/SideBox";
 import fetchSchedules from "../api/checkScheduleApi";
 
+//jotai
+import { useAtom } from "jotai";
+import { eventsAtoms } from "../atoms/HomeAtoms";
+
 const Home = () => {
   // 임시 데이터
-  const [events, setEvents] = useState([]); // 일정조회 api로 불러온 일정 데이터들
+  const [events, setEvents] = useAtom(eventsAtoms); // 일정조회 api로 불러온 일정 데이터들
   const [selectedDateEvents, setSelectedDateEvents] = useState(
     []
   ); // 선택된 날짜의 데이터
   const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태 추가
+
+  // TodoList에서 체크된 일정의 상태를 관리하는 useState와는 별개로 사용됨
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [modalData, setModalData] = useState({});
   const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 불러오기
 
@@ -68,37 +75,8 @@ const Home = () => {
     setIsModalOpen(true);
   };
 
-  const handleCheck = (id) => {
-    setEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event.id === id
-          ? { ...event, is_completed: !event.is_completed }
-          : event
-      )
-    );
-  };
-
-  // 일정 상세 페이지에서 일정 수정 시 사용될 함수 - data가 비어 있으면 state에서 지워야함 이건 추가 해야됨
-  // onChange로 전달된 삭제된 일정의 ID를 기반으로 events 상태를 업데이트(4/8)
-  const handleChange = (data, id) => {
-    if (data === null) {
-      setEvents((prevEvents) =>
-        prevEvents.filter((event) => event.id !== id)
-      );
-      console.log("삭제 후 events", events);
-    } else {
-      setEvents((prevEvents) =>
-        prevEvents.map((event) =>
-          event.id === id
-            ? { ...event, ...data } // data에 있는 값들로 덮어씀
-            : event
-        )
-      );
-    }
-  };
-
   // FullCalendar에 맞게 이벤트 형식 변환 (3개까지만 표시, 초과 시 "..." 추가)
-  const calendarEvents = events
+  let calendarEvents = events
     .filter((event) => !event.is_completed) // 완료되지 않은 일정만 포함
     .reduce((acc, event) => {
       const existingDate = acc.find(
@@ -167,13 +145,10 @@ const Home = () => {
           isModalOpen={isModalOpen}
           data={modalData}
           setIsModalOpen={setIsModalOpen}
-          onChange={handleChange}
         />
         <div className="w-100">
           <CheckSchedule
             selectedDateEvents={selectedDateEvents}
-            onCheck={handleCheck}
-            onChange={handleChange}
           />
         </div>
       </div>

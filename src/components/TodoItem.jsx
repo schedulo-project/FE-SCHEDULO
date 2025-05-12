@@ -2,7 +2,17 @@ import { React, useState } from "react";
 import TagBox from "./TagBox";
 import ScheduleModal from "./ScheduleModal";
 
-function TodoItem({ task, onCheck, checked, onChange }) {
+//jotai
+import { useAtom } from "jotai";
+import { handelCheckAtom } from "../atoms/HomeAtoms";
+
+function TodoItem({ task, checked }) {
+  //jotai
+  const [, setHandleCheck] = useAtom(handelCheckAtom);
+  const handleCheck = (id) => {
+    setHandleCheck(id);
+  };
+
   const bgColor = checked ? "bg-[#E0E0E0]" : "bg-[#F0F0F0]";
   const [isModalOpen, setModalOpen] = useState(false);
   const size =
@@ -22,7 +32,7 @@ function TodoItem({ task, onCheck, checked, onChange }) {
         </section>
         <input
           type="checkbox"
-          onChange={onCheck}
+          onChange={() => handleCheck(task.id)}
           checked={checked}
         />
       </div>
@@ -30,7 +40,6 @@ function TodoItem({ task, onCheck, checked, onChange }) {
         isModalOpen={isModalOpen && !checked}
         data={task}
         setIsModalOpen={setModalOpen}
-        onChange={onChange}
       />
     </>
   );
