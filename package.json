@@ -14,7 +14,7 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
-    "axios": "^1.8.4",
+    "axios": "^1.9.0",
     "jotai": "^2.12.4",
     "react": "^19.0.0",
     "react-calendar": "^5.1.0",

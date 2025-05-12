@@ -1,15 +1,19 @@
 // 일정 조회 api
 import GetCookie from "./GetCookie";
+import axios from "axios";
 
 const fetchSchedules = async (firstDate, lastDate) => {
   const Logindata = await GetCookie();
   const token = Logindata.access;
 
   try {
-    const response = await fetch(
-      `http://13.124.140.60/schedules/list/?first=${firstDate}&last=${lastDate}`,
+    const response = await axios.get(
+      `http://13.124.140.60/schedules/list/`,
       {
-        method: "GET",
+        params: {
+          first: firstDate,
+          last: lastDate,
+        },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -17,15 +21,10 @@ const fetchSchedules = async (firstDate, lastDate) => {
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch schedules");
-    }
-
-    const data = await response.json();
-    console.log("순수한 서버 데이터", data);
+    console.log("순수한 서버 데이터", response.data);
 
     // API 응답 데이터를 events 형식으로 변환
-    return Object.entries(data.schedules).flatMap(
+    return Object.entries(response.data.schedules).flatMap(
       ([date, schedules]) =>
         schedules.map((schedule) => ({
           id: schedule.id,
