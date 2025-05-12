@@ -76,7 +76,7 @@ const Home = () => {
   };
 
   // FullCalendar에 맞게 이벤트 형식 변환 (3개까지만 표시, 초과 시 "..." 추가)
-  const calendarEvents = events
+  let calendarEvents = events
     .filter((event) => !event.is_completed) // 완료되지 않은 일정만 포함
     .reduce((acc, event) => {
       const existingDate = acc.find(

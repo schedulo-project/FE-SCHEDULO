@@ -20,7 +20,6 @@ const ScheduleModal = ({
   isModalOpen,
   data,
   setIsModalOpen,
-  onChange,
 }) => {
   //jotai
   const [, sethandleChange] = useAtom(handleChangeAtom);
