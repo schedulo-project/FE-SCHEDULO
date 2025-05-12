@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import bookImg from "../assets/logo/book_square.svg";
 import SideBtn from "./SideBtn";
-import ChatbotBtn from "./ChatbotBtn";
+import ChatbotBtn from "./chatbot/ChatbotBtn";
 
 const SideBox = () => {
   const [selected, setSelected] = useState("calendar");

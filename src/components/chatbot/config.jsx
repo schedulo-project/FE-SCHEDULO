@@ -1,16 +1,14 @@
 // in config.js
 import { createChatBotMessage } from "react-chatbot-kit";
-import AddWidget from "./widgets/AddWidget";
-import CheckWidget from "./widgets/CheckWidget";
-import EditWidget from "./widgets/EditWidget";
-import DeleteWidget from "./widgets/DeleteWidget";
+import AddWidget from "../../widgets/AddWidget";
+import CheckWidget from "../../widgets/CheckWidget";
+import EditWidget from "../../widgets/EditWidget";
+import DeleteWidget from "../../widgets/DeleteWidget";
 
 const botName = "ExcitementBot";
 
 const config = {
-  initialMessages: [
-    createChatBotMessage(`Hi! I'm ${botName}`),
-  ],
+  initialMessages: [createChatBotMessage(`Hi! I'm ${botName}`)],
   botName: botName,
   customStyles: {
     botMessageBox: {

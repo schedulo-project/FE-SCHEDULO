@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import Settings from "../pages/Settings";
 import Timetable from "../pages/Timetable";
-import ChatbotComponent from "../ChatbotComponent";
+import ChatbotComponent from "../components/chatbot/ChatbotComponent";
 import Loginpage from "../pages/Login";
 import Main from "../pages/Main";
 

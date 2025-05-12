@@ -1,6 +1,6 @@
 // in MessageParser.js
 import React from "react";
-import GetCookie from "./api/GetCookie";
+import GetCookie from "../../api/GetCookie";
 
 const Logindata = await GetCookie();
 
