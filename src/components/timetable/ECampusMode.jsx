@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import GetCookie from "../../lib/GetCookie";
+import GetCookie from "../../api/GetCookie";
 const Logindata = await GetCookie();
 
 const dayMap = {

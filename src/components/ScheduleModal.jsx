@@ -14,7 +14,7 @@ import { handleChangeAtom } from "../atoms/HomeAtoms";
 import xImg from "../assets/src/x_sign.svg";
 import trashImg from "../assets/src/trash.svg";
 import calendarImg from "../assets/src/calendar_search.svg";
-import deleteSchedules from "../lib/deleteScheduleApi";
+import deleteSchedules from "../api/deleteScheduleApi";
 
 const ScheduleModal = ({
   isModalOpen,

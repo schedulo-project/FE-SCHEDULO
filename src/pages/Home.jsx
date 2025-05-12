@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Calendar from "../components/Calendar";
 import CheckSchedule from "../components/CheckSchedule";
-import GetCookie from "../lib/GetCookie";
+import GetCookie from "../api/GetCookie";
 import ScheduleModal from "../components/ScheduleModal";
 import SideBox from "../components/SideBox";
-import fetchSchedules from "../lib/checkScheduleApi";
+import fetchSchedules from "../api/checkScheduleApi";
 
 //jotai
 import { useAtom } from "jotai";
