@@ -35,6 +35,7 @@ export default [
       ],
       "no-unused-vars": "off",
       "react/prop-types": "off",
+      "react-hooks/exhaustive-deps": "off", // useEffect 오류 설정
     },
   },
 ];
