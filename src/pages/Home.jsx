@@ -130,7 +130,7 @@ const Home = () => {
 
   console.log("삭제 전 events", events);
   return (
-    <div className="flex gap-8 ml-10 ">
+    <div className="flex gap-8 ml-10 mr-10">
       <div className="grow-[3]">
         <Calendar
           events={calendarEvents}

@@ -4,17 +4,19 @@ import Settings from "../pages/Settings";
 import Timetable from "../pages/Timetable";
 import ChatbotComponent from "../components/chatbot/ChatbotComponent";
 import Loginpage from "../pages/Login";
-import Main from "../pages/Main";
+import MainLayout from "../components/layout/MainLayout";
 
 // 라우팅 함수 분리
 const AppRouter = () => {
   return (
     <Routes>
-      <Route path="/" element={<Main />} />
+      <Route path="/" element={<MainLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/timetable" element={<Timetable />} />
+        <Route path="/chatbot" element={<ChatbotComponent />} />
+      </Route>
       <Route path="/login" element={<Loginpage />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/timetable" element={<Timetable />} />
-      <Route path="/chatbot" element={<ChatbotComponent />} />
     </Routes>
   );
 };
