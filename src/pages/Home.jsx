@@ -60,7 +60,8 @@ const Home = () => {
 
     // clickedEventData : 클린된 일정의 정보 가공한 데이터
     const clickedEventData = {
-      id: clickedEvent.id,
+      id: Number(clickedEvent.id), // 고친 부분 기존에는 string으로 들어옴 event.id는 number여서 문제가 생겼음
+
       title: clickedEvent.title,
       date: clickedEvent.startStr,
       content: clickedEvent.extendedProps.content || "",
@@ -129,7 +130,7 @@ const Home = () => {
 
   console.log("삭제 전 events", events);
   return (
-    <div className="flex gap-8 ml-10">
+    <div className="flex gap-8 ml-10 ">
       <div className="grow-[3]">
         <Calendar
           events={calendarEvents}
