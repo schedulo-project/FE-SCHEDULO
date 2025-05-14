@@ -13,6 +13,7 @@ import StudyPlanSetting from "../components/settingsDetail/StudyPlanSetting";
 import DataVisualization from "../components/settingsDetail/DataVisualization";
 
 import PasswordChange from "../components/settingsDetail/PasswordChange";
+import Signup from "../pages/Signup";
 
 // 라우팅 함수 분리
 const AppRouter = () => {
@@ -38,6 +39,7 @@ const AppRouter = () => {
         <Route path="/chatbot" element={<ChatbotComponent />} />
       </Route>
       <Route path="/login" element={<Loginpage />} />
+      <Route path="/signup" element={<Signup />} />
     </Routes>
   );
 };
