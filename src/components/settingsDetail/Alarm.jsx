@@ -1,8 +1,8 @@
 const Alarm = () => {
+  //pt-5는 건드리면 안됨
   return (
-    <div className="settings-detail">
-      <h2>Alarm</h2>
-      <p>Alarm settings will be available soon.</p>
+    <div className="pt-5 ">
+      <h2>알람 올자리</h2>
     </div>
   );
 };

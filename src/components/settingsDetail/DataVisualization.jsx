@@ -1,8 +1,9 @@
 const DataVisualization = () => {
+  //pt-5는 건드리면 안됨
+
   return (
-    <div>
-      <h2>Data Visualization Settings</h2>
-      <p>Configure your data visualization preferences here.</p>
+    <div className="pt-5">
+      <h2>통계 및 시각화 올자리</h2>
     </div>
   );
 };

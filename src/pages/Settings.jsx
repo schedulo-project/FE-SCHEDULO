@@ -45,7 +45,7 @@ function Settings() {
 
       {/* {설정창에 오른쪽에 추가되는 양식이 추가되면 startWith에 or로 조건 링크로 추가하고 renderSettingComponent에 조건에 따른 그려야되는 컴포넌트 넣어줘야함} */}
       <section
-        className={`grow-[1] min-w-[25.25rem] max-w-[40.25rem] min-h-[10.4375rem]
+        className={`grow-[1] min-w-[25.25rem] max-w-[40.25rem] min-h-[10.4375rem] p-5
           ${
             location.pathname.startsWith(
               "/settings/profile/password"

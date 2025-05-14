@@ -1,11 +1,9 @@
 const StudyPlanSetting = () => {
+  //pt-5는 건드리면 안됨
+
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Study Plan</h2>
-      <p className="text-gray-600">
-        Study plan settings allow you to customize your study
-        plan according to your preferences.
-      </p>
+    <div className="pt-5">
+      <h2>공부계획 설정이 올자리</h2>
     </div>
   );
 };
