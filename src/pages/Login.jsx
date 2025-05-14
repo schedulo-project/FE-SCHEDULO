@@ -5,7 +5,7 @@ import logoimage from "../assets/logo/logoimage.svg";
 const Login = () => {
   return (
     <div className="flex">
-      <section className="flex flex-col justify-center  gap-[30.67px] w-[50vw] h-[100vh] bg-[#F3F3E0] border-solid border-2 border-black">
+      <section className="flex flex-col justify-center gap-[30.67px] w-[35vw] h-[100vh] bg-[#F3F3E0]">
         {/* 로고 및 서비스명 */}
         <div className="w-44 inline-flex justify-start items-center gap-2.5 ml-[58.07px]">
           <img
@@ -13,13 +13,13 @@ const Login = () => {
             alt="로고 이미지"
             className="w-12 h-12 relative"
           />
-          <p className="justify-center text-blue-950 text-2xl font-semibold font-['Plus_Jakarta_Sans'] leading-10">
+          <p className="justify-center text-blue-950 text-3xl font-semibold font-['Plus_Jakarta_Sans'] leading-10">
             Schedulo
           </p>
         </div>
 
         {/* 로그인 */}
-        <div className="flex flex-col items-center gap-10">
+        <div className="flex flex-col items-center gap-10 mt-24">
           {/* 로그인 아이콘 + 텍스트 */}
           <div className="flex gap-1">
             <img
@@ -52,7 +52,7 @@ const Login = () => {
         </div>
 
         {/* pw 찾기 및 회원가입 */}
-        <div className="flex flex-col gap-[15px] items-center">
+        <div className="flex flex-col gap-[15px] items-center mb-[166.39px]">
           <div className="w-[98px] h-[14px] text-center justify-start text-stone-500 text-[10px] font-normal font-['Inter'] leading-3 border-b border-stone-500 cursor-pointer">
             비밀번호를 잊으셨나요?
           </div>
@@ -63,7 +63,7 @@ const Login = () => {
       </section>
 
       {/* 로그인 오른쪽 그림 화면 */}
-      <section className="w-[50vw] h-[100vh] border-solid border-2 border-black">
+      <section className="w-[65vw] h-[100vh] ">
         <img
           className="w-[100%] h-[100%]"
           src={loginimage}
