@@ -137,9 +137,6 @@ const TimeTableForm = () => {
 
   return (
     <div className="p-6">
-      <button onClick={() => nav("/")}>
-        <img src={homeIcon} alt="" />
-      </button>
       <h1 className="text-3xl font-bold mb-6 text-center">
         시간표 등록
       </h1>
