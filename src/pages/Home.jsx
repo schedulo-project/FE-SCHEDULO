@@ -130,7 +130,7 @@ const Home = () => {
 
   console.log("삭제 전 events", events);
   return (
-    <div className="flex gap-8 ml-10 mr-10">
+    <div className="flex flex-col md:flex-row gap-8 ml-10 mr-10 ">
       <div className="grow-[3]">
         <Calendar
           events={calendarEvents}
@@ -143,7 +143,7 @@ const Home = () => {
         data={modalData}
         setIsModalOpen={setIsModalOpen}
       />
-      <div className="flex flex-col gap-2 grow-[1]">
+      <div className="flex flex-col items-center gap-2 grow-[1]">
         <button>샘물 정보 불러오기</button>
         <CheckSchedule selectedDateEvents={selectedDateEvents} />
       </div>
