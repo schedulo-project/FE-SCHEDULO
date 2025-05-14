@@ -34,12 +34,12 @@ const Login = () => {
           {/* 로그인 입력창 */}
           <div className="flex flex-col gap-3 items-center">
             <input
-              className="text-[8.39px] w-[152px] h-[28px] rounded-[4.2px] placeholder:text-black font-light pl-2 shadow-[0px_2.1040303707122803px_4.2080607414245605px_0px_rgba(0,0,0,0.12)]"
+              className="text-[10px] w-[152px] h-[32px] rounded-[4.2px] placeholder:text-black font-light pl-2 shadow-[0px_2.1040303707122803px_4.2080607414245605px_0px_rgba(0,0,0,0.12)]"
               type="email"
               placeholder="이메일"
             />
             <input
-              className="text-[8.39px] w-[152px] h-[28px] rounded-[4.2px] placeholder:text-black font-light pl-2 shadow-[0px_2.1040303707122803px_4.2080607414245605px_0px_rgba(0,0,0,0.12)]"
+              className="text-[10px] w-[152px] h-[32px] rounded-[4.2px] placeholder:text-black font-light pl-2 shadow-[0px_2.1040303707122803px_4.2080607414245605px_0px_rgba(0,0,0,0.12)]"
               type="password"
               placeholder="비밀번호"
             />

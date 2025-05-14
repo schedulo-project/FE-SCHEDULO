@@ -3,10 +3,10 @@ import signupimage from "../assets/signup/signup_img.svg";
 
 const Signup = () => {
   return (
-    <div className=" flex justify-center items-center w-[100vw] h-[100vh] relative bg-stone-700/60 shadow-[0.7483852505683899px_0px_2.9935410022735596px_0px_rgba(0,0,0,0.25)]">
-      <div className="flex flex-col justify-center items-center gap-10 w-[435px] h-[620.58px] bg-[#F3F3E0] rounded-[50px]">
+    <div className=" flex justify-center items-center w-[100vw] h-[100vh] bg-stone-700/60 shadow-[0.7483852505683899px_0px_2.9935410022735596px_0px_rgba(0,0,0,0.25)]">
+      <div className="flex flex-col justify-top items-center w-[435px] h-[620.58px] bg-[#F3F3E0] rounded-[50px]">
         {/* 로고 + 서비스명 */}
-        <div className="w-44 inline-flex justify-center items-center gap-2.5 ">
+        <div className="w-44 inline-flex justify-center items-center gap-2.5 mt-[68.95px] mb-[26.15px]">
           <img
             src={logoimage}
             alt="로고 이미지"
@@ -18,7 +18,7 @@ const Signup = () => {
         </div>
 
         {/* 회원 가입 로고 */}
-        <div className="flex justify-center items-center gap-[3.27px]">
+        <div className="flex justify-center items-center gap-[3.27px] mb-[32.65px]">
           <img
             src={signupimage}
             alt="회원가입 이미지"
@@ -30,16 +30,20 @@ const Signup = () => {
         </div>
 
         {/* 회원가입 입력 창 */}
-        <div className="flex flex-col gap-8 w-36 h-7 relative rounded-xl">
+        <div className="flex flex-col gap-2 w-36 h-7 rounded-xl mb-[0px]">
           <input type="email" />
           <input type="password" />
           <input type="password" />
         </div>
 
         {/* 이용약관 등 */}
-        <div>
-          <p>[필수] 서비스 이용 약관 동의</p>
-          <p>[선택] 광고성 정보 수신 동의</p>
+        <div className="flex flex-col">
+          <p className="text-stone-500 text-[10px] font-normal font-['Noto_Sans_KR']">
+            [필수] 서비스 이용 약관 동의
+          </p>
+          <p className="text-stone-500 text-[10px] font-normal font-['Noto_Sans_KR']">
+            [선택] 광고성 정보 수신 동의
+          </p>
         </div>
 
         {/* 회원가입 버튼 */}
