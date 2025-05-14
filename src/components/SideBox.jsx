@@ -36,7 +36,7 @@ const SideBox = () => {
         nav("/"); // 나중에 구현 예정
         break;
       case "setting":
-        nav("/settings");
+        nav("/settings/profile");
         break;
       case "timetable":
         nav("/timetable");
