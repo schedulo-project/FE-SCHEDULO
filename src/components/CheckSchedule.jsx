@@ -29,7 +29,7 @@ function CheckSchedule({ selectedDateEvents }) {
     <div
       className="pt-[0.75rem] pb-[0.75rem] pr-[0.8125rem] pl-[0.8125rem] 
                 bg-[#F0F0F0] rounded-[0.294rem] border-[#E0E0E0] 
-                border-4 w-80 max-w-[17.34519rem] min-h-[26.1875rem]"
+                border-4 w-80 max-w-[17.34519rem] min-h-[26.1875rem] max-h-[40.1875rem] overflow-scroll"
     >
       <section className="flex justify-between items-end">
         <span className="text-[#1A1A1A] text-[0.73925rem] font-semibold font-[Inter]">
@@ -43,8 +43,7 @@ function CheckSchedule({ selectedDateEvents }) {
         <span className="text-[0.55444rem] text-[#656565] font-[Inter] font-normal">
           todo
         </span>
-        <div className="flex-grow h-[0.04619rem] bg-[#ABABAB] max-w-[11.95906rem] mx-[0.44rem]" />
-        <ScheduleAddBtn />
+        <div className="flex-grow h-[0.04619rem] bg-[#ABABAB] max-w-[13.95906rem] mx-[0.44rem]" />
       </section>
       <section>
         <TodoCategory todoList={todoList} />

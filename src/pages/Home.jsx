@@ -22,6 +22,11 @@ const Home = () => {
   const [modalData, setModalData] = useState({});
   const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 불러오기
 
+  // 화면 크기 감지하는 코드
+  const [windowWidth, setWindowWidth] = useState(
+    window.innerWidth
+  );
+
   // 일정 데이터 불러오기(api)
   useEffect(() => {
     const loadSchedules = async () => {
@@ -130,7 +135,7 @@ const Home = () => {
 
   console.log("삭제 전 events", events);
   return (
-    <div className="flex flex-col lg:flex-row gap-8 ml-10 mr-10 ">
+    <div className="flex flex-row gap-8 ml-10 mr-10 ">
       <div className="grow-[3]">
         <Calendar
           events={calendarEvents}
@@ -143,7 +148,7 @@ const Home = () => {
         data={modalData}
         setIsModalOpen={setIsModalOpen}
       />
-      <div className="flex flex-col items-center gap-2 grow-[1]">
+      <div className="lg:flex lg:flex-col items-center gap-2 grow-[1] hidden">
         <button>샘물 정보 불러오기</button>
         <CheckSchedule selectedDateEvents={selectedDateEvents} />
       </div>
