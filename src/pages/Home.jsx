@@ -6,7 +6,10 @@ import fetchSchedules from "../api/checkScheduleApi";
 
 //jotai
 import { useAtom } from "jotai";
-import { eventsAtoms } from "../atoms/HomeAtoms";
+import {
+  eventsAtoms,
+  homeSidebarAtoms,
+} from "../atoms/HomeAtoms";
 
 const Home = () => {
   // 임시 데이터
@@ -26,6 +29,26 @@ const Home = () => {
   const [windowWidth, setWindowWidth] = useState(
     window.innerWidth
   );
+  // windowWidth가 1023보다 작으면 모바일로 간주하기 위한 조건
+  const isHalf = windowWidth < 1023;
+  //일정 조회가 사이드바처럼 나오게 하기 위한 상태 관리, 클릭했을 때 CheckSchedule의 내부에서 버튼으로 화면을 닫을 수 있도록 하기 위해서 jotai로 관리함
+  const [isSidebarOpen, setSidebarOpen] =
+    useAtom(homeSidebarAtoms);
+
+  // 화면 크기 감지하는 훅
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () =>
+      window.removeEventListener("resize", handleResize);
+  }, []);
+
+  //화면이 커질 때 사이드 바 열린 상태 초기화
+  useEffect(() => {
+    if (windowWidth >= 1023) {
+      setSidebarOpen(false);
+    }
+  }, [windowWidth, isSidebarOpen, setSidebarOpen]);
 
   // 일정 데이터 불러오기(api)
   useEffect(() => {
@@ -57,6 +80,10 @@ const Home = () => {
   // 날짜 클릭 시 선택된 날짜 업데이트
   const handleDateClick = (date) => {
     setSelectedDate(date);
+    //화면 크기가 1023보다 작으면 사이드바 열리게 하기 클릭도 하고 작은것도 확인해야하는 2중 코드
+    if (isHalf) {
+      setSidebarOpen(true);
+    }
   };
 
   // 캘린더 일정 클릭 시 모달 켜기
@@ -148,10 +175,35 @@ const Home = () => {
         data={modalData}
         setIsModalOpen={setIsModalOpen}
       />
+
+      {/* 사이드바 */}
       <div className="lg:flex lg:flex-col items-center gap-2 grow-[1] hidden">
         <button>샘물 정보 불러오기</button>
         <CheckSchedule selectedDateEvents={selectedDateEvents} />
       </div>
+      {/* 1023px 아래 일때 사이드바 디자인*/}
+      {/* 사이드바에 대한 코드  */}
+      {isHalf && (
+        <div
+          className={`lg:hidden fixed top-1 right-0 h-full w-4/5 max-w-xs bg-none z-50 transform transition-transform duration-300 ${
+            isSidebarOpen ? "translate-x-0" : "translate-x-full"
+          } `}
+        >
+          <div className="flex flex-col h-full items-center justify-center">
+            <CheckSchedule
+              selectedDateEvents={selectedDateEvents}
+            />
+          </div>
+        </div>
+      )}
+      {/* 사이드바 열릴 때 배경 어둡게 하기 위한 코드이다. */}
+      {/* inset: 0이라고 쓰면 top: 0, right: 0, bottom: 0, left: 0 과 동일하다. */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-30 z-30 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
     </div>
   );
 };

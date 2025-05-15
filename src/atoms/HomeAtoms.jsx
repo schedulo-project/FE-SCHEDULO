@@ -3,6 +3,8 @@ import GetCookie from "../api/GetCookie";
 
 export const eventsAtoms = atom([]);
 
+export const homeSidebarAtoms = atom(false);
+
 export const handelCheckAtom = atom(
   null,
   async (get, set, id) => {
