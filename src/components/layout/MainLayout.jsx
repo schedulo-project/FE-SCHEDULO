@@ -11,7 +11,7 @@ const MainLayout = () => {
       {/* 사이드바: showSidebar 상태로 제어 작아지면 사라지고 햄버거 버튼을 눌러야지 나온다. */}
       {/* {translate-x-0" : "-translate-x-full 는 이동시키는 코드인데 full은 넓이 만큼 이동 시키고 0은 원래 위치로 이동} */}
       <div
-        className={`fixed z-40 top-0 left-0 h-full transition-transform duration-400 md:static md:translate-x-0 ${
+        className={`fixed z-40 top-0 left-0 h-full transition-transform duration-400 lg:static lg:translate-x-0 ${
           showSidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -22,7 +22,7 @@ const MainLayout = () => {
       {/* inset: 0이라고 쓰면 top: 0, right: 0, bottom: 0, left: 0 과 동일하다. */}
       {showSidebar && (
         <div
-          className="fixed inset-0 bg-black opacity-30 z-30 md:hidden"
+          className="fixed inset-0 bg-black opacity-30 z-30 lg:hidden"
           onClick={() => setShowSidebar(false)}
         />
       )}

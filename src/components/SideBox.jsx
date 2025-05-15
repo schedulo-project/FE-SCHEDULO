@@ -43,7 +43,7 @@ const SideBox = ({ closeSidebar }) => {
   return (
     <div className="min-h-screen bg-[#F3F3E0] w-[11.75rem] min-w-[10rem] p-[1.25rem]">
       {/* 사이드바 닫기 버튼  768px 아래로 내려가면 나옴 */}
-      <div className="flex justify-end md:hidden ">
+      <div className="flex justify-end lg:hidden ">
         <button onClick={closeSidebar} className="text-l">
           ✕
         </button>
@@ -51,11 +51,11 @@ const SideBox = ({ closeSidebar }) => {
 
       <section className="flex justify-center items-center gap-[0.25rem]">
         <img
-          className="w-[1.86506rem] h-[1.86506rem] hidden md:block"
+          className="w-[1.86506rem] h-[1.86506rem] hidden lg:block"
           src={bookImg}
         />
         <button
-          className="text-[#010669] text-[1.49206rem] font-[Josefin Sans] font-semibold hidden md:block"
+          className="text-[#010669] text-[1.49206rem] font-[Josefin Sans] font-semibold hidden lg:block"
           onClick={() => nav("/")}
         >
           Schedulo
