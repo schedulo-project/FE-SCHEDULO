@@ -40,9 +40,9 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
         },
       }}
       headerToolbar={{
-        left: "prev,next",
+        left: "prev next",
         center: "title",
-        right: "myCustomButton, dayGridMonth, timeGridWeek",
+        right: "myCustomButton dayGridMonth timeGridWeek",
       }}
       locale="ko"
       events={events}
