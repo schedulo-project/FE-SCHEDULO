@@ -185,7 +185,7 @@ const Home = () => {
       {/* 사이드바에 대한 코드  */}
       {isHalf && (
         <div
-          className={`lg:hidden fixed top-1 right-0 h-full w-4/5 max-w-xs bg-none z-50 transform transition-transform duration-300 ${
+          className={`lg:hidden fixed top-1 right-0 h-full w-4/5 max-w-xs bg-none z-50 transform transition-transform duration-400 ${
             isSidebarOpen ? "translate-x-0" : "translate-x-full"
           } `}
         >
