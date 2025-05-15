@@ -1,10 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SideBox from "../SideBox";
 import Navbar from "../Navbar";
 import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
   const [showSidebar, setShowSidebar] = useState(false);
+
+  //화면 크기를 저장하는 state
+  const [windowWidth, setWindowWidth] = useState(
+    window.innerWidth
+  );
+
+  // 화면 크기 감지하는 훅
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () =>
+      window.removeEventListener("resize", handleResize);
+  }, []);
+
+  //화면이 커질 때 사이드 바 열린 상태 초기화
+  useEffect(() => {
+    if (windowWidth >= 1023) {
+      setShowSidebar(false);
+    }
+  }, [windowWidth, showSidebar, setShowSidebar]);
 
   return (
     <div className="flex w-full h-screen relative">
