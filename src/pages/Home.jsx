@@ -48,6 +48,10 @@ const Home = () => {
     if (windowWidth >= 1023) {
       setSidebarOpen(false);
     }
+    if (windowWidth < 1023) {
+      // 작아지는 순간 모달 닫기
+      setIsModalOpen(false);
+    }
   }, [windowWidth, isSidebarOpen, setSidebarOpen]);
 
   // 일정 데이터 불러오기(api)

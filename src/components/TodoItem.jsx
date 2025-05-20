@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import TagBox from "./TagBox";
 import ScheduleModal from "./ScheduleModal";
 
@@ -7,6 +7,24 @@ import { useAtom } from "jotai";
 import { handelCheckAtom } from "../atoms/HomeAtoms";
 
 function TodoItem({ task, checked }) {
+  // 화면 크기 감지
+  const [windowWidth, setWindowWidth] = useState(
+    window.innerWidth
+  );
+  // 화면 크기 감지하는 훅
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () =>
+      window.removeEventListener("resize", handleResize);
+  }, []);
+  useEffect(() => {
+    if (windowWidth < 1023) {
+      // 작아지는 순간 모달 닫기
+      setModalOpen(false);
+    }
+  }, [windowWidth]);
+
   //jotai
   const [, setHandleCheck] = useAtom(handelCheckAtom);
   const handleCheck = (id) => {
