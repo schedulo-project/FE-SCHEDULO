@@ -1,29 +1,17 @@
 import { React, useState, useEffect } from "react";
 import TagBox from "./TagBox";
-import ScheduleModal from "./ScheduleModal";
 
 //jotai
 import { useAtom } from "jotai";
-import { handelCheckAtom } from "../atoms/HomeAtoms";
+import {
+  handelCheckAtom,
+  isModalOpenAtom,
+  modalDataAtom,
+} from "../atoms/HomeAtoms";
 
 function TodoItem({ task, checked }) {
-  // 화면 크기 감지
-  const [windowWidth, setWindowWidth] = useState(
-    window.innerWidth
-  );
-  // 화면 크기 감지하는 훅
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () =>
-      window.removeEventListener("resize", handleResize);
-  }, []);
-  useEffect(() => {
-    if (windowWidth < 1023) {
-      // 작아지는 순간 모달 닫기
-      setModalOpen(false);
-    }
-  }, [windowWidth]);
+  const [, setModalOpen] = useAtom(isModalOpenAtom);
+  const [, setModalData] = useAtom(modalDataAtom);
 
   //jotai
   const [, setHandleCheck] = useAtom(handelCheckAtom);
@@ -31,8 +19,21 @@ function TodoItem({ task, checked }) {
     setHandleCheck(id);
   };
 
+  //모달 클릭시
+  const handleClick = () => {
+    setModalData({
+      id: task.id,
+      title: task.title,
+      date: task.date,
+      content: task.content,
+      tagName: task.tagName,
+      is_completed: task.is_completed,
+      deadline: task.deadline,
+    });
+    setModalOpen(true);
+  };
+
   const bgColor = checked ? "bg-[#E0E0E0]" : "bg-[#F0F0F0]";
-  const [isModalOpen, setModalOpen] = useState(false);
   const size =
     "min-w-[2rem] pr-[0.75rem] pl-[0.75rem] text-[0.375rem]";
 
@@ -40,7 +41,7 @@ function TodoItem({ task, checked }) {
     <>
       <div
         className={`flex items-center justify-between ${bgColor} border-[#E0E0E0] border-4 rounded-[0.294rem] p-2 mb-2`}
-        onClick={() => setModalOpen(true)}
+        onClick={() => handleClick()}
       >
         <section>
           <span className="text-[0.625rem] text-[#1A1A1A] font-semibold font-[Inter]">
@@ -54,11 +55,6 @@ function TodoItem({ task, checked }) {
           checked={checked}
         />
       </div>
-      <ScheduleModal
-        isModalOpen={isModalOpen && !checked}
-        data={task}
-        setIsModalOpen={setModalOpen}
-      />
     </>
   );
 }

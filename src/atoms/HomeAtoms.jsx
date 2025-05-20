@@ -1,6 +1,10 @@
 import { atom } from "jotai";
 import GetCookie from "../api/GetCookie";
 
+//모달에 대한 ataom
+export const isModalOpenAtom = atom(false);
+export const modalDataAtom = atom({});
+
 export const eventsAtoms = atom([]);
 
 export const homeSidebarAtoms = atom(false);

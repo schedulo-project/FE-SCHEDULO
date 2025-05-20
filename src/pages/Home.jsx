@@ -9,6 +9,8 @@ import { useAtom } from "jotai";
 import {
   eventsAtoms,
   homeSidebarAtoms,
+  isModalOpenAtom,
+  modalDataAtom,
 } from "../atoms/HomeAtoms";
 
 const Home = () => {
@@ -20,9 +22,9 @@ const Home = () => {
   const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태 추가
 
   // TodoList에서 체크된 일정의 상태를 관리하는 useState와는 별개로 사용됨
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useAtom(isModalOpenAtom);
 
-  const [modalData, setModalData] = useState({});
+  const [modalData, setModalData] = useAtom(modalDataAtom); // 모달에 보여줄 데이터
   const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 불러오기
 
   // 화면 크기 감지하는 코드
@@ -48,11 +50,11 @@ const Home = () => {
     if (windowWidth >= 1023) {
       setSidebarOpen(false);
     }
-    if (windowWidth < 1023) {
-      // 작아지는 순간 모달 닫기
-      setIsModalOpen(false);
-    }
-  }, [windowWidth, isSidebarOpen, setSidebarOpen]);
+    // if (windowWidth < 1023) {
+    //   // 작아지는 순간 모달 닫기
+    //   setIsModalOpen(false);
+    // }
+  }, [windowWidth, isSidebarOpen]);
 
   // 일정 데이터 불러오기(api)
   useEffect(() => {
@@ -189,7 +191,7 @@ const Home = () => {
       {/* 사이드바에 대한 코드  */}
       {isHalf && (
         <div
-          className={`lg:hidden fixed top-1 right-0 h-full w-4/5 max-w-xs bg-none z-50 transform transition-transform duration-400 ${
+          className={`lg:hidden fixed top-1 right-0 h-full w-4/5 max-w-xs bg-none z-40 transform transition-transform duration-400 ${
             isSidebarOpen ? "translate-x-0" : "translate-x-full"
           } `}
         >
