@@ -176,11 +176,13 @@ const Home = () => {
           onEventClick={handleEventClick}
         />
       </div>
-      <ScheduleModal
-        isModalOpen={isModalOpen}
-        data={modalData}
-        setIsModalOpen={setIsModalOpen}
-      />
+      {!modalData.is_completed && (
+        <ScheduleModal
+          isModalOpen={isModalOpen}
+          data={modalData}
+          setIsModalOpen={setIsModalOpen}
+        />
+      )}
 
       {/* 사이드바 */}
       <div className="lg:flex lg:flex-col items-center gap-2 grow-[1] hidden">
