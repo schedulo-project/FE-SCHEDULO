@@ -1,0 +1,68 @@
+/* 챗봇 전체 컨테이너 */
+.react-chatbot-kit-chat-container {
+  width: 500px;
+  height: 800px;
+  margin: 0 auto;
+  margin: 0 auto;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  background: #fff;
+}
+
+/* 챗봇 이름(헤더) */
+.react-chatbot-kit-chat-header {
+  color: black;
+  font-size: 20px;
+}
+
+/* 챗봇 채팅 컨테이너 */
+.react-chatbot-kit-chat-inner-container {
+  width: auto;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* react-chatbot-kit의 내부 요소 오버라이드 예시 */
+.react-chatbot-kit-chat-container {
+  border-radius: 16px;
+  background: #f5f7fa;
+}
+
+.react-chatbot-kit-chat-message-container {
+  height: 700px;
+}
+
+/* 챗봇 메세지 */
+.react-chatbot-kit-chat-bot-message-container {
+  background: white;
+}
+
+.react-chatbot-kit-chat-bot-message {
+  width: 300px;
+  margin-right: 80px;
+
+  color: black;
+  background-color: white !important;
+  border: 1px solid black;
+}
+
+.react-chatbot-kit-chat-bot-message-arrow {
+  border-right-color: black !important;
+}
+
+/* 유저 메세지 */
+.react-chatbot-kit-user-chat-message {
+  color: black;
+  background-color: white !important;
+  border: 1px solid black;
+}
+
+.react-chatbot-kit-user-chat-message-arrow {
+  border-color: transparent black transparent;
+  border-style: solid;
+  border-width: 7px 0px 7px 7px;
+}
+
+/* 제출 버튼 */
+.react-chatbot-kit-chat-btn-send {
+  background-color: white;
+}
