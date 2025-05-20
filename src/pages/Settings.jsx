@@ -11,14 +11,14 @@ function Settings() {
 
   const location = useLocation();
 
-  const renderSettingComponent = () => {
-    if (
-      location.pathname.startsWith("/settings/profile/password")
-    ) {
-      return <PasswordChange />;
-    }
-    // 추가적으로 다른 설정들 처리 가능
-  };
+  // const renderSettingComponent = () => {
+  //   if (
+  //     location.pathname.startsWith("/settings/profile/password")
+  //   ) {
+  //     return <PasswordChange />;
+  //   }
+  //   // 추가적으로 다른 설정들 처리 가능
+  // };
 
   return (
     <div className="flex justify-center w-full p-5 scroll-m-0">
