@@ -15,6 +15,8 @@ function TodoItem({ task, checked }) {
 
   //jotai
   const [, setHandleCheck] = useAtom(handelCheckAtom);
+
+  //체크박스 클릭시
   const handleCheck = (id) => {
     setHandleCheck(id);
   };
