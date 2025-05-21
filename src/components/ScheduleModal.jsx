@@ -94,6 +94,7 @@ const ScheduleModal = ({
             <span className="text-white text-[1.25rem] font-normal font-[Noto Sans KR]">
               일정 추가하기
             </span>
+            {/* 일정 추가 모달 종료 */}
             <button onClick={handleClose}>
               <img
                 className="w-[0.625rem] h-[0.62494rem]"
@@ -103,29 +104,41 @@ const ScheduleModal = ({
           </section>
 
           <section className="flex flex-col items-center justify-center w-full">
+            {/* 일정 제목 */}
             <section className="flex w-[80%] justify-between items-center">
               <span className="text-[#1A1A1A] text-[1.5625rem] font-semibold font-[Inter] text-center">
-                <input type="text" />
+                <input
+                  type="text"
+                  id="title"
+                  placeholder="일정 제목을 입력하세요"
+                  className=" placeholder:text-xl"
+                />
               </span>
             </section>
+
+            {/* 일정 태그 선택 */}
             <section className="w-[80%] flex justify-start items-center mt-[0.85rem]">
               <Select
                 isMulti // 다중 선택 가능
                 name="tags" // input의 name 속성
                 options={tagOptions} // select 목록
-                className="basic-multi-select w-10%"
+                className="basic-multi-select w-[3=40%]"
                 classNamePrefix="select"
                 value={selectedTags} // 현재 선택된 값
                 onChange={setSelectedTags}
+                placeholder="태그 선택"
               />
             </section>
           </section>
 
+          {/* 일정 날짜 + 일정 내용 */}
           <section className="w-[98%] h-[21.125rem] bg-[#F0F0F0] rounded-[1rem] mb-[1%] p-[2rem] flex flex-col">
+            {/* 일정 날짜 */}
             <section className="flex justify-start items-center mb-1 gap-2">
               <span className=" text-[#1A1A1A] text-[1.25rem] font-semibold font-[Inter] pt-[0.25rem]">
                 {todayDate}
               </span>
+              {/* 일정 선택 */}
               <button className="w-[1.3125rem] h-[1.3125rem] relative">
                 <img src={calendarImg} />
                 <input
@@ -144,9 +157,15 @@ const ScheduleModal = ({
                 />
               </button>
             </section>
+
+            {/* 일정 내용 */}
             <section className="border-t-[0.0625rem] border-[#ABABAB] mt-[0.0625rem] mb-[1rem]"></section>
             <span className="text-[#656565]">
-              {data.content}
+              <textarea
+                type="text"
+                placeholder="일정 내용을 입력하시오"
+                className="bg-transparent resize-none w-[100%] h-[200px]"
+              />
             </span>
           </section>
         </div>
