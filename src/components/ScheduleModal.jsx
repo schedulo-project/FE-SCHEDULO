@@ -17,6 +17,16 @@ import trashImg from "../assets/schedulemodal/trash.svg";
 import calendarImg from "../assets/schedulemodal/calendar_search.svg";
 import deleteSchedules from "../api/deleteScheduleApi";
 
+import Select from "react-select";
+
+const tagOptions = [
+  { value: "강의", label: "강의" },
+  { value: "취미", label: "취미" },
+  { value: "학교공부", label: "학교공부" },
+  { value: "개인공부", label: "개인공부" },
+  { value: "회의", label: "회의" },
+];
+
 const ScheduleModal = ({
   isModalOpen,
   data,
@@ -31,6 +41,9 @@ const ScheduleModal = ({
   const [showDateInput, setShowDateInput] = useState(false);
 
   const dateInputRef = useRef(null);
+
+  // 선택된 태그들 상태로 관리
+  const [selectedTags, setSelectedTags] = useState([]);
 
   const handleCalendarClick = () => {
     // showPicker()가 지원되는 브라우저면 바로 캘린더를 띄우기
@@ -113,7 +126,15 @@ const ScheduleModal = ({
               </span>
             </section>
             <section className="w-[80%] flex justify-start items-center mt-[0.85rem]">
-              <TagBox tagNames={data.tagName} size={size} />
+              <Select
+                isMulti // 다중 선택 가능
+                name="tags" // input의 name 속성
+                options={tagOptions} // select 목록
+                className="basic-multi-select w-10%"
+                classNamePrefix="select"
+                value={selectedTags} // 현재 선택된 값
+                onChange={setSelectedTags}
+              />
             </section>
           </section>
 
