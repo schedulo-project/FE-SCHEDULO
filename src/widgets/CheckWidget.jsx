@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const CheckWidget = ({ state }) => {
   const [scheduleData, setScheduleData] = useState([]);
-  // console.log("state", state);
   useEffect(() => {
     const lastMessage =
       state.messages[state.messages.length - 1];
@@ -15,9 +14,6 @@ const CheckWidget = ({ state }) => {
     }
   }, [setScheduleData]); // state.messages가 변경될 때마다 실행
 
-  // if (scheduleData.length === 0) {
-  //   return <div>일정 데이터를 로딩 중...</div>; // 데이터가 없으면 로딩 상태 표시
-  // }
   if (!scheduleData || Object.keys(scheduleData).length === 0) {
     return <div>일정이 없습니다.</div>;
   }
@@ -28,12 +24,10 @@ const CheckWidget = ({ state }) => {
 
   return (
     <div>
-      <h3 className="font-bold text-lg mb-4">조회된 일정</h3>
+      <h3 className="font-bold text-xl mb-4">조회된 일정</h3>
       {Object.entries(scheduleData).map(([date, items]) => (
         <div key={date} className="mb-4">
-          <h4 className="font-semibold text-base mb-2">
-            {date}
-          </h4>
+          <h4 className="font-semibold text-lg mb-2">{date}</h4>
           <div>
             {items.map((item, index) => (
               <div
