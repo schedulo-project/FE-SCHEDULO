@@ -3,8 +3,9 @@
 // setIsModalOpen : 모달을 열고 닫는 함수 useState로 관리
 // onChange : 모달에서 일정 수정 시 사용될 함수 - home에 있는 handleChange와 연결
 // onChange는 추후에 수정기능이 만들어지면 사용할 예정
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import TagBox from "./TagBox";
+import getTodayString from "../utils/getTodayString";
 
 //jotai
 import { useAtom } from "jotai";
@@ -24,22 +25,29 @@ const ScheduleModal = ({
   //jotai
   const [, sethandleChange] = useAtom(handleChangeAtom);
 
-  // const date = useRef();
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = ("0" + (today.getMonth() + 1)).slice(-2);
-  const day = ("0" + today.getDate()).slice(-2);
-  const now = year + "-" + month + "-" + day;
+  const today = getTodayString();
 
-  const [todayDate, setTodayDate] = useState(now);
+  const [todayDate, setTodayDate] = useState(today);
   const [showDateInput, setShowDateInput] = useState(false);
+
+  const dateInputRef = useRef(null);
+
+  const handleCalendarClick = () => {
+    // showPicker()가 지원되는 브라우저면 바로 캘린더를 띄우기
+    // -> input의 date picker를 강제로 띄우기
+    dateInputRef.current &&
+      dateInputRef.current.showPicker &&
+      dateInputRef.current.showPicker();
+    // 그 외에는 포커스를 줘서 캘린더가 뜨게 하기
+    dateInputRef.current && dateInputRef.current.focus();
+  };
 
   console.log(todayDate); // 오늘 날짜 확인
 
   if (!isModalOpen) return null;
   const handleClose = () => {
     setIsModalOpen(false);
-    setTodayDate(now); // 모달 창 꺼질 때 오늘 일정으로 초기화
+    setTodayDate(today); // 모달 창 꺼질 때 오늘 일정으로 초기화
     // sethandleChange({ data: null, id }); 추가해야함
   };
 
@@ -62,8 +70,6 @@ const ScheduleModal = ({
     "min-w-[4.8125rem] text-[0.90238rem] pr-[1.80469rem] pl-[1.80469rem] pt-[0.15038rem] pb-[0.15038rem]";
 
   if (data.id === null) {
-    // const [showDateInput, setShowDateInput] = useState(false);
-
     // input(date) 보이기
     const handleCalendarClick = () => {
       setShowDateInput(true);
@@ -103,7 +109,7 @@ const ScheduleModal = ({
           <section className="flex flex-col items-center justify-center w-full">
             <section className="flex w-[80%] justify-between items-center">
               <span className="text-[#1A1A1A] text-[1.5625rem] font-semibold font-[Inter] text-center">
-                {data.title}
+                <input type="text" />
               </span>
             </section>
             <section className="w-[80%] flex justify-start items-center mt-[0.85rem]">
@@ -112,25 +118,29 @@ const ScheduleModal = ({
           </section>
 
           <section className="w-[98%] h-[21.125rem] bg-[#F0F0F0] rounded-[1rem] mb-[1%] p-[2rem] flex flex-col">
-            <section className="flex justify-start items-center mb-1 gap-1">
+            <section className="flex justify-start items-center mb-1 gap-2">
               <span className=" text-[#1A1A1A] text-[1.25rem] font-semibold font-[Inter] pt-[0.25rem]">
                 {todayDate}
               </span>
-              <button className="w-[1.3125rem] h-[1.3125rem]">
-                {!showDateInput ? (
-                  <img
-                    src={calendarImg}
-                    onClick={handleCalendarClick}
-                  />
-                ) : (
-                  <input
-                    type="date"
-                    value={todayDate}
-                    onChange={handleDateChange}
-                    onBlur={() => setShowDateInput(false)}
-                    autoFocus
-                  />
-                )}
+              <button className="w-[1.3125rem] h-[1.3125rem] relative">
+                <img
+                  src={calendarImg}
+                  onClick={handleCalendarClick}
+                />
+                <input
+                  ref={dateInputRef}
+                  type="date"
+                  value={todayDate}
+                  onChange={handleDateChange}
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    opacity: 0,
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
               </button>
             </section>
             <section className="border-t-[0.0625rem] border-[#ABABAB] mt-[0.0625rem] mb-[1rem]"></section>
