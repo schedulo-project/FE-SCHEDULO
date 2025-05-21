@@ -1,11 +1,13 @@
 import SideBox from "../SideBox";
 import Navbar from "../Navbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 const MainLayout = () => {
+  const location = useLocation();
+
   return (
     <div className="flex flex-row w-full h-screen">
-      <SideBox />
+      {location.pathname !== "/study-plan" && <SideBox />}
       <div className="flex flex-col w-full min-w-[900px] h-screen overflow-scroll">
         <Navbar />
         <div className="p-4">
