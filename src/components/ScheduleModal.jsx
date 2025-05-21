@@ -3,7 +3,7 @@
 // setIsModalOpen : 모달을 열고 닫는 함수 useState로 관리
 // onChange : 모달에서 일정 수정 시 사용될 함수 - home에 있는 handleChange와 연결
 // onChange는 추후에 수정기능이 만들어지면 사용할 예정
-import React from "react";
+import React, { useState } from "react";
 import TagBox from "./TagBox";
 
 //jotai
@@ -24,11 +24,26 @@ const ScheduleModal = ({
   //jotai
   const [, sethandleChange] = useAtom(handleChangeAtom);
 
+  // const date = useRef();
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = ("0" + (today.getMonth() + 1)).slice(-2);
+  const day = ("0" + today.getDate()).slice(-2);
+  const now = year + "-" + month + "-" + day;
+
+  const [todayDate, setTodayDate] = useState(now);
+  const [showDateInput, setShowDateInput] = useState(false);
+
+  console.log(todayDate); // 오늘 날짜 확인
+
   if (!isModalOpen) return null;
   const handleClose = () => {
     setIsModalOpen(false);
+    setTodayDate(now); // 모달 창 꺼질 때 오늘 일정으로 초기화
+    // sethandleChange({ data: null, id }); 추가해야함
   };
 
+  // 일정 삭제
   const handleTrashClick = async (id) => {
     // 삭제할 일정의 id를 받아 일정 삭제 api에 전달
     try {
@@ -46,6 +61,87 @@ const ScheduleModal = ({
   const size =
     "min-w-[4.8125rem] text-[0.90238rem] pr-[1.80469rem] pl-[1.80469rem] pt-[0.15038rem] pb-[0.15038rem]";
 
+  if (data.id === null) {
+    // const [showDateInput, setShowDateInput] = useState(false);
+
+    // input(date) 보이기
+    const handleCalendarClick = () => {
+      setShowDateInput(true);
+    };
+
+    const handleDateChange = (e) => {
+      setTodayDate(e.target.value);
+      setShowDateInput(false);
+    };
+
+    // 모달 창 닫을 시
+    // const handleOffModal = () => {
+    //   setTodayDate(now);
+    // };
+
+    return (
+      <div
+        className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+        onClick={handleClose}
+      >
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="flex flex-col justify-between items-center w-[27.375rem] h-[36.8125rem] bg-white rounded-[1rem]"
+        >
+          <section className="bg-[#010669] flex w-full h-[5rem] p-[1.5625rem] justify-between items-center rounded-t-[1rem]">
+            <span className="text-white text-[1.25rem] font-normal font-[Noto Sans KR]">
+              일정 추가하기
+            </span>
+            <button onClick={handleClose}>
+              <img
+                className="w-[0.625rem] h-[0.62494rem]"
+                src={xImg}
+              />
+            </button>
+          </section>
+
+          <section className="flex flex-col items-center justify-center w-full">
+            <section className="flex w-[80%] justify-between items-center">
+              <span className="text-[#1A1A1A] text-[1.5625rem] font-semibold font-[Inter] text-center">
+                {data.title}
+              </span>
+            </section>
+            <section className="w-[80%] flex justify-start items-center mt-[0.85rem]">
+              <TagBox tagNames={data.tagName} size={size} />
+            </section>
+          </section>
+
+          <section className="w-[98%] h-[21.125rem] bg-[#F0F0F0] rounded-[1rem] mb-[1%] p-[2rem] flex flex-col">
+            <section className="flex justify-start items-center mb-1 gap-1">
+              <span className=" text-[#1A1A1A] text-[1.25rem] font-semibold font-[Inter] pt-[0.25rem]">
+                {todayDate}
+              </span>
+              <button className="w-[1.3125rem] h-[1.3125rem]">
+                {!showDateInput ? (
+                  <img
+                    src={calendarImg}
+                    onClick={handleCalendarClick}
+                  />
+                ) : (
+                  <input
+                    type="date"
+                    value={todayDate}
+                    onChange={handleDateChange}
+                    onBlur={() => setShowDateInput(false)}
+                    autoFocus
+                  />
+                )}
+              </button>
+            </section>
+            <section className="border-t-[0.0625rem] border-[#ABABAB] mt-[0.0625rem] mb-[1rem]"></section>
+            <span className="text-[#656565]">
+              {data.content}
+            </span>
+          </section>
+        </div>
+      </div>
+    );
+  }
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
