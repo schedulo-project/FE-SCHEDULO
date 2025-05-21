@@ -37,25 +37,13 @@ const ScheduleModal = ({
 
   const today = getTodayString();
 
+  // 오늘 날짜
   const [todayDate, setTodayDate] = useState(today);
-  const [showDateInput, setShowDateInput] = useState(false);
 
   const dateInputRef = useRef(null);
 
   // 선택된 태그들 상태로 관리
   const [selectedTags, setSelectedTags] = useState([]);
-
-  const handleCalendarClick = () => {
-    // showPicker()가 지원되는 브라우저면 바로 캘린더를 띄우기
-    // -> input의 date picker를 강제로 띄우기
-    dateInputRef.current &&
-      dateInputRef.current.showPicker &&
-      dateInputRef.current.showPicker();
-    // 그 외에는 포커스를 줘서 캘린더가 뜨게 하기
-    dateInputRef.current && dateInputRef.current.focus();
-  };
-
-  console.log(todayDate); // 오늘 날짜 확인
 
   if (!isModalOpen) return null;
   const handleClose = () => {
@@ -83,14 +71,9 @@ const ScheduleModal = ({
     "min-w-[4.8125rem] text-[0.90238rem] pr-[1.80469rem] pl-[1.80469rem] pt-[0.15038rem] pb-[0.15038rem]";
 
   if (data.id === null) {
-    // input(date) 보이기
-    const handleCalendarClick = () => {
-      setShowDateInput(true);
-    };
-
     const handleDateChange = (e) => {
       setTodayDate(e.target.value);
-      setShowDateInput(false);
+      // setShowDateInput(false);
     };
 
     // 모달 창 닫을 시
@@ -144,10 +127,7 @@ const ScheduleModal = ({
                 {todayDate}
               </span>
               <button className="w-[1.3125rem] h-[1.3125rem] relative">
-                <img
-                  src={calendarImg}
-                  onClick={handleCalendarClick}
-                />
+                <img src={calendarImg} />
                 <input
                   ref={dateInputRef}
                   type="date"
