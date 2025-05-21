@@ -53,7 +53,11 @@ function TodoItem({ task, checked }) {
         </section>
         <input
           type="checkbox"
-          onChange={() => handleCheck(task.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleCheck(task.id);
+          }}
+          //상위 요소에서 onclick 이벤트가 발생하면 하위 요소에서 onClick 이벤트가 발생하지 않도록 하는 코드
           checked={checked}
         />
       </div>
