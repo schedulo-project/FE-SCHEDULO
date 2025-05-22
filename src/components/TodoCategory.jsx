@@ -3,6 +3,7 @@ import TodoItem from "./TodoItem";
 
 function TodoCategory({ todoList }) {
   if (todoList.length === 0) return null;
+  console.log("todoList", todoList);
 
   return (
     <div>

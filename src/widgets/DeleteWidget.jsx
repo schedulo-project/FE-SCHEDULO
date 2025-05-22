@@ -39,7 +39,7 @@ const DeleteWidget = ({ state }) => {
       alert("삭제할 항목을 선택하세요.");
       return;
     }
-    DeleteSchedules({ data: checked, token });
+    DeleteSchedules({ data: checked, token, actions: actions });
     setIsButtonDisabled(true); // 버튼 비활성화
     console.log("삭제할 항목들:", checked);
 
@@ -107,7 +107,7 @@ const DeleteWidget = ({ state }) => {
   );
 };
 
-const DeleteSchedules = async ({ data, token }) => {
+const DeleteSchedules = async ({ data, token, actions }) => {
   try {
     const response = await fetch(
       "http://13.124.140.60/schedules/",
@@ -126,6 +126,7 @@ const DeleteSchedules = async ({ data, token }) => {
     // ✅ 204 No Content → 성공 처리 후 종료
     if (response.status === 204) {
       console.log("✅ 삭제 성공 (204 No Content)");
+      console.log("삭제된 항목들:", actions);
       return actions.handleDeleteRequest();
     }
 

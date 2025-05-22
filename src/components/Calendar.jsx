@@ -29,10 +29,20 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
         interactionPlugin,
       ]}
       initialView="dayGridMonth"
+      customButtons={{
+        myCustomButton: {
+          text: "+",
+          hint: "새로운 일정을 추가합니다",
+          click: () => {
+            alert("일정 추가 버튼이 클릭되었습니다!");
+            // 여기에 실제 일정 추가 로직을 연결할 수 있습니다.
+          },
+        },
+      }}
       headerToolbar={{
-        left: "prev,next",
+        left: "prev next",
         center: "title",
-        right: "dayGridMonth,timeGridWeek",
+        right: "myCustomButton dayGridMonth timeGridWeek",
       }}
       locale="ko"
       events={events}

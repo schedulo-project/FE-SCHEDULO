@@ -57,7 +57,8 @@ const ActionProvider = ({
 
   //일정 추가 경우에 따른 코드
   const handleAddRequest = () => {
-    const botMessage = createChatBotMessage("일정이 추가되었습니다.");
+    const botMessage =
+      createChatBotMessage("일정이 추가되었습니다.");
 
     setState((prev) => ({
       ...prev,
@@ -75,7 +76,8 @@ const ActionProvider = ({
   };
 
   const handleDeleteRequest = () => {
-    const botMessage = createChatBotMessage("일정이 삭제되었습니다.");
+    const botMessage =
+      createChatBotMessage("일정이 삭제되었습니다.");
 
     setState((prev) => ({
       ...prev,
