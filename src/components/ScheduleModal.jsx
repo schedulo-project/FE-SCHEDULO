@@ -35,9 +35,8 @@ const ScheduleModal = ({
   //jotai
   const [, sethandleChange] = useAtom(handleChangeAtom);
 
-  const today = getTodayString();
-
   // 오늘 날짜
+  const today = getTodayString();
   const [todayDate, setTodayDate] = useState(today);
 
   const dateInputRef = useRef(null);
@@ -65,6 +64,12 @@ const ScheduleModal = ({
       console.error("삭제 중 오류 발생", error);
       alert("삭제에 실패했습니다. 다시 시도해주세요.");
     }
+  };
+
+  // 일정 추가
+  const handleButtonClick = () => {
+    // 입력 내용 api로 전달
+    alert("추가완료");
   };
 
   const size =
@@ -103,6 +108,7 @@ const ScheduleModal = ({
             </button>
           </section>
 
+          {/* 일정 제목 + 태그 */}
           <section className="flex flex-col items-center justify-center w-full">
             {/* 일정 제목 */}
             <section className="flex w-[80%] justify-between items-center">
@@ -111,7 +117,7 @@ const ScheduleModal = ({
                   type="text"
                   id="title"
                   placeholder="일정 제목을 입력하세요"
-                  className=" placeholder:text-xl"
+                  className=" placeholder:text-xl focus:outline-none"
                 />
               </span>
             </section>
@@ -122,7 +128,7 @@ const ScheduleModal = ({
                 isMulti // 다중 선택 가능
                 name="tags" // input의 name 속성
                 options={tagOptions} // select 목록
-                className="basic-multi-select w-[3=40%]"
+                className="basic-multi-select w-auto focus:outline-none focus:border-none"
                 classNamePrefix="select"
                 value={selectedTags} // 현재 선택된 값
                 onChange={setSelectedTags}
@@ -134,7 +140,7 @@ const ScheduleModal = ({
           {/* 일정 날짜 + 일정 내용 */}
           <section className="w-[98%] h-[21.125rem] bg-[#F0F0F0] rounded-[1rem] mb-[1%] p-[2rem] flex flex-col">
             {/* 일정 날짜 */}
-            <section className="flex justify-start items-center mb-1 gap-2">
+            <section className="flex  items-center mb-1 gap-2">
               <span className=" text-[#1A1A1A] text-[1.25rem] font-semibold font-[Inter] pt-[0.25rem]">
                 {todayDate}
               </span>
@@ -159,14 +165,24 @@ const ScheduleModal = ({
             </section>
 
             {/* 일정 내용 */}
-            <section className="border-t-[0.0625rem] border-[#ABABAB] mt-[0.0625rem] mb-[1rem]"></section>
-            <span className="text-[#656565]">
-              <textarea
-                type="text"
-                placeholder="일정 내용을 입력하시오"
-                className="bg-transparent resize-none w-[100%] h-[200px]"
-              />
-            </span>
+            <section className="border-t-[0.0625rem] border-[#ABABAB] mt-[0.0625rem] mb-[1rem]">
+              <span className="text-[#656565]">
+                <textarea
+                  type="text"
+                  placeholder="일정 내용을 입력하시오"
+                  className="bg-transparent resize-none w-[100%] h-[190px] focus:outline-none overflow-y-scroll"
+                />
+              </span>
+            </section>
+            {/* 추가 버튼 */}
+            <section className="flex justify-center">
+              <button
+                className="w-[50%] h-[40px] border-[1px] border-gray-300 rounded-[15px] shadow transition-shadow duration-200 hover:shadow-md hover:border-blue-500 hover:border-[2px] cursor-pointer"
+                onClick={handleButtonClick}
+              >
+                추가하기
+              </button>
+            </section>
           </section>
         </div>
       </div>
