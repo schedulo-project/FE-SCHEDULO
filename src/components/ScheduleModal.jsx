@@ -3,7 +3,7 @@
 // setIsModalOpen : 모달을 열고 닫는 함수 useState로 관리
 // onChange : 모달에서 일정 수정 시 사용될 함수 - home에 있는 handleChange와 연결
 // onChange는 추후에 수정기능이 만들어지면 사용할 예정
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TagBox from "./TagBox";
 import getTodayString from "../utils/getTodayString";
 
@@ -43,12 +43,23 @@ const ScheduleModal = ({
 
   // 선택된 태그들 상태로 관리
   const [selectedTags, setSelectedTags] = useState([]);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setTodayDate(today); // 모달 창 꺼질 때 오늘 일정으로 초기화
+      setTitle(""); // 제목 초기화
+      setContent(""); // 내용 초기화
+      setSelectedTags([]); // 태그 초기화
+    }
+  }, [!isModalOpen, today]);
 
   if (!isModalOpen) return null;
+
+  // 모달 닫기
   const handleClose = () => {
     setIsModalOpen(false);
-    setTodayDate(today); // 모달 창 꺼질 때 오늘 일정으로 초기화
-    // sethandleChange({ data: null, id }); 추가해야함
   };
 
   // 일정 삭제
@@ -66,26 +77,37 @@ const ScheduleModal = ({
     }
   };
 
+  // 입력값 변경 핸들러
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    if (id === "title") setTitle(value);
+    if (id === "content") setContent(value);
+    if (id === "date") setTodayDate(value);
+  };
+
+  // 태그 변경 핸들러
+  const handleTagChange = (selectedOptions) => {
+    setSelectedTags(selectedOptions);
+  };
+
   // 일정 추가
   const handleButtonClick = () => {
     // 입력 내용 api로 전달
+    console.log("일정 제목:", title);
+    console.log(
+      "태그:",
+      selectedTags.map((tag) => tag.label).join(", ")
+    );
+    console.log("날짜:", todayDate);
+    console.log("내용:", content);
     alert("추가완료");
+    setIsModalOpen(false);
   };
 
   const size =
     "min-w-[4.8125rem] text-[0.90238rem] pr-[1.80469rem] pl-[1.80469rem] pt-[0.15038rem] pb-[0.15038rem]";
 
   if (data.id === null) {
-    const handleDateChange = (e) => {
-      setTodayDate(e.target.value);
-      // setShowDateInput(false);
-    };
-
-    // 모달 창 닫을 시
-    // const handleOffModal = () => {
-    //   setTodayDate(now);
-    // };
-
     return (
       <div
         className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
@@ -95,11 +117,11 @@ const ScheduleModal = ({
           onClick={(e) => e.stopPropagation()}
           className="flex flex-col justify-between items-center w-[27.375rem] h-[36.8125rem] bg-white rounded-[1rem]"
         >
+          {/* 모달 헤더 */}
           <section className="bg-[#010669] flex w-full h-[5rem] p-[1.5625rem] justify-between items-center rounded-t-[1rem]">
             <span className="text-white text-[1.25rem] font-normal font-[Noto Sans KR]">
               일정 추가하기
             </span>
-            {/* 일정 추가 모달 종료 */}
             <button onClick={handleClose}>
               <img
                 className="w-[0.625rem] h-[0.62494rem]"
@@ -117,7 +139,9 @@ const ScheduleModal = ({
                   type="text"
                   id="title"
                   placeholder="일정 제목을 입력하세요"
-                  className=" placeholder:text-xl focus:outline-none"
+                  className="placeholder:text-xl focus:outline-none"
+                  value={title}
+                  onChange={handleInputChange}
                 />
               </span>
             </section>
@@ -125,13 +149,13 @@ const ScheduleModal = ({
             {/* 일정 태그 선택 */}
             <section className="w-[80%] flex justify-start items-center mt-[0.85rem]">
               <Select
-                isMulti // 다중 선택 가능
-                name="tags" // input의 name 속성
-                options={tagOptions} // select 목록
+                isMulti
+                name="tags"
+                options={tagOptions}
                 className="basic-multi-select w-auto focus:outline-none focus:border-none"
                 classNamePrefix="select"
-                value={selectedTags} // 현재 선택된 값
-                onChange={setSelectedTags}
+                value={selectedTags}
+                onChange={handleTagChange}
                 placeholder="태그 선택"
               />
             </section>
@@ -140,18 +164,18 @@ const ScheduleModal = ({
           {/* 일정 날짜 + 일정 내용 */}
           <section className="w-[98%] h-[21.125rem] bg-[#F0F0F0] rounded-[1rem] mb-[1%] p-[2rem] flex flex-col">
             {/* 일정 날짜 */}
-            <section className="flex  items-center mb-1 gap-2">
-              <span className=" text-[#1A1A1A] text-[1.25rem] font-semibold font-[Inter] pt-[0.25rem]">
+            <section className="flex items-center mb-1 gap-2">
+              <span className="text-[#1A1A1A] text-[1.25rem] font-semibold font-[Inter] pt-[0.25rem]">
                 {todayDate}
               </span>
-              {/* 일정 선택 */}
               <button className="w-[1.3125rem] h-[1.3125rem] relative">
                 <img src={calendarImg} />
                 <input
                   ref={dateInputRef}
                   type="date"
+                  id="date"
                   value={todayDate}
-                  onChange={handleDateChange}
+                  onChange={handleInputChange}
                   style={{
                     position: "absolute",
                     left: 0,
@@ -169,8 +193,11 @@ const ScheduleModal = ({
               <span className="text-[#656565]">
                 <textarea
                   type="text"
+                  id="content"
                   placeholder="일정 내용을 입력하시오"
                   className="bg-transparent resize-none w-[100%] h-[190px] focus:outline-none overflow-y-scroll"
+                  value={content}
+                  onChange={handleInputChange}
                 />
               </span>
             </section>
