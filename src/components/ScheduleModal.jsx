@@ -94,15 +94,6 @@ const ScheduleModal = ({
 
   // 일정 추가
   const handleButtonClick = () => {
-    // // 입력 내용 api로 전달
-    // console.log("일정 제목:", title);
-    // console.log(
-    //   "태그:",
-    //   selectedTags.map((tag) => tag.label).join(", ")
-    // );
-    // console.log("날짜:", date);
-    // console.log("내용:", content);
-
     const data = {
       title,
       selectedTags,
@@ -110,9 +101,7 @@ const ScheduleModal = ({
       date,
       completed,
     };
-    // addSchedules(data);
-    console.log(data);
-    alert("추가완료");
+    addSchedules(data);
     setIsModalOpen(false);
   };
 
