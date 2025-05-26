@@ -25,7 +25,6 @@ import trashImg from "../assets/schedulemodal/trash.svg";
 import calendarImg from "../assets/schedulemodal/calendar_search.svg";
 import deleteSchedules from "../api/deleteScheduleApi";
 
-
 import Select from "react-select";
 
 const tagOptions = [
@@ -36,12 +35,7 @@ const tagOptions = [
   { value: "회의", label: "회의" },
 ];
 
-const ScheduleModal = ({
-  isModalOpen,
-  data,
-  setIsModalOpen,
-}) => {
-
+const ScheduleModal = () => {
   //jotai
   const [, sethandleChange] = useAtom(handleChangeAtom);
   const [isModalOpen, setIsModalOpen] = useAtom(isModalOpenAtom);
