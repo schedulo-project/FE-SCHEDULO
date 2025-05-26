@@ -6,6 +6,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import TagBox from "./TagBox";
 import getTodayString from "../utils/getTodayString";
+import addSchedules from "../api/addScheduleApi";
 
 //jotai
 import { useAtom } from "jotai";
@@ -37,7 +38,7 @@ const ScheduleModal = ({
 
   // 오늘 날짜
   const today = getTodayString();
-  const [todayDate, setTodayDate] = useState(today);
+  const [date, setDate] = useState(today);
 
   const dateInputRef = useRef(null);
 
@@ -45,10 +46,11 @@ const ScheduleModal = ({
   const [selectedTags, setSelectedTags] = useState([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
     if (isModalOpen) {
-      setTodayDate(today); // 모달 창 꺼질 때 오늘 일정으로 초기화
+      setDate(today); // 모달 창 꺼질 때 오늘 일정으로 초기화
       setTitle(""); // 제목 초기화
       setContent(""); // 내용 초기화
       setSelectedTags([]); // 태그 초기화
@@ -82,7 +84,7 @@ const ScheduleModal = ({
     const { id, value } = e.target;
     if (id === "title") setTitle(value);
     if (id === "content") setContent(value);
-    if (id === "date") setTodayDate(value);
+    if (id === "date") setDate(value);
   };
 
   // 태그 변경 핸들러
@@ -92,14 +94,24 @@ const ScheduleModal = ({
 
   // 일정 추가
   const handleButtonClick = () => {
-    // 입력 내용 api로 전달
-    console.log("일정 제목:", title);
-    console.log(
-      "태그:",
-      selectedTags.map((tag) => tag.label).join(", ")
-    );
-    console.log("날짜:", todayDate);
-    console.log("내용:", content);
+    // // 입력 내용 api로 전달
+    // console.log("일정 제목:", title);
+    // console.log(
+    //   "태그:",
+    //   selectedTags.map((tag) => tag.label).join(", ")
+    // );
+    // console.log("날짜:", date);
+    // console.log("내용:", content);
+
+    const data = {
+      title,
+      selectedTags,
+      content,
+      date,
+      completed,
+    };
+    // addSchedules(data);
+    console.log(data);
     alert("추가완료");
     setIsModalOpen(false);
   };
@@ -166,7 +178,7 @@ const ScheduleModal = ({
             {/* 일정 날짜 */}
             <section className="flex items-center mb-1 gap-2">
               <span className="text-[#1A1A1A] text-[1.25rem] font-semibold font-[Inter] pt-[0.25rem]">
-                {todayDate}
+                {date}
               </span>
               <button className="w-[1.3125rem] h-[1.3125rem] relative">
                 <img src={calendarImg} />
@@ -174,7 +186,7 @@ const ScheduleModal = ({
                   ref={dateInputRef}
                   type="date"
                   id="date"
-                  value={todayDate}
+                  value={date}
                   onChange={handleInputChange}
                   style={{
                     position: "absolute",
