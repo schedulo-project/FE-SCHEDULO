@@ -70,11 +70,19 @@ const AddWidget = ({ state }) => {
   };
 
   return (
-    <div style={{ display: "flex", gap: "10px" }}>
-      <button onClick={handleAdd} disabled={isDisabled}>
+    <div className="flex gap-[50px] justify-center">
+      <button
+        onClick={handleAdd}
+        disabled={isDisabled}
+        className="w-[60px] h-7 text-3 leading-3 text-white bg-gray-600 border border-black rounded-2xl "
+      >
         추가
       </button>
-      <button onClick={handleCancel} disabled={isDisabled}>
+      <button
+        onClick={handleCancel}
+        disabled={isDisabled}
+        className="w-[60px] h-7 text-3 leading-3 bg-white border border-gray-600 rounded-2xl"
+      >
         취소
       </button>
     </div>
