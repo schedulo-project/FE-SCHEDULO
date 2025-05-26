@@ -18,9 +18,9 @@ const CheckWidget = ({ state }) => {
     return <div>일정이 없습니다.</div>;
   }
 
-  Object.entries(scheduleData).map(([date, items]) =>
-    console.log(items[3].tag[0].name)
-  );
+  // Object.entries(scheduleData).map(([date, items]) =>
+  //   console.log(items[3].tag[0].name)
+  // );
 
   return (
     <div>

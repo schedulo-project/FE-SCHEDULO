@@ -166,7 +166,6 @@ const Home = () => {
       return limitedEvents;
     });
 
-  console.log("삭제 전 events", events);
   return (
     <div className="flex flex-row gap-8 ml-10 mr-10 ">
       <div className="grow-[3]">
