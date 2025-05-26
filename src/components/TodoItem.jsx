@@ -15,6 +15,8 @@ function TodoItem({ task, checked }) {
 
   //jotai
   const [, setHandleCheck] = useAtom(handelCheckAtom);
+
+  //체크박스 클릭시
   const handleCheck = (id) => {
     setHandleCheck(id);
   };
@@ -51,8 +53,10 @@ function TodoItem({ task, checked }) {
         </section>
         <input
           type="checkbox"
+          onClick={(e) => e.stopPropagation()}
           onChange={() => handleCheck(task.id)}
           checked={checked}
+          //상위 onClick 이벤트가 발생하지 않도록 막아준다.
         />
       </div>
     </>

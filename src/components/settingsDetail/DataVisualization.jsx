@@ -54,7 +54,7 @@ const DataVisualization = () => {
         },
         {
           x: "12월",
-          y: 37,
+          y: 30,
         },
       ],
     },
@@ -70,7 +70,7 @@ const DataVisualization = () => {
         <ResponsiveLine
           data={data} // 그래프에 사용할 시계열 데이터
           // 그래프 전체 padding: 레이블 공간 확보
-          margin={{ top: 20, right: 30, bottom: 50, left: 30 }}
+          margin={{ top: 20, right: 30, bottom: 50, left: 70 }}
           // Y축 스케일 설정
           yScale={{
             type: "linear", // 선형 스케일

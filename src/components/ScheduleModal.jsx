@@ -10,13 +10,21 @@ import addSchedules from "../api/addScheduleApi";
 
 //jotai
 import { useAtom } from "jotai";
-import { handleChangeAtom } from "../atoms/HomeAtoms";
+import {
+  handleChangeAtom,
+  isModalOpenAtom,
+  modalDataAtom,
+} from "../atoms/HomeAtoms";
+// % 모달 사용 요령 %
+// 1. 모달을 열고 닫는 함수는 useAtom으로 관리 : isModalOpenAtom
+// 2. 모달에 보여줄 데이터는 useAtom으로 관리 : modalDataAtom
 
 //이미지
 import xImg from "../assets/schedulemodal/x_sign.svg";
 import trashImg from "../assets/schedulemodal/trash.svg";
 import calendarImg from "../assets/schedulemodal/calendar_search.svg";
 import deleteSchedules from "../api/deleteScheduleApi";
+
 
 import Select from "react-select";
 
@@ -33,8 +41,15 @@ const ScheduleModal = ({
   data,
   setIsModalOpen,
 }) => {
+
   //jotai
   const [, sethandleChange] = useAtom(handleChangeAtom);
+  const [isModalOpen, setIsModalOpen] = useAtom(isModalOpenAtom);
+  const [modalData] = useAtom(modalDataAtom); // 모달에 보여줄 데이터
+  //모달이 열렸는지 판단하는 boolean 값
+
+  const data = modalData;
+  //data는 모달에 보여줄 데이터
 
   // 오늘 날짜
   const today = getTodayString();

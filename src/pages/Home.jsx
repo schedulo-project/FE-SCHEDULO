@@ -22,7 +22,7 @@ const Home = () => {
   const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태 추가
 
   // TodoList에서 체크된 일정의 상태를 관리하는 useState와는 별개로 사용됨
-  const [isModalOpen, setIsModalOpen] = useAtom(isModalOpenAtom);
+  const [, setIsModalOpen] = useAtom(isModalOpenAtom);
 
   const [modalData, setModalData] = useAtom(modalDataAtom); // 모달에 보여줄 데이터
   const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 불러오기
@@ -175,11 +175,8 @@ const Home = () => {
           onEventClick={handleEventClick}
         />
       </div>
-      <ScheduleModal
-        isModalOpen={isModalOpen}
-        data={modalData}
-        setIsModalOpen={setIsModalOpen}
-      />
+      {/* 모달 */}
+      {!modalData.is_completed && <ScheduleModal />}
 
       {/* 사이드바 */}
       <div className="lg:flex lg:flex-col items-center gap-2 grow-[1] hidden">
