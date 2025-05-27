@@ -11,6 +11,9 @@ export const homeSidebarAtoms = atom(false);
 
 export const WitchGroupAtom = atom("기본 정렬");
 
+//토글 열린지 아닌지 관리하는 atom
+export const openGroupsAtom = atom({});
+
 export const handelCheckAtom = atom(
   null,
   async (get, set, id) => {

@@ -11,6 +11,7 @@ import {
   homeSidebarAtoms,
   isModalOpenAtom,
   modalDataAtom,
+  openGroupsAtom,
 } from "../atoms/HomeAtoms";
 
 const Home = () => {
@@ -36,6 +37,9 @@ const Home = () => {
   //일정 조회가 사이드바처럼 나오게 하기 위한 상태 관리, 클릭했을 때 CheckSchedule의 내부에서 버튼으로 화면을 닫을 수 있도록 하기 위해서 jotai로 관리함
   const [isSidebarOpen, setSidebarOpen] =
     useAtom(homeSidebarAtoms);
+
+  //일정 토글을 다른 날짜를 누르면 초기화 되게 하는 Atom
+  const [, setOpenGroups] = useAtom(openGroupsAtom);
 
   // 화면 크기 감지하는 훅
   useEffect(() => {
@@ -85,6 +89,7 @@ const Home = () => {
 
   // 날짜 클릭 시 선택된 날짜 업데이트
   const handleDateClick = (date) => {
+    setOpenGroups({});
     setSelectedDate(date);
     //화면 크기가 1023보다 작으면 사이드바 열리게 하기 클릭도 하고 작은것도 확인해야하는 2중 코드
     if (isHalf) {
