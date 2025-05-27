@@ -50,6 +50,7 @@ function TodoCategory({ todoList }) {
     return result;
   };
 
+  //빈 리스트를 걸러주기 위한 필터링
   const filterAllList = (list) => {
     const todoList = list.filter((t) => !t.is_completed);
     const completedList = list.filter((t) => t.is_completed);
