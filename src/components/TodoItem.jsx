@@ -59,6 +59,7 @@ function TodoItem({ task, checked }) {
           onChange={() => handleCheck(task.id)}
           checked={checked}
           //상위 onClick 이벤트가 발생하지 않도록 막아준다.
+          className="accent-[#9DB2BF] "
         />
       </div>
     </>
