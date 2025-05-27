@@ -3,6 +3,8 @@ import TodoCategory from "../components/TodoCategory";
 import { useAtom } from "jotai";
 import { homeSidebarAtoms } from "../atoms/HomeAtoms";
 
+import DropDown from "./DropDown";
+
 function CheckSchedule({ selectedDateEvents }) {
   const [todoList, setTodoList] = useState([]);
   const [isSidebarOpen, setSidebarOpen] =
@@ -48,21 +50,17 @@ function CheckSchedule({ selectedDateEvents }) {
                 bg-[#F0F0F0] rounded-[0.294rem] border-[#E0E0E0] 
                 border-4 w-80 max-w-[17.34519rem] min-h-[26.1875rem] max-h-[40.1875rem] overflow-scroll"
     >
-      <section className="flex justify-between items-end">
+      <section className="flex justify-between items-center">
         <span className="text-[#1A1A1A] text-[0.73925rem] font-semibold font-[Inter]">
           일정
         </span>
-        <span className="text-[#010669] text-[0.625rem] font-semibold font-[Inter] flex items-center gap-2">
+        <span className="text-[#010669] text-[10px] font-semibold font-[Inter] flex items-center gap-2">
           {selectedDateEvents[0].date}
+          <DropDown />
+          {/* 드롭다운 컴포넌트 */}
 
           {isSidebarOpen && exitButton}
         </span>
-      </section>
-      <section className="flex items-center mt-[0.69rem] mb-[0.69rem]">
-        <span className="text-[0.55444rem] text-[#656565] font-[Inter] font-normal">
-          todo
-        </span>
-        <div className="flex-grow h-[0.04619rem] bg-[#ABABAB] max-w-[13.95906rem] mx-[0.44rem]" />
       </section>
       <section>
         <TodoCategory todoList={todoList} />
