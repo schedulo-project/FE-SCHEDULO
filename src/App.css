@@ -6,3 +6,45 @@ body,
   margin: 0;
   overscroll-behavior: none;
 }
+
+/* react-select 스타일링 */
+/* 
+.basic-multi-select .select__control {
+  @apply bg-transparent border-none shadow-none min-h-[38px];
+}
+
+.basic-multi-select .select__value-container {
+  @apply text-white;
+}
+
+.basic-multi-select .select__input input {
+  @apply text-white placeholder-white;
+}
+
+.basic-multi-select .select__single-value {
+  @apply text-white;
+}
+
+.basic-multi-select .select__menu {
+  @apply bg-black bg-opacity-70 border-none shadow-lg;
+}
+
+.basic-multi-select .select__option {
+  @apply bg-transparent text-white hover:bg-white hover:bg-opacity-10;
+}
+
+.basic-multi-select .select__option--is-selected {
+  @apply bg-white bg-opacity-20 text-white;
+}
+
+.basic-multi-select .select__multi-value {
+  @apply bg-white bg-opacity-10;
+}
+
+.basic-multi-select .select__multi-value__label {
+  @apply text-white;
+}
+
+.basic-multi-select .select__multi-value__remove {
+  @apply text-white hover:bg-white hover:bg-opacity-20 hover:text-black;
+} */

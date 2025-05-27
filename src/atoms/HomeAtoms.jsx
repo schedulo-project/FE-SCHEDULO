@@ -9,6 +9,8 @@ export const eventsAtoms = atom([]);
 
 export const homeSidebarAtoms = atom(false);
 
+export const WitchGroupAtom = atom("기본 정렬");
+
 export const handelCheckAtom = atom(
   null,
   async (get, set, id) => {
