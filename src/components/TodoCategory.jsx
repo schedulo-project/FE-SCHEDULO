@@ -26,9 +26,11 @@ function TodoCategory({ todoList }) {
       if (task.is_completed) {
         completedGroup.push(task);
       } else {
+        // 태그가 , 으로 나누어져 있어 이를 분리해주는 코드
         const firstTag = task.tagName?.split(",")[0]?.trim();
         if (firstTag) {
           if (!tagGroups.has(firstTag)) {
+            // 태그가 처음 등장하면 새로운 배열을 생성
             tagGroups.set(firstTag, []);
           }
           tagGroups.get(firstTag).push(task);
@@ -38,9 +40,10 @@ function TodoCategory({ todoList }) {
       }
     });
 
-    // 최종 배열 구성
+    // 최종 배열을 넣어줄 곳
     const result = [];
 
+    // 순서대로 배치하기 위해 3가지로 나눔
     // 1. 태그로 묶인 작업
     for (const [tag, tasks] of tagGroups.entries()) {
       result.push({ tag, task: tasks });
@@ -86,6 +89,7 @@ function TodoCategory({ todoList }) {
       : filterAllList(todoList);
 
   // 토글에 대한 상태 관리
+  // tag : true 처럼 되어있고 배열에 없는 것은 false로 초기화 된다.
   const toggleGroup = (tag) => {
     setOpenGroups((prev) => ({
       ...prev,
