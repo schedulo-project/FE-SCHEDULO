@@ -42,7 +42,7 @@ export default function StudyPlanStep() {
           overflow: "hidden",
         }}
       >
-        <h1 className="text-white text-[1.5rem] font-semibold mx-auto">
+        <h1 className="text-white text-xl font-semibold mx-auto">
           시험공부 계획설정
         </h1>
         <button

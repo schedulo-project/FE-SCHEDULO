@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import "../../styles/daterange.css";
+import CalenderIcon from "../../assets/studyplan/calender.svg";
 
 export default function StudyPlanStep1({ formData, updateFormData, nextStep }) {
   const [localData, setLocalData] = useState({
@@ -55,61 +56,51 @@ export default function StudyPlanStep1({ formData, updateFormData, nextStep }) {
   };
 
   return (
-    <div className="w-full h-screen bg-white flex flex-col">
+    <div className="w-full min-h-screen bg-white flex flex-col">
       {/* 제목 */}
-      <div className="p-16 pb-0">
-        <h2 className="text-2xl font-bold">1. 기본 입력</h2>
+      <div className="text-black text-2xl font-medium font-['Inter'] leading-snug pt-32 pb-2 px-32">
+        1. 기본 입력
       </div>
 
-      <div className="flex flex-grow items-center justify-center relative px-16">
-        {/* 이전 버튼 */}
-        <button
-          type="button"
-          className="text-gray-300 cursor-not-allowed absolute left-16"
-          disabled
-        >
-          <ChevronLeft size={49} />
-        </button>
-
+      <div
+        className="flex flex-1 items-center justify-center relative px-6"
+        style={{ marginTop: "-16rem" }}
+      >
         {/* 입력 폼 */}
-        <div className="w-full max-w-[700px] mx-auto">
+        <div className="w-full max-w-[700px] mt-4 flex flex-col justify-center">
           {/* 시험명 */}
           <div className="flex items-center justify-center mb-8">
-            <label className="w-32 text-[20px] font-semibold">
-              시험명
-            </label>
+            <label className="w-32 text-xl font-semibold">시험명</label>
             <input
               type="text"
               name="examName"
               value={localData.examName}
               onChange={handleChange}
-              className="w-full p-4 border border-[#8E92BC] rounded-lg max-w-[400px] focus:outline-none"
-              placeholder="ex) 공학설계입문"
+              className="w-full p-4 text-lg border border-[#8E92BC] rounded-lg max-w-[400px] focus:outline-none h-14 box-border"
             />
           </div>
 
           {/* 시험기간 */}
           <div className="flex items-center justify-center mb-12 relative">
-            <label className="w-32 text-[20px] font-semibold mt-3">
-              시험기간
-            </label>
+            <label className="w-32 text-xl font-semibold">시험기간</label>
             <div className="flex flex-col gap-2 w-full max-w-[400px] relative">
-              <input
-                readOnly
+              <div
                 onClick={() => setShowCalendar(!showCalendar)}
-                value={
-                  localData.startDate && localData.endDate
+                className="w-full p-4 text-lg border border-[#8E92BC] rounded-lg cursor-pointer bg-white flex items-center justify-between h-14 box-border"
+              >
+                <div className="text-lg font-normal font-['Inter'] leading-tight">
+                  {localData.startDate && localData.endDate
                     ? `${format(
                         new Date(localData.startDate),
                         "M월 d일"
                       )} ~ ${format(new Date(localData.endDate), "M월 d일")}`
-                    : ""
-                }
-                className="w-full p-4 border border-[#8E92BC] rounded-lg cursor-pointer bg-white focus:outline-none"
-                placeholder="날짜를 선택해주세요"
-              />
+                    : ""}
+                </div>
+                {/* 캘린더 아이콘 */}
+                <img src={CalenderIcon} alt="calendar" className="w-6 h-6" />
+              </div>
               {showCalendar && (
-                <div className="absolute z-10 top-full mt-4 left-1/2 transform -translate-x-1/2">
+                <div className="absolute z-10 top-full mt-8 left-1/2 transform -translate-x-1/2">
                   <DateRange
                     editableDateInputs={true}
                     onChange={handleDateChange}
@@ -128,7 +119,7 @@ export default function StudyPlanStep1({ formData, updateFormData, nextStep }) {
         <button
           type="button"
           onClick={handleNext}
-          className="text-[#27374D] absolute right-16"
+          className="text-[#27374D] absolute right-32 top-1/2 -translate-y-1/2"
         >
           <ChevronRight size={49} />
         </button>
