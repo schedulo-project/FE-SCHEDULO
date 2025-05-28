@@ -25,7 +25,7 @@ import trashImg from "../assets/schedulemodal/trash.svg";
 import calendarImg from "../assets/schedulemodal/calendar_search.svg";
 import deleteSchedules from "../api/deleteScheduleApi";
 
-import Select from "react-select";
+import Select from "react-select/creatable";
 
 const tagOptions = [
   { value: "강의", label: "강의" },

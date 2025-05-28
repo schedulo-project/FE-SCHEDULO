@@ -1,10 +1,13 @@
 // 일정 조회 api
 import GetCookie from "./GetCookie";
 import axios from "axios";
+import getTags from "./getTagsApi";
 
 const fetchSchedules = async (firstDate, lastDate) => {
   const Logindata = await GetCookie();
   const token = Logindata.access;
+
+  getTags();
 
   try {
     const response = await axios.get(
