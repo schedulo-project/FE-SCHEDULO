@@ -15,7 +15,15 @@ const getTags = async () => {
         },
       }
     );
-    console.log("res", response.data);
+
+    const tagNames = response.data
+      .map((tag) => tag.name)
+      .map((name) => ({
+        value: name,
+        label: name,
+      }));
+
+    return tagNames;
   } catch (error) {
     console.error("error", error);
   }

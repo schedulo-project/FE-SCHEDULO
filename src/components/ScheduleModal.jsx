@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 import TagBox from "./TagBox";
 import getTodayString from "../utils/getTodayString";
 import addSchedules from "../api/addScheduleApi";
+import getTags from "../api/getTagsApi";
 
 //jotai
 import { useAtom } from "jotai";
@@ -27,13 +28,13 @@ import deleteSchedules from "../api/deleteScheduleApi";
 
 import Select from "react-select/creatable";
 
-const tagOptions = [
-  { value: "강의", label: "강의" },
-  { value: "취미", label: "취미" },
-  { value: "학교공부", label: "학교공부" },
-  { value: "개인공부", label: "개인공부" },
-  { value: "회의", label: "회의" },
-];
+// const tagOptions = [
+//   { value: "강의", label: "강의" },
+//   { value: "취미", label: "취미" },
+//   { value: "학교공부", label: "학교공부" },
+//   { value: "개인공부", label: "개인공부" },
+//   { value: "회의", label: "회의" },
+// ];
 
 const ScheduleModal = () => {
   //jotai
@@ -56,6 +57,19 @@ const ScheduleModal = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [completed, setCompleted] = useState(false);
+
+  // 태그 리스트
+  const [tagList, setTagList] = useState([]);
+
+  // 태그 호출 api
+  useEffect(() => {
+    const fetchTags = async () => {
+      const response = await getTags();
+
+      setTagList(response);
+    };
+    fetchTags();
+  }, []);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -161,7 +175,7 @@ const ScheduleModal = () => {
               <Select
                 isMulti
                 name="tags"
-                options={tagOptions}
+                options={tagList}
                 className="basic-multi-select w-auto focus:outline-none focus:border-none"
                 classNamePrefix="select"
                 value={selectedTags}
