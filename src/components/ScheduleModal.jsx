@@ -15,6 +15,7 @@ import {
   handleChangeAtom,
   isModalOpenAtom,
   modalDataAtom,
+  tagListAtom,
 } from "../atoms/HomeAtoms";
 // % 모달 사용 요령 %
 // 1. 모달을 열고 닫는 함수는 useAtom으로 관리 : isModalOpenAtom
@@ -50,20 +51,11 @@ const ScheduleModal = () => {
   const [content, setContent] = useState("");
   const [completed, setCompleted] = useState(false);
 
-  // 태그 리스트
-  const [tagList, setTagList] = useState([]);
-
   // 태그 호출 api
   // Home 페이지 렌더링 시 태그 조회 호출
   // -> atom에 호출된 태그 리스트 넣어두기
-  useEffect(() => {
-    const fetchTags = async () => {
-      const response = await getTags();
-
-      setTagList(response);
-    };
-    fetchTags();
-  }, []);
+  // atom에서 taglist 불러오기
+  const [tagList] = useAtom(tagListAtom);
 
   useEffect(() => {
     if (isModalOpen) {

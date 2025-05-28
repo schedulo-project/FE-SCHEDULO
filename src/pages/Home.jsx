@@ -11,7 +11,9 @@ import {
   homeSidebarAtoms,
   isModalOpenAtom,
   modalDataAtom,
+  tagListAtom,
 } from "../atoms/HomeAtoms";
+import getTags from "../api/getTagsApi";
 
 const Home = () => {
   // 임시 데이터
@@ -36,6 +38,18 @@ const Home = () => {
   //일정 조회가 사이드바처럼 나오게 하기 위한 상태 관리, 클릭했을 때 CheckSchedule의 내부에서 버튼으로 화면을 닫을 수 있도록 하기 위해서 jotai로 관리함
   const [isSidebarOpen, setSidebarOpen] =
     useAtom(homeSidebarAtoms);
+
+  // 태그 리스트 불러오기
+  const [, setTagList] = useAtom(tagListAtom); // jotai 전역 태그 리스트 setter
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      const response = await getTags();
+
+      setTagList(response);
+    };
+    fetchTags();
+  }, []);
 
   // 화면 크기 감지하는 훅
   useEffect(() => {
