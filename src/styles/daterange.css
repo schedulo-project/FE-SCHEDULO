@@ -1,0 +1,17 @@
+/* 날짜 표시 상자 숨기기 (최상단) */
+.rdrDateDisplayWrapper {
+  display: none;
+}
+
+/* 선택된 날짜 배경색 */
+.rdrInRange,
+.rdrStartEdge,
+.rdrEndEdge,
+.rdrSelected {
+  background: #9db2bf !important;
+}
+
+/* 오늘 날짜 밑줄 제거 */
+.rdrDayToday .rdrDayNumber span:after {
+  display: none !important;
+}

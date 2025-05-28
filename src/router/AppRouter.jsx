@@ -5,6 +5,7 @@ import Timetable from "../pages/Timetable";
 import ChatbotComponent from "../components/chatbot/ChatbotComponent";
 import Loginpage from "../pages/Login";
 import MainLayout from "../components/layout/MainLayout";
+import StudyPlanStep from "../components/studyPlan/StudyPlanStep";
 
 //setting에 사용되는 컴포넌트들
 import Profile from "../components/settingsDetail/Profile";
@@ -23,20 +24,15 @@ const AppRouter = () => {
         <Route path="/" element={<Home />} />
         <Route path="/settings" element={<Settings />}>
           <Route path="profile" element={<Profile />}>
-            <Route
-              path="password"
-              element={<PasswordChange />}
-            />
+            <Route path="password" element={<PasswordChange />} />
           </Route>
           <Route path="alarm" element={<Alarm />} />
-          <Route
-            path="studyplan"
-            element={<StudyPlanSetting />}
-          />
+          <Route path="studyplan" element={<StudyPlanSetting />} />
           <Route path="data" element={<DataVisualization />} />
         </Route>
         <Route path="/timetable" element={<Timetable />} />
         <Route path="/chatbot" element={<ChatbotComponent />} />
+        <Route path="/study-plan" element={<StudyPlanStep />} />
       </Route>
       <Route path="/login" element={<Loginpage />} />
       <Route path="/signup" element={<Signup />} />

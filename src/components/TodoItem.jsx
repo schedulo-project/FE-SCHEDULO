@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React } from "react";
 import TagBox from "./TagBox";
 
 //jotai
@@ -35,14 +35,16 @@ function TodoItem({ task, checked }) {
     setModalOpen(true);
   };
 
-  const bgColor = checked ? "bg-[#E0E0E0]" : "bg-[#F0F0F0]";
+  const bgColor = checked
+    ? "bg-[#DDE6ED] border-[1px] border-[#9DB2BF]"
+    : "bg-[#FFFFFF]";
   const size =
     "min-w-[2rem] pr-[0.75rem] pl-[0.75rem] text-[0.375rem]";
 
   return (
     <>
       <div
-        className={`flex items-center justify-between ${bgColor} border-[#E0E0E0] border-4 rounded-[0.294rem] p-2 mb-2`}
+        className={`flex items-center min-h-[2.8125rem] justify-between ${bgColor} rounded-[0.294rem] p-2 mb-2`}
         onClick={() => handleClick()}
       >
         <section>
@@ -57,6 +59,7 @@ function TodoItem({ task, checked }) {
           onChange={() => handleCheck(task.id)}
           checked={checked}
           //상위 onClick 이벤트가 발생하지 않도록 막아준다.
+          className="accent-[#9DB2BF] "
         />
       </div>
     </>

@@ -62,43 +62,65 @@ const DeleteWidget = ({ state }) => {
 
   return (
     <div>
-      <strong>삭제할 일정</strong>
-      {Object.keys(scheduleData).map((date) => (
-        <div key={date}>
-          <h4>{date}</h4>
-          {scheduleData[date].map((item) => (
-            <div key={item.id}>
-              <label>
-                <input
-                  type="checkbox"
-                  value={item.id}
-                  checked={checked.includes(item.id)}
-                  onChange={() => handleCheck(item.id)}
-                  disabled={isButtonDisabled}
-                />
-                {item.title} :<p>{item.content}</p>
-              </label>
-            </div>
-          ))}
+      <h3 className="font-bold text-xl mb-4">삭제할 일정</h3>
+      {Object.entries(scheduleData).map(([date, items]) => (
+        <div key={date} className="mb-4">
+          <h4 className="font-semibold text-lg mb-2">{date}</h4>
+          <div>
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className={`flex items-center justify-between bg-[#F0F0F0] border-[#E0E0E0] border-4 rounded-md p-2 mb-2`}
+              >
+                <section>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      value={item.id}
+                      checked={checked.includes(item.id)}
+                      onChange={() => handleCheck(item.id)}
+                      disabled={isButtonDisabled}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm text-[#1A1A1A] font-semibold font-inter">
+                      {item.title}
+                    </span>
+                  </label>
+
+                  {/* 태그가 있다면 아래처럼 표시 */}
+                  {item.tag &&
+                    Array.isArray(item.tag) &&
+                    item.tag.length > 0 && (
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {item.tag.map((tag, i) => (
+                          <span
+                            key={i}
+                            className="inline-block bg-[#e0e0e0] rounded px-2 py-0.5 text-xs"
+                          >
+                            {tag.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                </section>
+              </div>
+            ))}
+          </div>
         </div>
       ))}
 
-      <div
-        style={{
-          marginTop: "40px",
-          display: "flex",
-          gap: "10px",
-        }}
-      >
+      <div className="flex gap-[50px] justify-center">
         <button
           onClick={handleDelete}
           disabled={isButtonDisabled}
+          className="w-[60px] h-7 text-3 leading-3 text-white bg-gray-600 border border-black rounded-2xl "
         >
           삭제
         </button>
         <button
           onClick={handleCancel}
           disabled={isButtonDisabled}
+          className="w-[60px] h-7 text-3 leading-3 bg-white border border-gray-600 rounded-2xl"
         >
           취소
         </button>

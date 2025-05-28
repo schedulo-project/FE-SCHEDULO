@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import bookImg from "../assets/logo/book_square.svg";
 import SideBtn from "./SideBtn";
+import StudyPlanBtn from "./studyPlan/StudyPlanBtn";
 import ChatbotBtn from "./chatbot/ChatbotBtn";
 
 const SideBox = ({ closeSidebar }) => {
@@ -9,12 +10,10 @@ const SideBox = ({ closeSidebar }) => {
   const location = useLocation();
 
   const getSelected = () => {
-    if (location.pathname.startsWith("/timetable"))
-      return "timetable";
+    if (location.pathname.startsWith("/timetable")) return "timetable";
     if (location.pathname.startsWith("/tag")) return "tag";
     if (location.pathname.startsWith("/clock")) return "clock";
-    if (location.pathname.startsWith("/setting"))
-      return "setting";
+    if (location.pathname.startsWith("/setting")) return "setting";
     if (location.pathname.startsWith("/")) return "calendar";
     return "";
   };
@@ -54,6 +53,7 @@ const SideBox = ({ closeSidebar }) => {
           className="w-[1.86506rem] h-[1.86506rem] hidden lg:block"
           src={bookImg}
         />
+
         <button
           className="text-[#010669] text-[1.49206rem] font-[Josefin Sans] font-semibold hidden lg:block"
           onClick={() => nav("/")}
@@ -63,13 +63,7 @@ const SideBox = ({ closeSidebar }) => {
       </section>
 
       <section className="flex flex-col gap-[1.11906rem] mt-[2.41rem]">
-        {[
-          "calendar",
-          "tag",
-          "clock",
-          "setting",
-          "timetable",
-        ].map((type) => (
+        {["calendar", "tag", "clock", "setting", "timetable"].map((type) => (
           <SideBtn
             key={type}
             type={type}
@@ -79,7 +73,8 @@ const SideBox = ({ closeSidebar }) => {
         ))}
       </section>
 
-      <section className="flex justify-center items-center mt-[9rem]">
+      <section className="flex flex-col items-center gap-[1rem] mt-[9rem]">
+        <StudyPlanBtn />
         <ChatbotBtn />
       </section>
     </div>
