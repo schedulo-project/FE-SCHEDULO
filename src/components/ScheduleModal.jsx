@@ -28,6 +28,7 @@ import calendarImg from "../assets/schedulemodal/calendar_search.svg";
 import deleteSchedules from "../api/deleteScheduleApi";
 
 import Select from "react-select/creatable";
+import addTags from "../api/addTagsApi";
 
 const ScheduleModal = () => {
   //jotai
@@ -56,6 +57,7 @@ const ScheduleModal = () => {
   // -> atom에 호출된 태그 리스트 넣어두기
   // atom에서 taglist 불러오기
   const [tagList] = useAtom(tagListAtom);
+  const [, setTagList] = useAtom(tagListAtom);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -99,6 +101,13 @@ const ScheduleModal = () => {
   // 태그 변경 핸들러
   const handleTagChange = (selectedOptions) => {
     setSelectedTags(selectedOptions);
+  };
+
+  // 태그 추가
+  const handleCreate = (inputValue) => {
+    const newTags = { value: inputValue, label: inputValue };
+    setTagList((prev) => [...prev, newTags]);
+    addTags(inputValue);
   };
 
   // 일정 추가
@@ -166,6 +175,7 @@ const ScheduleModal = () => {
                 classNamePrefix="select"
                 value={selectedTags}
                 onChange={handleTagChange}
+                onCreateOption={handleCreate}
                 placeholder="태그 선택"
               />
             </section>
