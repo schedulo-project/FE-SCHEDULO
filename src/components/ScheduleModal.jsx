@@ -28,14 +28,6 @@ import deleteSchedules from "../api/deleteScheduleApi";
 
 import Select from "react-select/creatable";
 
-// const tagOptions = [
-//   { value: "강의", label: "강의" },
-//   { value: "취미", label: "취미" },
-//   { value: "학교공부", label: "학교공부" },
-//   { value: "개인공부", label: "개인공부" },
-//   { value: "회의", label: "회의" },
-// ];
-
 const ScheduleModal = () => {
   //jotai
   const [, sethandleChange] = useAtom(handleChangeAtom);
