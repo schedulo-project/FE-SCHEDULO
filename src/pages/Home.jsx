@@ -11,8 +11,10 @@ import {
   homeSidebarAtoms,
   isModalOpenAtom,
   modalDataAtom,
+  tagListAtom,
   openGroupsAtom,
 } from "../atoms/HomeAtoms";
+import getTags from "../api/getTagsApi";
 
 const Home = () => {
   // 임시 데이터
@@ -38,6 +40,17 @@ const Home = () => {
   const [isSidebarOpen, setSidebarOpen] =
     useAtom(homeSidebarAtoms);
 
+  // 태그 리스트 불러오기
+  const [, setTagList] = useAtom(tagListAtom); // jotai 전역 태그 리스트 setter
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      const response = await getTags();
+
+      setTagList(response);
+    };
+    fetchTags();
+  }, []);
   //일정 토글을 다른 날짜를 누르면 초기화 되게 하는 Atom
   const [, setOpenGroups] = useAtom(openGroupsAtom);
 

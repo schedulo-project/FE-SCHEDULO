@@ -57,6 +57,9 @@ export const handleChangeAtom = atom(
   }
 );
 
+// 태그에 대한 atom
+export const tagListAtom = atom([]);
+
 const ScheduleCompleteOrNot = async ({ data }) => {
   const Logindata = await GetCookie();
   const token = Logindata.access;

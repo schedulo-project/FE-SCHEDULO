@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 import TagBox from "./TagBox";
 import getTodayString from "../utils/getTodayString";
 import addSchedules from "../api/addScheduleApi";
+import getTags from "../api/getTagsApi";
 
 //jotai
 import { useAtom } from "jotai";
@@ -14,6 +15,7 @@ import {
   handleChangeAtom,
   isModalOpenAtom,
   modalDataAtom,
+  tagListAtom,
 } from "../atoms/HomeAtoms";
 // % 모달 사용 요령 %
 // 1. 모달을 열고 닫는 함수는 useAtom으로 관리 : isModalOpenAtom
@@ -25,15 +27,7 @@ import trashImg from "../assets/schedulemodal/trash.svg";
 import calendarImg from "../assets/schedulemodal/calendar_search.svg";
 import deleteSchedules from "../api/deleteScheduleApi";
 
-import Select from "react-select";
-
-const tagOptions = [
-  { value: "강의", label: "강의" },
-  { value: "취미", label: "취미" },
-  { value: "학교공부", label: "학교공부" },
-  { value: "개인공부", label: "개인공부" },
-  { value: "회의", label: "회의" },
-];
+import Select from "react-select/creatable";
 
 const ScheduleModal = () => {
   //jotai
@@ -56,6 +50,12 @@ const ScheduleModal = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [completed, setCompleted] = useState(false);
+
+  // 태그 호출 api
+  // Home 페이지 렌더링 시 태그 조회 호출
+  // -> atom에 호출된 태그 리스트 넣어두기
+  // atom에서 taglist 불러오기
+  const [tagList] = useAtom(tagListAtom);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -161,7 +161,7 @@ const ScheduleModal = () => {
               <Select
                 isMulti
                 name="tags"
-                options={tagOptions}
+                options={tagList}
                 className="basic-multi-select w-auto focus:outline-none focus:border-none"
                 classNamePrefix="select"
                 value={selectedTags}
