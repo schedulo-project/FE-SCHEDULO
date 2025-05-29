@@ -19,14 +19,15 @@ const DataVisualization = () => {
 
   //pt-5는 건드리면 안됨
 
-  console.log(Data.data);
-  //임시 데이터
-  const data = [
-    {
-      id: "score",
-      data: Data.data,
-    },
-  ];
+  let data = [];
+  if (Data) {
+    data = [
+      {
+        id: "score",
+        data: Data.data ?? [],
+      },
+    ];
+  }
 
   return (
     <div className="pt-5 flex flex-col gap-5">
