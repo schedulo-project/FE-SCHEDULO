@@ -1,52 +1,51 @@
-import calendarIcon from "../assets/sidebar/calendar_btn.svg";
-import tagIcon from "../assets/sidebar/tag_btn.svg";
-import clockIcon from "../assets/sidebar/clock_btn.svg";
-import settingIcon from "../assets/sidebar/setting_btn.svg";
-import timetableIcon from "../assets/sidebar/timetable_btn.svg";
+import { CalendarIcon } from "../assets/sidebar/CalendarIcon.jsx";
+import { TagIcon } from "../assets/sidebar/TagIcon.jsx";
+import { ClockIcon } from "../assets/sidebar/ClockIcon.jsx";
+import { TimetableIcon } from "../assets/sidebar/TimetableIcon.jsx";
+import { SettingIcon } from "../assets/sidebar/SettingIcon.jsx";
 
-const imgObject = {
+const iconObject = {
   calendar: {
-    src: calendarIcon,
+    Icon: CalendarIcon,
     alt: "달력",
   },
   tag: {
-    src: tagIcon,
+    Icon: TagIcon,
     alt: "태그",
   },
   clock: {
-    src: clockIcon,
+    Icon: ClockIcon,
     alt: "포커스 타이머",
   },
-  setting: {
-    src: settingIcon,
-    alt: "설정",
-  },
   timetable: {
-    src: timetableIcon,
+    Icon: TimetableIcon,
     alt: "시간표",
+  },
+  setting: {
+    Icon: SettingIcon,
+    alt: "설정",
   },
 };
 
 const SideBtn = ({ type, isActive, onClick }) => {
-  const current = imgObject[type];
+  const current = iconObject[type];
+  const Icon = current.Icon;
 
   const baseStyle =
-    "flex gap-[0.56rem] items-center py-[0.46625rem] px-[0.93256rem] rounded-[0.46625rem] w-full";
+    "flex gap-[0.56rem] items-center py-[0.46625rem] px-[0.93256rem] w-[8.76rem] h-[2.05rem] rounded-[0.46625rem]";
   const activeStyle = isActive
-    ? "bg-[#010669] text-[#CBDCEB] font-semibold"
-    : "text-[#8E92BC] hover:bg-[#E0E0E0]";
+    ? "bg-[#27374D] text-[#DDE6ED] font-semibold"
+    : "text-[#526D82] font-semibold hover:bg-[#E0E0E0]";
 
   return (
     <button
       className={`${baseStyle} ${activeStyle}`}
       onClick={onClick}
     >
-      <img
-        src={current.src}
-        alt={current.alt}
-        className="w-[1.11725rem] h-[1.11725rem]"
-      />
-      <span className="text-[0.65275rem]">{current.alt}</span>
+      <span className="w-[1.11725rem] h-[1.11725rem]">
+        <Icon className="w-full h-full" />
+      </span>
+      <span className="text-[0.652rem]">{current.alt}</span>
     </button>
   );
 };

@@ -47,7 +47,7 @@ export default function StudyPlanStep() {
         </h1>
         <button
           onClick={handleClose}
-          className="absolute right-4 text-white text-[1.5rem] font-semibold"
+          className="absolute right-4 text-white text-[1.5rem] font-semibold z-20"
         >
           ✕
         </button>

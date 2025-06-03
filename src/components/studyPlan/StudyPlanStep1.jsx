@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import "../../styles/daterange.css";
-import CalenderIcon from "../../assets/studyplan/calender.svg";
+import CalendarIcon from "../../assets/studyplan/calendar.svg";
 
 export default function StudyPlanStep1({ formData, updateFormData, nextStep }) {
   const [localData, setLocalData] = useState({
@@ -97,7 +97,7 @@ export default function StudyPlanStep1({ formData, updateFormData, nextStep }) {
                     : ""}
                 </div>
                 {/* 캘린더 아이콘 */}
-                <img src={CalenderIcon} alt="calendar" className="w-6 h-6" />
+                <img src={CalendarIcon} alt="calendar" className="w-6 h-6" />
               </div>
               {showCalendar && (
                 <div className="absolute z-10 top-full mt-8 left-1/2 transform -translate-x-1/2">
