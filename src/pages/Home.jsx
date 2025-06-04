@@ -3,7 +3,7 @@ import Calendar from "../components/Calendar";
 import CheckSchedule from "../components/CheckSchedule";
 import ScheduleModal from "../components/ScheduleModal";
 import fetchSchedules from "../api/checkScheduleApi";
-import fetchECampusSchedule from "../api/fetchECampusSchedule";
+import fetchECampusSchedule from "../api/ECampusScheduleFetcher";
 
 //jotai
 import { useAtom } from "jotai";
