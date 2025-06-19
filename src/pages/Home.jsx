@@ -20,7 +20,9 @@ import getTags from "../api/getTagsApi";
 const Home = () => {
   // 임시 데이터
   const [events, setEvents] = useAtom(eventsAtoms); // 일정조회 api로 불러온 일정 데이터들
-  const [selectedDateEvents, setSelectedDateEvents] = useState([]); // 선택된 날짜의 데이터
+  const [selectedDateEvents, setSelectedDateEvents] = useState(
+    []
+  ); // 선택된 날짜의 데이터
   const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태 추가
 
   // TodoList에서 체크된 일정의 상태를 관리하는 useState와는 별개로 사용됨
@@ -30,11 +32,14 @@ const Home = () => {
   const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 불러오기
 
   // 화면 크기 감지하는 코드
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(
+    window.innerWidth
+  );
   // windowWidth가 1023보다 작으면 모바일로 간주하기 위한 조건
   const isHalf = windowWidth < 1023;
   //일정 조회가 사이드바처럼 나오게 하기 위한 상태 관리, 클릭했을 때 CheckSchedule의 내부에서 버튼으로 화면을 닫을 수 있도록 하기 위해서 jotai로 관리함
-  const [isSidebarOpen, setSidebarOpen] = useAtom(homeSidebarAtoms);
+  const [isSidebarOpen, setSidebarOpen] =
+    useAtom(homeSidebarAtoms);
 
   // 태그 리스트 불러오기
   const [, setTagList] = useAtom(tagListAtom); // jotai 전역 태그 리스트 setter
@@ -54,7 +59,8 @@ const Home = () => {
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () =>
+      window.removeEventListener("resize", handleResize);
   }, []);
 
   //화면이 커질 때 사이드 바 열린 상태 초기화
@@ -74,7 +80,7 @@ const Home = () => {
       try {
         const transformedEvents = await fetchSchedules(
           "2025-02-28",
-          "2025-05-30"
+          "2025-12-30"
         );
         console.log("가공한 서버데이터", transformedEvents);
         setEvents(transformedEvents);
@@ -129,7 +135,9 @@ const Home = () => {
   const calendarEvents = events
     .filter((event) => !event.is_completed) // 완료되지 않은 일정만 포함
     .reduce((acc, event) => {
-      const existingDate = acc.find((item) => item.date === event.date);
+      const existingDate = acc.find(
+        (item) => item.date === event.date
+      );
       if (existingDate) {
         // 이미 해당 날짜가 있는 경우
         if (existingDate.events.length < 3) {
@@ -200,16 +208,17 @@ const Home = () => {
       }
 
       // 일정 데이터 가공
-      const newEvents = Object.entries(courses).flatMap(([courseName, items]) =>
-        items.map((item, index) => ({
-          id: Date.now() + Math.random() + index,
-          title: `${courseName} - ${item.title}`,
-          date: item.scheduled_date,
-          content: item.content || "",
-          tagName: item.tagName || "",
-          is_completed: item.is_completed ?? false,
-          deadline: item.deadline ?? null,
-        }))
+      const newEvents = Object.entries(courses).flatMap(
+        ([courseName, items]) =>
+          items.map((item, index) => ({
+            id: Date.now() + Math.random() + index,
+            title: `${courseName} - ${item.title}`,
+            date: item.scheduled_date,
+            content: item.content || "",
+            tagName: item.tagName || "",
+            is_completed: item.is_completed ?? false,
+            deadline: item.deadline ?? null,
+          }))
       );
 
       // 기존 이벤트와 병합
@@ -252,7 +261,9 @@ const Home = () => {
           } `}
         >
           <div className="flex flex-col h-full items-center justify-center">
-            <CheckSchedule selectedDateEvents={selectedDateEvents} />
+            <CheckSchedule
+              selectedDateEvents={selectedDateEvents}
+            />
           </div>
         </div>
       )}
