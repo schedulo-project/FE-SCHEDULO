@@ -28,6 +28,7 @@ import calendarImg from "../assets/schedulemodal/calendar_search.svg";
 import deleteSchedules from "../api/deleteScheduleApi";
 
 import Select from "react-select/creatable";
+import updateSchedules from "../api/updateScheduleApi";
 
 const ScheduleModal = () => {
   //jotai
@@ -51,20 +52,35 @@ const ScheduleModal = () => {
   const [content, setContent] = useState("");
   const [completed, setCompleted] = useState(false);
 
+  // 일정 수정 상태 관리
+  const [isEditMode, setIsEditMode] = useState(false);
+
   // 태그 호출 api
   // Home 페이지 렌더링 시 태그 조회 호출
   // -> atom에 호출된 태그 리스트 넣어두기
   // atom에서 taglist 불러오기
   const [tagList] = useAtom(tagListAtom);
 
+  // 일정 추가 시 초기화
   useEffect(() => {
     if (isModalOpen) {
-      setDate(today); // 모달 창 꺼질 때 오늘 일정으로 초기화
       setTitle(""); // 제목 초기화
       setContent(""); // 내용 초기화
+      setDate(today); // 모달 창 꺼질 때 오늘 일정으로 초기화
       setSelectedTags([]); // 태그 초기화
+      setCompleted(false);
     }
-  }, [!isModalOpen, today]);
+
+    // 일정 수정 모드 진입 시 값 세팅
+    if (isModalOpen && data.id !== null) {
+      setTitle(data.title || "");
+      setContent(data.content || "");
+      setDate(data.date || today);
+      setSelectedTags(data.tagName || []);
+      setCompleted(data.is_completed || false);
+      setIsEditMode(false);
+    }
+  }, [isModalOpen]);
 
   if (!isModalOpen) return null;
 
@@ -102,16 +118,32 @@ const ScheduleModal = () => {
   };
 
   // 일정 추가
-  const handleButtonClick = () => {
-    const data = {
+  const handleAdd = async () => {
+    const newData = {
       title,
       selectedTags,
       content,
       date,
       completed,
     };
-    addSchedules(data);
+    await addSchedules(newData);
     setIsModalOpen(false);
+  };
+
+  const handleUpdate = async () => {
+    const updateData = {
+      id: data.id,
+      title,
+      content,
+      date,
+      tag: selectedTags,
+      completed,
+    };
+    await updateSchedules(updateData);
+    alert("일정 수정 완료되었습니다.");
+    sethandleChange({ data: updateData, id: data.id });
+    setIsModalOpen(false);
+    setIsEditMode(false);
   };
 
   const size =
@@ -215,7 +247,7 @@ const ScheduleModal = () => {
             <section className="flex justify-center">
               <button
                 className="w-[50%] h-[40px] border-[1px] border-gray-300 rounded-[15px] shadow transition-shadow duration-200 hover:shadow-md hover:border-blue-500 hover:border-[2px] cursor-pointer"
-                onClick={handleButtonClick}
+                onClick={handleAdd}
               >
                 추가하기
               </button>
@@ -235,45 +267,99 @@ const ScheduleModal = () => {
         className="flex flex-col justify-between items-center w-[27.375rem] h-[36.8125rem] bg-white rounded-[1rem]"
       >
         <section className="bg-[#010669] flex w-full h-[5rem] p-[1.5625rem] justify-between items-center rounded-t-[1rem]">
-          <span className="text-white text-[1.25rem] font-normal font-[Noto Sans KR]">
-            일정 상세표
+          <span className="text-white text-[1.25rem]">
+            {isEditMode ? "일정 수정하기" : "일정 상세표"}
           </span>
           <button onClick={handleClose}>
-            <img
-              className="w-[0.625rem] h-[0.62494rem]"
-              src={xImg}
-            />
+            <img src={xImg} />
           </button>
         </section>
 
-        <section className="flex flex-col items-center justify-center w-full">
+        <section className="flex flex-col items-center w-full">
           <section className="flex w-[80%] justify-between items-center">
-            <span className="text-[#1A1A1A] text-[1.5625rem] font-semibold font-[Inter] text-center">
-              {data.title}
-            </span>
-            <button
-              className="w-[1.5rem] h-[1.5rem]"
-              onClick={() => handleTrashClick(data.id)}
-            >
-              <img src={trashImg} />
-            </button>
+            {isEditMode ? (
+              <input
+                id="title"
+                value={title}
+                onChange={handleInputChange}
+                className="text-xl w-full focus:outline-none"
+              />
+            ) : (
+              <span className="text-[1.5625rem] font-semibold">
+                {data.title}
+              </span>
+            )}
+            {!isEditMode && (
+              <div className="flex gap-2">
+                <button onClick={() => setIsEditMode(true)}>
+                  ✏️
+                </button>
+                <button
+                  onClick={() => handleTrashClick(data.id)}
+                >
+                  <img src={trashImg} />
+                </button>
+              </div>
+            )}
           </section>
-          <section className="w-[80%] flex justify-start items-center mt-[0.85rem]">
-            <TagBox tagNames={data.tagName} size={size} />
+
+          <section className="w-[80%] mt-2">
+            {isEditMode ? (
+              <Select
+                isMulti
+                options={tagList}
+                value={selectedTags}
+                onChange={handleTagChange}
+              />
+            ) : (
+              <TagBox tagNames={data.tagName} size={size} />
+            )}
           </section>
         </section>
 
-        <section className="w-[98%] h-[21.125rem] bg-[#F0F0F0] rounded-[1rem] mb-[1%] p-[2rem] flex flex-col">
-          <section className="flex justify-start items-center mb-1 gap-1">
-            <span className=" text-[#1A1A1A] text-[1.25rem] font-semibold font-[Inter] pt-[0.25rem]">
-              {data.date}
+        <section className="w-[98%] h-[21.125rem] bg-[#F0F0F0] rounded-[1rem] p-[2rem] flex flex-col">
+          <section className="flex gap-2 items-center">
+            <span className="text-[1.25rem] font-semibold">
+              {date}
             </span>
-            <button className="w-[1.3125rem] h-[1.3125rem]">
-              <img src={calendarImg} />
-            </button>
+            {isEditMode && (
+              <button className="relative w-[1.3125rem] h-[1.3125rem]">
+                <img src={calendarImg} />
+                <input
+                  type="date"
+                  id="date"
+                  value={date}
+                  onChange={handleInputChange}
+                  className="absolute inset-0 opacity-0 w-full h-full"
+                />
+              </button>
+            )}
           </section>
-          <section className="border-t-[0.0625rem] border-[#ABABAB] mt-[0.0625rem] mb-[1rem]"></section>
-          <span className="text-[#656565]">{data.content}</span>
+          <section className="border-t mt-2 mb-4">
+            {isEditMode ? (
+              <textarea
+                id="content"
+                value={content}
+                onChange={handleInputChange}
+                className="bg-transparent w-full h-[190px] resize-none focus:outline-none"
+              />
+            ) : (
+              <span className="text-[#656565]">
+                {data.content}
+              </span>
+            )}
+          </section>
+
+          {isEditMode && (
+            <section className="flex justify-center">
+              <button
+                onClick={handleUpdate}
+                className="w-[50%] h-[40px] border border-gray-300 rounded-[15px]"
+              >
+                저장하기
+              </button>
+            </section>
+          )}
         </section>
       </div>
     </div>
