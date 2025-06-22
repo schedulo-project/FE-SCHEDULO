@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Calendar from "../components/Calendar";
 import CheckSchedule from "../components/CheckSchedule";
 import ScheduleModal from "../components/ScheduleModal";
 import fetchSchedules from "../api/checkScheduleApi";
+import fetchECampusSchedule from "../api/ECampusScheduleFetcher";
 
 //jotai
 import { useAtom } from "jotai";
@@ -79,7 +80,7 @@ const Home = () => {
       try {
         const transformedEvents = await fetchSchedules(
           "2025-02-28",
-          "2025-05-30"
+          "2025-12-30"
         );
         console.log("가공한 서버데이터", transformedEvents);
         setEvents(transformedEvents);
@@ -184,6 +185,51 @@ const Home = () => {
       return limitedEvents;
     });
 
+  // 이캠퍼스 크롤링 데이터 가져오기
+  const handleFetchECampus = async () => {
+    try {
+      const response = await fetchECampusSchedule();
+
+      if (!response || !response.courses) {
+        alert("샘물 데이터를 불러오지 못했습니다.");
+        return;
+      }
+
+      const { courses } = response;
+
+      // 모든 과목의 일정이 비어 있는지 확인
+      const isAllEmpty = Object.values(courses).every(
+        (arr) => Array.isArray(arr) && arr.length === 0
+      );
+
+      if (isAllEmpty) {
+        alert("샘물에서 가져올 일정이 없습니다.");
+        return;
+      }
+
+      // 일정 데이터 가공
+      const newEvents = Object.entries(courses).flatMap(
+        ([courseName, items]) =>
+          items.map((item, index) => ({
+            id: Date.now() + Math.random() + index,
+            title: `${courseName} - ${item.title}`,
+            date: item.scheduled_date,
+            content: item.content || "",
+            tagName: item.tagName || "",
+            is_completed: item.is_completed ?? false,
+            deadline: item.deadline ?? null,
+          }))
+      );
+
+      // 기존 이벤트와 병합
+      setEvents((prev) => [...prev, ...newEvents]);
+      alert("샘물 일정을 성공적으로 불러왔습니다.");
+    } catch (error) {
+      console.error("샘물 일정 불러오기 실패:", error);
+      alert("샘물 일정을 불러오는 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <div className="flex flex-row gap-8 ml-10 mr-10 ">
       <div className="grow-[3]">
@@ -197,8 +243,13 @@ const Home = () => {
       {!modalData.is_completed && <ScheduleModal />}
 
       {/* 사이드바 */}
-      <div className="lg:flex lg:flex-col items-center gap-2 grow-[1] hidden">
-        <button>샘물 정보 불러오기</button>
+      <div className="lg:flex lg:flex-col items-center gap-2 grow-[1] hidden mt-5">
+        <button
+          onClick={handleFetchECampus}
+          className="w-full px-14 py-2 text-[12px] bg-[#DDE6ED] text-[#27374D] rounded-[3.18px] transition-colors hover:bg-[#526D82] hover:text-[#DDE6ED]"
+        >
+          샘물 정보 불러오기
+        </button>
         <CheckSchedule selectedDateEvents={selectedDateEvents} />
       </div>
       {/* 1023px 아래 일때 사이드바 디자인*/}

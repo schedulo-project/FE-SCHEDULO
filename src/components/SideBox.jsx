@@ -40,7 +40,7 @@ const SideBox = ({ closeSidebar }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F3E0] w-[11.75rem] min-w-[10rem] p-[1.25rem]">
+    <div className="min-h-screen bg-[#DDE6ED] w-[11.75rem] min-w-[10rem] p-[1.25rem]">
       {/* 사이드바 닫기 버튼  768px 아래로 내려가면 나옴 */}
       <div className="flex justify-end lg:hidden ">
         <button onClick={closeSidebar} className="text-l">
@@ -55,15 +55,15 @@ const SideBox = ({ closeSidebar }) => {
         />
 
         <button
-          className="text-[#010669] text-[1.49206rem] font-[Josefin Sans] font-semibold hidden lg:block"
+          className="text-[#27374D] text-[1.49206rem] font-[Josefin Sans] font-semibold hidden lg:block"
           onClick={() => nav("/")}
         >
           Schedulo
         </button>
       </section>
 
-      <section className="flex flex-col gap-[1.11906rem] mt-[2.41rem]">
-        {["calendar", "tag", "clock", "setting", "timetable"].map((type) => (
+      <section className="flex flex-col items-center gap-[1.11906rem] mt-[2.41rem]">
+        {["calendar", "tag", "clock", "timetable", "setting"].map((type) => (
           <SideBtn
             key={type}
             type={type}
@@ -73,7 +73,7 @@ const SideBox = ({ closeSidebar }) => {
         ))}
       </section>
 
-      <section className="flex flex-col items-center gap-[1rem] mt-[9rem]">
+      <section className="flex flex-col items-center gap-[1rem] mt-[2.5rem]">
         <StudyPlanBtn />
         <ChatbotBtn />
       </section>
