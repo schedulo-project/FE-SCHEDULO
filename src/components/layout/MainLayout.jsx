@@ -6,13 +6,16 @@ import { Outlet, useLocation } from "react-router-dom";
 const MainLayout = () => {
   const location = useLocation();
   const [showSidebar, setShowSidebar] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(
+    window.innerWidth
+  );
 
   // 화면 크기 감지하는 훅
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () =>
+      window.removeEventListener("resize", handleResize);
   }, []);
 
   //화면이 커질 때 사이드 바 열린 상태 초기화
@@ -35,7 +38,9 @@ const MainLayout = () => {
               showSidebar ? "translate-x-0" : "-translate-x-full"
             }`}
           >
-            <SideBox closeSidebar={() => setShowSidebar(false)} />
+            <SideBox
+              closeSidebar={() => setShowSidebar(false)}
+            />
           </div>
 
           {/* 사이드바 열릴 때 배경 어둡게 하기 위한 코드이다. */}
@@ -52,7 +57,9 @@ const MainLayout = () => {
       <div className="flex flex-col w-full h-screen z-10">
         {/* shrink-0을 하면 줄어 들지 않음 */}
         <div className="shrink-0">
-          <Navbar onToggleSidebar={() => setShowSidebar(!showSidebar)} />
+          <Navbar
+            onToggleSidebar={() => setShowSidebar(!showSidebar)}
+          />
         </div>
 
         {/* Outlet은 스크롤 영역 */}

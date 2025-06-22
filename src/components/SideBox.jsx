@@ -10,10 +10,12 @@ const SideBox = ({ closeSidebar }) => {
   const location = useLocation();
 
   const getSelected = () => {
-    if (location.pathname.startsWith("/timetable")) return "timetable";
+    if (location.pathname.startsWith("/timetable"))
+      return "timetable";
     if (location.pathname.startsWith("/tag")) return "tag";
     if (location.pathname.startsWith("/clock")) return "clock";
-    if (location.pathname.startsWith("/setting")) return "setting";
+    if (location.pathname.startsWith("/setting"))
+      return "setting";
     if (location.pathname.startsWith("/")) return "calendar";
     return "";
   };
@@ -26,6 +28,8 @@ const SideBox = ({ closeSidebar }) => {
         nav("/");
         break;
       case "tag":
+        nav("/tag");
+        break;
       case "clock":
         nav("/"); // 구현 예정
         break;
@@ -63,7 +67,13 @@ const SideBox = ({ closeSidebar }) => {
       </section>
 
       <section className="flex flex-col items-center gap-[1.11906rem] mt-[2.41rem]">
-        {["calendar", "tag", "clock", "timetable", "setting"].map((type) => (
+        {[
+          "calendar",
+          "tag",
+          "clock",
+          "timetable",
+          "setting",
+        ].map((type) => (
           <SideBtn
             key={type}
             type={type}
