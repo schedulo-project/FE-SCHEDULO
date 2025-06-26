@@ -29,7 +29,7 @@ const SideBox = ({ closeSidebar }) => {
         break;
       case "tag":
       case "timer":
-        nav("/timer"); // 구현 예정
+        nav("/timer");
         break;
       case "setting":
         nav("/settings/profile");
