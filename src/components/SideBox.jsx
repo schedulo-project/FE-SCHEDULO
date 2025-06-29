@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import bookImg from "../assets/logo/book_square.svg";
 import SideBtn from "./SideBtn";
