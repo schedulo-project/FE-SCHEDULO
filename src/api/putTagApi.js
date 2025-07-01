@@ -1,0 +1,29 @@
+import axios from "axios";
+import GetCookie from "./GetCookie";
+
+const putTag = async (tag, tagId) => {
+  const Logindata = await GetCookie();
+  const token = Logindata.access;
+
+  try {
+    const response = await axios.put(
+      `http://13.124.140.60/schedules/tags/${tagId}/`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: {
+          name: tag,
+        },
+      }
+    );
+
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error("error", error);
+  }
+};
+
+export default putTag;

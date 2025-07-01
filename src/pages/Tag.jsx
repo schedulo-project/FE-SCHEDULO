@@ -1,12 +1,33 @@
 import TagItem from "../components/TagItem";
 import { useAtom } from "jotai";
-import { eventsAtoms } from "../atoms/HomeAtoms";
+import { eventsAtoms, tagIdListAtom } from "../atoms/HomeAtoms";
 import { useEffect } from "react";
 import fetchSchedules from "../api/checkScheduleApi";
+import getTagList from "../api/getTagsListApi";
 
 const Tag = () => {
   // 일정 데이터 불러오기(api)
   const [allEvents, setEvents] = useAtom(eventsAtoms);
+
+  //태그 리스트 불러오기(api)
+  const [allTags, setAllTags] = useAtom(tagIdListAtom);
+
+  //페이지가 처음 로드 될 때 태그 목록을 가져온다.
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const tags = await getTagList(); // 실제 API 호출
+        setAllTags(tags); // 응답 결과 저장
+      } catch (error) {
+        console.error("태그 불러오기 실패:", error);
+      }
+    };
+    fetchTags();
+    console.log(
+      "태그 목록이 성공적으로 불러와졌습니다:",
+      allTags
+    );
+  }, []);
 
   // 페이지가 처음 로드될 때만 데이터를 불러오도록 useEffect 사용 이미 있으면 통신 안 함
   useEffect(() => {
@@ -31,45 +52,120 @@ const Tag = () => {
 
   // 이벤트를 태그별로 그룹화하는 함수
   // 단순히 태그 이름을 기준으로 그룹화하고, 태그가 없는 작업은 별도로 모아둠, 완료된 작업과 되지 않은 작업은 구분하지 않음
-  const groupBy = (list) => {
+
+  //이건 태그 일정 하나만 들어가게 하는 코드
+  // const groupBy = (list, tagList) => {
+  //   // 태그맵 (태그명 -> 태그 객체)
+  //   const tagMap = new Map(
+  //     tagList.map((tag) => [tag.name, tag])
+  //   );
+
+  //   // 모든 태그를 빈 배열 task와 함께 초기화
+  //   const tagGroups = new Map();
+  //   tagList.forEach((tag) => {
+  //     tagGroups.set(tag.id, {
+  //       tagId: tag.id,
+  //       tag: tag.name,
+  //       task: [],
+  //     });
+  //   });
+
+  //   const noTagGroup = [];
+
+  //   list.forEach((task) => {
+  //     // 태그가 없는 작업은 별도로 모음
+  //     if (!task.tagName) {
+  //       noTagGroup.push(task);
+  //       return;
+  //     }
+
+  //     // 첫 번째 태그만 사용
+  //     const firstTagName = task.tagName.split(",")[0].trim();
+  //     const tag = tagMap.get(firstTagName);
+
+  //     if (tag) {
+  //       tagGroups.get(tag.id).task.push(task);
+  //     } else {
+  //       noTagGroup.push(task);
+  //     }
+  //   });
+
+  //   const result = [...tagGroups.values()];
+
+  //   if (noTagGroup.length > 0) {
+  //     result.push({
+  //       tagId: null,
+  //       tag: "태그 없음",
+  //       task: noTagGroup,
+  //     });
+  //   }
+
+  //   return result;
+  // };
+
+  const groupBy = (list, tagList) => {
+    const tagMap = new Map(
+      tagList.map((tag) => [tag.name, tag])
+    );
+
+    // 태그별 그룹 미리 빈 배열로 초기화
     const tagGroups = new Map();
+    tagList.forEach((tag) => {
+      tagGroups.set(tag.id, {
+        tagId: tag.id,
+        tag: tag.name,
+        task: [],
+      });
+    });
+
     const noTagGroup = [];
 
     list.forEach((task) => {
-      // 태그가 , 으로 나누어져 있어 이를 분리해주는 코드
-      const firstTag = task.tagName?.split(",")[0]?.trim();
-      if (firstTag) {
-        if (!tagGroups.has(firstTag)) {
-          // 태그가 처음 등장하면 새로운 배열을 생성
-          tagGroups.set(firstTag, []);
+      if (!task.tagName) {
+        noTagGroup.push(task);
+        return;
+      }
+
+      // 콤마로 구분된 모든 태그 이름 배열
+      const tagsInTask = task.tagName
+        .split(",")
+        .map((t) => t.trim());
+
+      // 이 일정이 속한 태그를 하나도 못 찾으면 noTagGroup에 넣기 위한 플래그
+      let matched = false;
+
+      tagsInTask.forEach((tagName) => {
+        const tag = tagMap.get(tagName);
+        if (tag) {
+          matched = true;
+          tagGroups.get(tag.id).task.push(task);
         }
-        tagGroups.get(firstTag).push(task);
-      } else {
+      });
+
+      if (!matched) {
         noTagGroup.push(task);
       }
     });
 
-    // 최종 배열을 넣어줄 곳
-    const result = [];
-
-    // 순서대로 배치하기 위해 3가지로 나눔
-    // 1. 태그로 묶인 작업
-    for (const [tag, tasks] of tagGroups.entries()) {
-      result.push({ tag, task: tasks });
-    }
-
-    // 2. 태그 없음 그룹 추가
+    const result = [...tagGroups.values()];
     if (noTagGroup.length > 0) {
-      result.push({ tag: "태그 없음", task: noTagGroup });
+      result.push({
+        tagId: null,
+        tag: "태그 없음",
+        task: noTagGroup,
+      });
     }
 
     return result;
   };
 
-  console.log(groupBy(allEvents));
-
   // 데이터 없으면 로딩 표시
-  if (allEvents.length === 0) {
+  if (
+    !allTags ||
+    allTags.length === 0 ||
+    !allEvents ||
+    allEvents.length === 0
+  ) {
     return (
       <div className="text-center mt-10">데이터 로딩 중...</div>
     );
@@ -78,8 +174,11 @@ const Tag = () => {
   return (
     <div className="flex justify-center">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {groupBy(allEvents).map((group, index) => (
-          <TagItem key={index} eventsList={group} />
+        {groupBy(allEvents, allTags).map((group, index) => (
+          <TagItem
+            key={group.tagId ?? "no-tag"}
+            eventsList={group}
+          />
         ))}
       </div>
     </div>
