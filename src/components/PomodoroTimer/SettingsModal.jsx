@@ -195,17 +195,8 @@ export default function SettingsModal({
           {/* 버튼들 */}
           <div className="flex gap-3">
             <Button onClick={handleApply} className="flex-1">
-              {isInitial ? "시작하기" : "적용"}
+              적용
             </Button>
-            {!isInitial && (
-              <Button
-                variant="outline"
-                onClick={onClose}
-                className="flex-1 bg-transparent"
-              >
-                취소
-              </Button>
-            )}
           </div>
         </div>
       </div>

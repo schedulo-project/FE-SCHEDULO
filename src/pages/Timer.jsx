@@ -35,16 +35,15 @@ export default function Timer() {
           setIsCompleted(true);
           setIsActive(false);
         } else {
-          // 휴식시간으로 전환
+          // 휴식시간으로 전환 후 바로 시작
           setIsWork(false);
           setTimeLeft(breakTime * 60);
         }
       } else {
-        // 작업시간으로 전환
+        // 작업시간으로 전환 후 바로 시작
         setIsWork(true);
         setTimeLeft(workTime * 60);
       }
-      setIsActive(false);
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -121,17 +120,45 @@ export default function Timer() {
           onClose={() => {}} // 초기 화면에서는 닫기 불가
           isInitial={true}
         />
+      ) : isCompleted ? (
+        // 완료 화면
+        <div className="w-full max-w-md mx-auto shadow-2xl bg-white rounded-lg">
+          <div className="p-8">
+            <div className="text-center space-y-6">
+              <div className="text-6xl mb-4">🎉</div>
+              <div className="text-2xl font-bold text-purple-600 mb-4">
+                모든 세션 완료!
+              </div>
+              <div className="text-gray-600 mb-8">
+                모든 세션이 완료되었습니다! 수고하셨습니다.
+              </div>
+
+              {/* 완료 통계 */}
+              <div className="text-sm text-gray-500 mb-4">
+                총 작업 시간:{" "}
+                <span className="font-semibold text-gray-800">
+                  {workTime * cycles}분
+                </span>
+              </div>
+
+              <Button
+                onClick={() => setAppState("setup")}
+                size="lg"
+                className="px-8 bg-purple-600 hover:bg-purple-700"
+              >
+                새로운 세션 시작하기
+              </Button>
+            </div>
+          </div>
+        </div>
       ) : (
+        // 타이머 UI
         <div className="w-full max-w-md mx-auto shadow-2xl bg-white rounded-lg">
           <div className="p-8">
             <div className="text-center space-y-6">
               {/* 현재 모드 표시 */}
               <div className="flex items-center justify-center gap-2">
-                {isCompleted ? (
-                  <div className="text-lg font-semibold text-purple-600">
-                    🎉 모든 세션 완료!
-                  </div>
-                ) : isWork ? (
+                {isWork ? (
                   <>
                     <Briefcase className="h-6 w-6 text-blue-600" />
                     <span className="text-lg font-semibold text-blue-600">
