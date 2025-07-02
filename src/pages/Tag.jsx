@@ -5,6 +5,9 @@ import { useEffect } from "react";
 import fetchSchedules from "../api/checkScheduleApi";
 import getTagList from "../api/getTagsListApi";
 
+//모달
+import ScheduleModal from "../components/ScheduleModal";
+
 const Tag = () => {
   // 일정 데이터 불러오기(api)
   const [allEvents, setEvents] = useAtom(eventsAtoms);
@@ -173,13 +176,15 @@ const Tag = () => {
 
   return (
     <div className="flex justify-center">
+      <ScheduleModal />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {groupBy(allEvents, allTags).map((group, index) => (
+        {groupBy(allEvents, allTags).map((group) => (
           <TagItem
             key={group.tagId ?? "no-tag"}
             eventsList={group}
           />
         ))}
+        <div className="w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8"></div>
       </div>
     </div>
   );

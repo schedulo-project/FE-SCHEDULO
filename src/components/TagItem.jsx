@@ -1,17 +1,16 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAtom } from "jotai";
 import {
   tagIdListAtom,
   handleChangeAtom,
   modalDataAtom,
   isModalOpenAtom,
+  handelCheckAtom,
 } from "../atoms/HomeAtoms";
 
 //통신부분
 import putTag from "../api/putTagApi";
-
-//모달
-import ScheduleModal from "./ScheduleModal";
+import deleteTag from "../api/deleteTagApi";
 
 const TagItem = ({ eventsList }) => {
   //더블 클릭을 해서 수정하고 있는 상태인지 확인하는 State
@@ -26,6 +25,29 @@ const TagItem = ({ eventsList }) => {
   //일정 모달 띄우기 위한 데이터
   const [, setModalData] = useAtom(modalDataAtom);
   const [, setIsModalOpen] = useAtom(isModalOpenAtom);
+
+  //ref를 통한 다른 곳 눌렀을 때의 탈출
+  const ref = useRef(null);
+
+  //체크 핸들링
+  const [, setHandleCheck] = useAtom(handelCheckAtom);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setTempTag(eventsList.tag); // 원래 태그로 되돌리기
+        setIsEditing(false); // 수정 모드 종료
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, [ref]);
 
   const eventListChange = (origin, changedTagName) => {
     eventsList.task.forEach((event) => {
@@ -73,6 +95,7 @@ const TagItem = ({ eventsList }) => {
       sethandleChange(event);
       console.log("태그 삭제 로직 실행", eventsList);
     });
+    deleteTag(tagId);
   };
 
   const doubleClickToEdit = (origin, tagId) => {
@@ -107,16 +130,19 @@ const TagItem = ({ eventsList }) => {
     setIsModalOpen(true);
   };
 
+  //체크박스 클릭시
+  const handleCheck = (id) => {
+    setHandleCheck(id);
+  };
+
   return (
     <div className="flex justify-center items-center">
-      <>
-        {console.log("모달 열림")}
-        <ScheduleModal />
-      </>
       <div className="w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8">
         <section className="flex justify-between items-center">
           {isEditing ? (
             <input
+              ref={ref}
+              className="w-[9rem] h-[1.6rem]"
               type="text"
               //기존의 값을 가져온다.
               value={tempTag}
@@ -136,6 +162,7 @@ const TagItem = ({ eventsList }) => {
             />
           ) : (
             <div
+              className="text-zinc-900 text-[17px] font-bold font-['Inter']"
               onDoubleClick={() => {
                 if (tempTag === "태그 없음") {
                   //태그가 비어있으면 수정 모드로 들어가지 않는다.
@@ -154,16 +181,37 @@ const TagItem = ({ eventsList }) => {
         </section>
         <div className="mt-4 flex-grow h-[0.04619rem] bg-[#ABABAB] max-w-[9.33019rem] mx-[0.44rem]"></div>
         <section className="flex flex-col items-start gap-2 mt-4 overflow-y-scroll h-[16rem]">
-          {eventsList.task.map((event) => (
-            <div
-              key={event.id}
-              onClick={() => {
-                handleClick(event);
-              }}
-            >
-              {event.title}
-            </div>
-          ))}
+          {[...eventsList.task]
+            .sort((a, b) => a.is_completed - b.is_completed)
+            .map((event) => (
+              <div
+                className="flex items-center gap-2"
+                key={event.id}
+              >
+                <input
+                  className="w-4 h-4 cursor-pointer"
+                  type="checkbox"
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={() => handleCheck(event.id)}
+                  checked={event.is_completed}
+                />
+                <div
+                  key={event.id}
+                  className={`text-blue-950 font-normal font-['Inter'] ${
+                    event.is_completed
+                      ? "opacity-50 cursor-default"
+                      : "cursor-pointer"
+                  }`}
+                  onClick={() => {
+                    if (!event.is_completed) {
+                      handleClick(event);
+                    }
+                  }}
+                >
+                  {event.title}
+                </div>
+              </div>
+            ))}
         </section>
       </div>
     </div>

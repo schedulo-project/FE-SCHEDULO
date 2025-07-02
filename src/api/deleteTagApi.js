@@ -1,18 +1,15 @@
 import axios from "axios";
 import GetCookie from "./GetCookie";
 
-const putTag = async (tag, tagId) => {
+const deleteTag = async (tagId) => {
   const Logindata = await GetCookie();
   const token = Logindata.access;
   const typeCeck = typeof tagId;
-  console.log("putTag", tag, tagId);
+  console.log("putTag", tagId);
 
   try {
-    const response = await axios.put(
+    const response = await axios.delete(
       `http://13.124.140.60/schedules/tags/${tagId}/`,
-      {
-        name: tag,
-      },
       {
         headers: {
           "Content-Type": "application/json",
@@ -28,4 +25,4 @@ const putTag = async (tag, tagId) => {
   }
 };
 
-export default putTag;
+export default deleteTag;
