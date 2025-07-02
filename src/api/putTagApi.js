@@ -4,6 +4,8 @@ import GetCookie from "./GetCookie";
 const putTag = async (tag, tagId) => {
   const Logindata = await GetCookie();
   const token = Logindata.access;
+  const typeCeck = typeof tagId;
+  console.log("putTag", tag, tagId);
 
   try {
     const response = await axios.put(
