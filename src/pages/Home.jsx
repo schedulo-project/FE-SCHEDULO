@@ -1,9 +1,15 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useNavigate,
+} from "react";
 import Calendar from "../components/Calendar";
 import CheckSchedule from "../components/CheckSchedule";
 import ScheduleModal from "../components/ScheduleModal";
 import fetchSchedules from "../api/checkScheduleApi";
 import fetchECampusSchedule from "../api/ECampusScheduleFetcher";
+import PlanSetupModal from "../components/planSetup/PlanSetupModal";
 
 //jotai
 import { useAtom } from "jotai";
@@ -30,6 +36,13 @@ const Home = () => {
 
   const [modalData, setModalData] = useAtom(modalDataAtom); // 모달에 보여줄 데이터
   const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 불러오기
+
+  const [isPlanCompleted, setIsPlanCompleted] = useState(false); // 공부계획 완료 여부 상태
+
+  useEffect(() => {
+    const completed = localStorage.getItem("planSetupCompleted");
+    setIsPlanCompleted(completed === "true");
+  }, []);
 
   // 화면 크기 감지하는 코드
   const [windowWidth, setWindowWidth] = useState(
@@ -231,51 +244,58 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-row gap-8 ml-10 mr-10 ">
-      <div className="grow-[3]">
-        <Calendar
-          events={calendarEvents}
-          onDateClick={handleDateClick}
-          onEventClick={handleEventClick}
-        />
-      </div>
-      {/* 모달 */}
-      {!modalData.is_completed && <ScheduleModal />}
-
-      {/* 사이드바 */}
-      <div className="lg:flex lg:flex-col items-center gap-2 grow-[1] hidden mt-5">
-        <button
-          onClick={handleFetchECampus}
-          className="w-full px-14 py-2 text-[12px] bg-[#DDE6ED] text-[#27374D] rounded-[3.18px] transition-colors hover:bg-[#526D82] hover:text-[#DDE6ED]"
-        >
-          샘물 정보 불러오기
-        </button>
-        <CheckSchedule selectedDateEvents={selectedDateEvents} />
-      </div>
-      {/* 1023px 아래 일때 사이드바 디자인*/}
-      {/* 사이드바에 대한 코드  */}
-      {isHalf && (
-        <div
-          className={`lg:hidden fixed top-1 right-0 h-full w-4/5 max-w-xs bg-none z-40 transform transition-transform duration-400 ${
-            isSidebarOpen ? "translate-x-0" : "translate-x-full"
-          } `}
-        >
-          <div className="flex flex-col h-full items-center justify-center">
-            <CheckSchedule
-              selectedDateEvents={selectedDateEvents}
-            />
-          </div>
+    <>
+      {!isPlanCompleted && <PlanSetupModal />}
+      <div className="flex flex-row gap-8 ml-10 mr-10 ">
+        <div className="grow-[3]">
+          <Calendar
+            events={calendarEvents}
+            onDateClick={handleDateClick}
+            onEventClick={handleEventClick}
+          />
         </div>
-      )}
-      {/* 사이드바 열릴 때 배경 어둡게 하기 위한 코드이다. */}
-      {/* inset: 0이라고 쓰면 top: 0, right: 0, bottom: 0, left: 0 과 동일하다. */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black opacity-30 z-30 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-    </div>
+        {/* 모달 */}
+        {!modalData.is_completed && <ScheduleModal />}
+
+        {/* 사이드바 */}
+        <div className="lg:flex lg:flex-col items-center gap-2 grow-[1] hidden mt-5">
+          <button
+            onClick={handleFetchECampus}
+            className="w-full px-14 py-2 text-[12px] bg-[#DDE6ED] text-[#27374D] rounded-[3.18px] transition-colors hover:bg-[#526D82] hover:text-[#DDE6ED]"
+          >
+            샘물 정보 불러오기
+          </button>
+          <CheckSchedule
+            selectedDateEvents={selectedDateEvents}
+          />
+        </div>
+        {/* 1023px 아래 일때 사이드바 디자인*/}
+        {/* 사이드바에 대한 코드  */}
+        {isHalf && (
+          <div
+            className={`lg:hidden fixed top-1 right-0 h-full w-4/5 max-w-xs bg-none z-40 transform transition-transform duration-400 ${
+              isSidebarOpen
+                ? "translate-x-0"
+                : "translate-x-full"
+            } `}
+          >
+            <div className="flex flex-col h-full items-center justify-center">
+              <CheckSchedule
+                selectedDateEvents={selectedDateEvents}
+              />
+            </div>
+          </div>
+        )}
+        {/* 사이드바 열릴 때 배경 어둡게 하기 위한 코드이다. */}
+        {/* inset: 0이라고 쓰면 top: 0, right: 0, bottom: 0, left: 0 과 동일하다. */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black opacity-30 z-30 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+      </div>
+    </>
   );
 };
 
