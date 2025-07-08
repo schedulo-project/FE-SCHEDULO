@@ -52,6 +52,12 @@ const PlanStep3 = ({
     if (valueToSubmit.match(/^\d+:\d+$/)) {
       const [study, rest] = valueToSubmit.split(":").map(Number);
       const total = study + rest;
+
+      if (total === 0) {
+        alert("유효한 비율을 입력해주세요.");
+        return;
+      }
+
       structuredValue = {
         type: "ratio",
         studyPercent: Math.round((study / total) * 100),
@@ -67,7 +73,10 @@ const PlanStep3 = ({
     console.log("사용자 선택값:", valueToSubmit);
     console.log("구조화된 값:", structuredValue);
 
-    updateFormData({ studyRestRatio: valueToSubmit });
+    updateFormData({
+      studyRestRatio: valueToSubmit,
+      studyRestRatioStructured: structuredValue,
+    });
     nextStep();
   };
 

@@ -89,7 +89,10 @@ const PlanStep5 = ({
     console.log("사용자 선택:", valueToSubmit);
     console.log("구조화된 데이터:", structuredValue);
 
-    updateFormData({ assignmentTiming: valueToSubmit });
+    updateFormData({
+      assignmentTiming: valueToSubmit,
+      assignmentTimingStructured: structuredValue,
+    });
     nextStep();
   };
 

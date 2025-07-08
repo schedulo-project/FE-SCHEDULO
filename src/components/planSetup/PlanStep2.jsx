@@ -89,7 +89,10 @@ const PlanStep2 = ({
     console.log("사용자 선택값:", valueToSubmit);
     console.log("구조화된 값:", structuredValue);
 
-    updateFormData({ reviewTiming: valueToSubmit });
+    updateFormData({
+      reviewTiming: valueToSubmit,
+      reviewTimingStructured: structuredValue,
+    });
     nextStep();
   };
 
