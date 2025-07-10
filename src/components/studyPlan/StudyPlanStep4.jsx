@@ -2,30 +2,31 @@ import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import bookLogo from "../../assets/logo/book_square.svg";
 
-const PlanStep5 = ({
+const StudyPlanStep4 = ({
   nextStep,
   updateFormData,
   formData = {},
   handleClose,
 }) => {
   const options = [
-    "바로 시작",
-    "마감 하루 전",
-    "마감 3일 전",
-    "마감 1주 전",
+    "페이지 수",
+    "시간",
+    "완료한 챕터 수",
+    "과목별 분량 나누기",
+    "학습 목표 수",
     "직접 입력",
   ];
 
   const [selectedOption, setSelectedOption] = useState(
-    formData.assignmentTiming &&
-      !options.includes(formData.assignmentTiming)
+    formData.studyAmountCriteria &&
+      !options.includes(formData.studyAmountCriteria)
       ? "직접 입력"
-      : formData.assignmentTiming || ""
+      : formData.studyAmountCriteria || ""
   );
   const [customValue, setCustomValue] = useState(
-    options.includes(formData.assignmentTiming)
+    options.includes(formData.studyAmountCriteria)
       ? ""
-      : formData.assignmentTiming || ""
+      : formData.studyAmountCriteria || ""
   );
 
   const handleSelect = (option) => {
@@ -46,52 +47,10 @@ const PlanStep5 = ({
       return;
     }
 
-    let structuredValue;
-
-    if (selectedOption === "바로 시작") {
-      structuredValue = { type: "immediate" };
-    } else if (selectedOption.startsWith("마감 ")) {
-      const match = selectedOption.match(
-        /마감\s(\d+)(일|주)\s전/
-      );
-      if (match) {
-        const amount = parseInt(match[1]);
-        const unit = match[2] === "일" ? "day" : "week";
-        structuredValue = {
-          type: "relative",
-          offset: -amount,
-          unit,
-          reference: "deadline",
-        };
-      }
-    } else if (selectedOption === "직접 입력") {
-      const match = customValue.match(
-        /마감\s?(\d+)(일|주)\s?전/
-      );
-      if (match) {
-        const amount = parseInt(match[1]);
-        const unit = match[2] === "일" ? "day" : "week";
-        structuredValue = {
-          type: "relative",
-          offset: -amount,
-          unit,
-          reference: "deadline",
-          raw: customValue,
-        };
-      } else {
-        structuredValue = {
-          type: "custom",
-          raw: customValue,
-        };
-      }
-    }
-
-    console.log("사용자 선택:", valueToSubmit);
-    console.log("구조화된 데이터:", structuredValue);
+    console.log("선택한 값:", valueToSubmit);
 
     updateFormData({
-      assignmentTiming: valueToSubmit,
-      assignmentTimingStructured: structuredValue,
+      studyAmountCriteria: valueToSubmit,
     });
     nextStep();
   };
@@ -127,7 +86,7 @@ const PlanStep5 = ({
           <div className="px-8 py-16 relative h-[calc(100%-110px)]">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center space-y-12">
               <p className="text-center text-gray-700 text-xl">
-                5. 과제는 언제 시작/마감하는 것을 선호하시나요?
+                4. 시험 공부의 할당량을 정하는 기준이 무엇인가요?
               </p>
 
               <div className="relative">
@@ -154,7 +113,7 @@ const PlanStep5 = ({
                     <input
                       type="text"
                       className="border-2 border-gray-300 rounded-lg px-6 py-4 w-80 text-center text-lg mt-8 focus:outline-none focus:border-[#9DB2BF] transition-colors"
-                      placeholder="예: 마감 2일 전, 주말 등"
+                      placeholder="예: 집중도, 시험 난이도 등"
                       value={customValue}
                       onChange={(e) =>
                         setCustomValue(e.target.value)
@@ -177,4 +136,4 @@ const PlanStep5 = ({
   );
 };
 
-export default PlanStep5;
+export default StudyPlanStep4;

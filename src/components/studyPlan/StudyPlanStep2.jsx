@@ -1,213 +1,180 @@
-import React, { useState, useEffect } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  Minus,
-} from "lucide-react";
+import React, { useState } from "react";
+import { ChevronRight } from "lucide-react";
+import bookLogo from "../../assets/logo/book_square.svg";
 
-export default function StudyPlanStep2({
-  formData,
-  updateFormData,
+const StudyPlanStep2 = ({
   nextStep,
-  prevStep,
-}) {
-  const [subjects, setSubjects] = useState([]);
-  const [selectedSubjects, setSelectedSubjects] = useState(
-    formData.subjects || []
+  updateFormData,
+  formData = {},
+  handleClose,
+}) => {
+  const options = [
+    "매일",
+    "시험 1주 전",
+    "시험 2주 전",
+    "시험 3주 전",
+    "직접 입력",
+  ];
+
+  const [selectedOption, setSelectedOption] = useState(
+    formData.reviewTiming &&
+      !options.includes(formData.reviewTiming)
+      ? "직접 입력"
+      : formData.reviewTiming || ""
   );
-  const [averageSubjectsPerDay, setAverageSubjectsPerDay] =
-    useState(formData.averageSubjectsPerDay || 1);
-  const [showDetailSetting, setShowDetailSetting] =
-    useState(false);
-  const [isAddingCustom, setIsAddingCustom] = useState(false); // 직접 추가
-  const [customInput, setCustomInput] = useState("");
+  const [customValue, setCustomValue] = useState(
+    options.includes(formData.reviewTiming)
+      ? ""
+      : formData.reviewTiming || ""
+  );
 
-  // 로컬스토리지에서 시간표 가져오기
-  useEffect(() => {
-    const timetable = localStorage.getItem("schedule");
-    if (timetable) {
-      const parsed = JSON.parse(timetable);
-      const uniqueSubjects = [
-        ...new Set(parsed.map((item) => item.name)),
-      ];
-      setSubjects(uniqueSubjects);
+  const handleSelect = (option) => {
+    setSelectedOption(option);
+    if (option !== "직접 입력") {
+      setCustomValue("");
     }
-  }, []);
-
-  // 과목 선택/해제 토글
-  const toggleSubject = (subject) => {
-    const alreadySelected = selectedSubjects.includes(subject);
-    const updated = alreadySelected
-      ? selectedSubjects.filter((s) => s !== subject)
-      : [...selectedSubjects, subject];
-
-    setSelectedSubjects(updated);
   };
 
-  // 직접 추가 과목 처리
-  const handleAddCustomSubject = () => {
-    if (!customInput.trim()) return;
-    if (!subjects.includes(customInput)) {
-      setSubjects((prev) => [...prev, customInput]);
-    }
-    if (!selectedSubjects.includes(customInput)) {
-      setSelectedSubjects((prev) => [...prev, customInput]);
-    }
-    setCustomInput("");
-  };
-
-  // 왼쪽 저장 버튼
-  const handleSaveSubjects = () => {
-    if (selectedSubjects.length === 0) {
-      alert("최소 1개 이상의 과목을 선택해주세요.");
-      return;
-    }
-    setShowDetailSetting(true);
-  };
-
-  // 오른쪽 저장 버튼
-  const handleSaveDetailSetting = () => {
-    updateFormData({
-      subjects: selectedSubjects,
-      averageSubjectsPerDay,
-    });
-    alert("상세 설정이 저장되었습니다."); // 저장 확인 알림 (선택사항)
-  };
-
-  // 오른쪽 이동 화살표 클릭
   const handleNext = () => {
-    if (selectedSubjects.length === 0) {
-      alert("최소 1개 이상의 과목을 선택해주세요.");
+    const valueToSubmit =
+      selectedOption === "직접 입력"
+        ? customValue
+        : selectedOption;
+
+    if (!valueToSubmit || valueToSubmit.trim() === "") {
+      alert("옵션을 선택하거나 값을 입력해주세요.");
       return;
     }
+
+    let structuredValue;
+
+    if (selectedOption === "매일") {
+      structuredValue = { type: "daily" };
+    } else if (selectedOption.startsWith("시험 ")) {
+      const match = selectedOption.match(
+        /시험\s(\d+)(주|일)\s전/
+      );
+      if (match) {
+        const amount = parseInt(match[1]);
+        const unit = match[2] === "주" ? "week" : "day";
+        structuredValue = {
+          type: "relative",
+          offset: -amount,
+          unit,
+          reference: "exam",
+        };
+      }
+    } else if (selectedOption === "직접 입력") {
+      const match = customValue.match(
+        /시험\s?(\d+)(주|일)\s?전/
+      );
+      if (match) {
+        const amount = parseInt(match[1]);
+        const unit = match[2] === "주" ? "week" : "day";
+        structuredValue = {
+          type: "relative",
+          offset: -amount,
+          unit,
+          reference: "exam",
+          raw: customValue,
+        };
+      } else {
+        structuredValue = {
+          type: "custom",
+          raw: customValue,
+        };
+      }
+    }
+
+    console.log("선택한 값:", valueToSubmit);
+    console.log("구조화된 값:", structuredValue);
+
     updateFormData({
-      subjects: selectedSubjects,
-      averageSubjectsPerDay,
+      reviewTiming: valueToSubmit,
+      reviewTimingStructured: structuredValue,
     });
     nextStep();
   };
 
   return (
-    <div className="w-full flex min-h-screen">
-      {/* 왼쪽: 과목 선택 */}
-      <div
-        className={`w-1/2 transition-opacity duration-500 ${
-          showDetailSetting ? "opacity-30" : "opacity-100"
-        }`}
-      >
-        <div className="text-black text-2xl font-medium font-['Inter'] leading-snug pt-32 pb-2 px-32">
-          2. 과목 선택
-        </div>
-        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 relative">
-          {subjects.map((subject) => (
-            <button
-              key={subject}
-              className={`w-[250px] min-h-[60px] border px-4 py-3 rounded-lg text-left font-semibold ${
-                selectedSubjects.includes(subject)
-                  ? "bg-[#D0D7E2] border-[#27374D]"
-                  : "bg-white"
-              }`}
-              onClick={() => toggleSubject(subject)}
-            >
-              {subject}
-            </button>
-          ))}
-
-          {/* 직접 추가 버튼 */}
-          {!isAddingCustom ? (
-            <button
-              className="w-[250px] min-h-[60px] border px-4 py-3 font-semibold text-left"
-              onClick={() => setIsAddingCustom(true)}
-            >
-              + 직접 추가
-            </button>
-          ) : (
-            <div className="flex flex-col items-center">
-              <input
-                type="text"
-                value={customInput}
-                onChange={(e) => setCustomInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter")
-                    handleAddCustomSubject();
-                }}
-                className="border px-3 py-2 rounded w-[250px] min-h-[60px]"
-                placeholder="과목명을 입력하세요"
-              />
-            </div>
-          )}
-          <button
-            onClick={handleSaveSubjects}
-            className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl absolute bottom-0 left-1/2 transform -translate-x-1/2"
-          >
-            저장
-          </button>
-        </div>
+    <div className="min-h-screen w-full bg-[#DDE6ED] relative">
+      {/* 로고 */}
+      <div className="absolute top-32 left-36 flex items-center space-x-3">
+        <img
+          src={bookLogo}
+          alt="logo"
+          className="w-[47px] h-[47px]"
+        />
+        <span className="text-[#27374D] text-3xl">Schedulo</span>
       </div>
 
-      {/* 오른쪽: 상세 설정 */}
-      {showDetailSetting && (
-        <div className="w-1/2 px-16 animate-fade-in ">
-          <div className="text-black text-2xl font-medium font-['Inter'] leading-snug pt-32 pb-2">
-            3. 상세 설정
+      {/* 모달 박스 */}
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-[950px] h-[550px] bg-white rounded-3xl shadow-lg overflow-hidden relative">
+          {/* 헤더 */}
+          <div className="bg-[#27374D] h-[110px] py-8 px-8 flex justify-between items-center">
+            <span className="text-white text-2xl font-semibold mx-auto">
+              공부 계획 등록
+            </span>
+            <button
+              className="text-white text-2xl font-bold hover:opacity-70 transition-opacity"
+              onClick={handleClose}
+            >
+              ✕
+            </button>
           </div>
-          {/* 가운데 본문 */}
-          <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 relative">
-            <p className="text-lg">
-              Q. 3주 동안 하루 평균 몇 과목 공부할 계획인가요?
-            </p>
-            <div className="flex items-center mt-32 gap-6">
-              <button
-                onClick={() =>
-                  setAverageSubjectsPerDay((prev) =>
-                    Math.max(1, prev - 1)
-                  )
-                }
-                className="border p-2 rounded"
-              >
-                <Minus size={24} />
-              </button>
-              <span className="text-xl font-bold">
-                {averageSubjectsPerDay}
-              </span>
-              <button
-                onClick={() =>
-                  setAverageSubjectsPerDay((prev) => prev + 1)
-                }
-                className="border p-2 rounded"
-              >
-                <Plus size={24} />
-              </button>
-            </div>
+          {/* 본문 */}
+          <div className="px-8 py-16 relative h-[calc(100%-110px)]">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center space-y-12">
+              <p className="text-center text-gray-700 text-xl">
+                2. 복습은 언제 하시나요?
+              </p>
 
-            {showDetailSetting && (
-              <button
-                onClick={handleSaveDetailSetting}
-                className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl absolute bottom-0 left-1/2 transform -translate-x-1/2"
-              >
-                저장
-              </button>
-            )}
+              <div className="relative">
+                <div className="flex flex-wrap justify-center gap-4 w-full max-w-md">
+                  {options.map((option) => (
+                    <button
+                      key={option}
+                      onClick={() => handleSelect(option)}
+                      className={`px-5 py-3 rounded-full border-2 transition-colors text-sm
+            ${
+              selectedOption === option
+                ? "bg-[#9DB2BF] text-white border-[#9DB2BF]"
+                : "bg-white text-gray-700 border-gray-300 hover:border-[#9DB2BF]"
+            }`}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+
+                {/* 직접 입력일 경우 */}
+                {selectedOption === "직접 입력" && (
+                  <div className="w-full flex justify-center">
+                    <input
+                      type="text"
+                      className="border-2 border-gray-300 rounded-lg px-6 py-4 w-80 text-center text-lg mt-8 focus:outline-none focus:border-[#9DB2BF] transition-colors"
+                      placeholder="예: 시험 5일 전 등"
+                      value={customValue}
+                      onChange={(e) =>
+                        setCustomValue(e.target.value)
+                      }
+                    />
+                  </div>
+                )}
+                <button
+                  onClick={handleNext}
+                  className="absolute top-1/2 -translate-y-1/2 right-[-110px] bg-[#9DB2BF] text-white rounded-full w-[48px] h-[48px] flex items-center justify-center hover:bg-[#8BA3B0] transition-colors shadow-md"
+                >
+                  <ChevronRight size={24} />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      )}
-
-      {/* 이동 버튼 */}
-      <button
-        type="button"
-        onClick={prevStep}
-        className="absolute left-10 top-1/2 -translate-y-1/2"
-      >
-        <ChevronLeft size={49} />
-      </button>
-      <button
-        type="button"
-        onClick={handleNext}
-        className="absolute right-10 top-1/2 -translate-y-1/2"
-      >
-        <ChevronRight size={49} />
-      </button>
+      </div>
     </div>
   );
-}
+};
+
+export default StudyPlanStep2;

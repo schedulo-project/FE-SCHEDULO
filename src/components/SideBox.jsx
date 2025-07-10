@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import bookImg from "../assets/logo/book_square.svg";
 import SideBtn from "./SideBtn";
-import StudyPlanBtn from "./studyPlan/StudyPlanBtn";
+import ExamPlanBtn from "./examplan/ExamPlanBtn";
 import ChatbotBtn from "./chatbot/ChatbotBtn";
 
 const SideBox = ({ closeSidebar }) => {
@@ -74,7 +74,7 @@ const SideBox = ({ closeSidebar }) => {
       </section>
 
       <section className="flex flex-col items-center gap-[1rem] mt-[2.5rem]">
-        <StudyPlanBtn />
+        <ExamPlanBtn />
         <ChatbotBtn />
       </section>
     </div>

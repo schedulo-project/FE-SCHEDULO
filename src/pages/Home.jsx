@@ -9,7 +9,7 @@ import CheckSchedule from "../components/CheckSchedule";
 import ScheduleModal from "../components/ScheduleModal";
 import fetchSchedules from "../api/checkScheduleApi";
 import fetchECampusSchedule from "../api/ECampusScheduleFetcher";
-import PlanSetupModal from "../components/planSetup/PlanSetupModal";
+import StudyPlanModal from "../components/studyplan/StudyPlanModal";
 
 //jotai
 import { useAtom } from "jotai";
@@ -245,7 +245,7 @@ const Home = () => {
 
   return (
     <>
-      {!isPlanCompleted && <PlanSetupModal />}
+      {!isPlanCompleted && <StudyPlanModal />}
       <div className="flex flex-row gap-8 ml-10 mr-10 ">
         <div className="grow-[3]">
           <Calendar
