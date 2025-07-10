@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const SetupDoneModal = () => {
+const StudyPlanDoneModal = () => {
   const navigate = useNavigate();
 
   const goToHome = () => {
@@ -30,4 +30,4 @@ const SetupDoneModal = () => {
   );
 };
 
-export default SetupDoneModal;
+export default StudyPlanDoneModal;

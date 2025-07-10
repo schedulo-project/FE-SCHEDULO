@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
-const StudyPlanBtn = () => {
+const ExamPlanBtn = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/study-plan");
+    navigate("/examplan");
   };
 
   return (
@@ -17,4 +17,4 @@ const StudyPlanBtn = () => {
   );
 };
 
-export default StudyPlanBtn;
+export default ExamPlanBtn;

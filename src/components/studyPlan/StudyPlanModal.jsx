@@ -2,11 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import planImage from "../../assets/studyplan/planimage.jpg";
 
-const PlanSetupModal = () => {
+const StudyPlanModal = () => {
   const navigate = useNavigate();
 
   const handleStart = () => {
-    navigate("/plan-setup");
+    navigate("/studyplan/setup");
   };
 
   return (
@@ -38,4 +38,4 @@ const PlanSetupModal = () => {
   );
 };
 
-export default PlanSetupModal;
+export default StudyPlanModal;

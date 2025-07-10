@@ -3,22 +3,31 @@ import { useNavigate } from "react-router-dom";
 import StudyPlanStep1 from "./StudyPlanStep1";
 import StudyPlanStep2 from "./StudyPlanStep2";
 import StudyPlanStep3 from "./StudyPlanStep3";
+import StudyPlanStep4 from "./StudyPlanStep4";
+import StudyPlanStep5 from "./StudyPlanStep5";
+import StudyPlanDoneModal from "./StudyPlanDoneModal";
 
-export default function StudyPlanStep() {
+const StudyPlanStep = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    examName: "",
-    startDate: "",
-    endDate: "",
-    subjects: [],
-    totalWeeks: "",
-    averageSubjectsPerDay: "",
+    weeksBeforeExam: "",
+    reviewTiming: "",
+    studyRestRatio: "",
+    studyAmountCriteria: "",
+    assignmentTiming: "",
   });
+  const [showCompleteModal, setShowCompleteModal] =
+    useState(false);
 
   const navigate = useNavigate();
 
-  const nextStep = () => setStep((prev) => prev + 1);
-  const prevStep = () => setStep((prev) => prev - 1);
+  const nextStep = () => {
+    if (step < 5) {
+      setStep((prev) => prev + 1);
+    } else {
+      setShowCompleteModal(true);
+    }
+  };
 
   const updateFormData = (newData) => {
     setFormData((prev) => ({ ...prev, ...newData }));
@@ -28,55 +37,64 @@ export default function StudyPlanStep() {
     navigate("/");
   };
 
-  return (
-    <div className="fixed top-0 left-0 w-screen h-screen z-50 bg-white flex flex-col items-center">
-      {/* 네비게이션 바 */}
-      <div
-        className="w-full flex items-center justify-between "
-        style={{
-          backgroundColor: "#27374D",
-          height: "66px",
-          minHeight: "66px",
-          maxHeight: "66px",
-          padding: "1px 5px",
-          overflow: "hidden",
-        }}
-      >
-        <h1 className="text-white text-xl font-semibold mx-auto">
-          시험공부 계획설정
-        </h1>
-        <button
-          onClick={handleClose}
-          className="absolute right-4 text-white text-[1.5rem] font-semibold z-20"
-        >
-          ✕
-        </button>
-      </div>
-      {/* 본문 영역 */}
-      <div className="w-full flex justify-center flex-1">
-        {step === 1 && (
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
           <StudyPlanStep1
-            formData={formData}
-            updateFormData={updateFormData}
             nextStep={nextStep}
+            updateFormData={updateFormData}
+            formData={formData}
+            handleClose={handleClose}
           />
-        )}
-        {step === 2 && (
+        );
+      case 2:
+        return (
           <StudyPlanStep2
-            formData={formData}
-            updateFormData={updateFormData}
             nextStep={nextStep}
-            prevStep={prevStep}
-          />
-        )}
-        {step === 3 && (
-          <StudyPlanStep3
-            formData={formData}
             updateFormData={updateFormData}
-            prevStep={prevStep}
+            formData={formData}
+            handleClose={handleClose}
           />
-        )}
-      </div>
-    </div>
+        );
+      case 3:
+        return (
+          <StudyPlanStep3
+            nextStep={nextStep}
+            updateFormData={updateFormData}
+            formData={formData}
+            handleClose={handleClose}
+          />
+        );
+      case 4:
+        return (
+          <StudyPlanStep4
+            nextStep={nextStep}
+            updateFormData={updateFormData}
+            formData={formData}
+            handleClose={handleClose}
+          />
+        );
+      case 5:
+        return (
+          <StudyPlanStep5
+            nextStep={nextStep}
+            updateFormData={updateFormData}
+            formData={formData}
+            handleClose={handleClose}
+          />
+        );
+      default:
+        return;
+    }
+  };
+
+  return (
+    <>
+      {renderStep()}
+      {showCompleteModal && <StudyPlanDoneModal />}
+    </>
   );
-}
+};
+
+export default StudyPlanStep;
