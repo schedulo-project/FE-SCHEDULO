@@ -1,8 +1,7 @@
-import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import bookImg from "../assets/logo/book_square.svg";
 import SideBtn from "./SideBtn";
-import StudyPlanBtn from "./studyPlan/StudyPlanBtn";
+import ExamPlanBtn from "./examplan/ExamPlanBtn";
 import ChatbotBtn from "./chatbot/ChatbotBtn";
 
 const SideBox = ({ closeSidebar }) => {
@@ -13,7 +12,7 @@ const SideBox = ({ closeSidebar }) => {
     if (location.pathname.startsWith("/timetable"))
       return "timetable";
     if (location.pathname.startsWith("/tag")) return "tag";
-    if (location.pathname.startsWith("/clock")) return "clock";
+    if (location.pathname.startsWith("/timer")) return "timer";
     if (location.pathname.startsWith("/setting"))
       return "setting";
     if (location.pathname.startsWith("/")) return "calendar";
@@ -30,8 +29,8 @@ const SideBox = ({ closeSidebar }) => {
       case "tag":
         nav("/tag");
         break;
-      case "clock":
-        nav("/"); // 구현 예정
+      case "timer":
+        nav("/timer");
         break;
       case "setting":
         nav("/settings/profile");
@@ -70,7 +69,7 @@ const SideBox = ({ closeSidebar }) => {
         {[
           "calendar",
           "tag",
-          "clock",
+          "timer",
           "timetable",
           "setting",
         ].map((type) => (
@@ -84,7 +83,7 @@ const SideBox = ({ closeSidebar }) => {
       </section>
 
       <section className="flex flex-col items-center gap-[1rem] mt-[2.5rem]">
-        <StudyPlanBtn />
+        <ExamPlanBtn />
         <ChatbotBtn />
       </section>
     </div>

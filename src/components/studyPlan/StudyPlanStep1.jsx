@@ -1,129 +1,93 @@
 import React, { useState } from "react";
-import { DateRange } from "react-date-range";
-import { format } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
-import "../../styles/daterange.css";
-import CalendarIcon from "../../assets/studyplan/calendar.svg";
+import { ChevronRight } from "lucide-react";
+import bookLogo from "../../assets/logo/book_square.svg";
 
-export default function StudyPlanStep1({ formData, updateFormData, nextStep }) {
-  const [localData, setLocalData] = useState({
-    examName: formData.examName || "",
-    startDate: formData.startDate || "",
-    endDate: formData.endDate || "",
-  });
-
-  const [range, setRange] = useState([
-    {
-      startDate: localData.startDate
-        ? new Date(localData.startDate)
-        : new Date(),
-      endDate: localData.endDate ? new Date(localData.endDate) : new Date(),
-      key: "selection",
-    },
-  ]);
-
-  const [showCalendar, setShowCalendar] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLocalData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleDateChange = (item) => {
-    const newStart = item.selection.startDate;
-    const newEnd = item.selection.endDate;
-
-    setRange([item.selection]);
-    setLocalData((prev) => ({
-      ...prev,
-      startDate: format(newStart, "yyyy-MM-dd"),
-      endDate: format(newEnd, "yyyy-MM-dd"),
-    }));
-  };
+const StudyPlanStep1 = ({
+  nextStep,
+  updateFormData,
+  formData = {},
+  handleClose,
+}) => {
+  const [week, setWeek] = useState(
+    formData.weeksBeforeExam || ""
+  );
 
   const handleNext = () => {
-    if (!localData.examName || !localData.startDate || !localData.endDate) {
-      alert("모든 항목을 입력해주세요.");
+    if (!week || Number(week) < 1) {
+      alert("몇 주 전에 시작할지 입력해주세요.");
       return;
     }
-    updateFormData(localData);
+
+    const structuredValue = {
+      type: "relative",
+      offset: -Number(week),
+      unit: "week",
+      reference: "exam",
+    };
+
+    console.log("선택한 값:", week);
+    console.log("구조화된 값:", structuredValue);
+
+    updateFormData({
+      weeksBeforeExam: week,
+      weeksBeforeExamStructured: structuredValue,
+    });
     nextStep();
   };
 
   return (
-    <div className="w-full min-h-screen bg-white flex flex-col">
-      {/* 제목 */}
-      <div className="text-black text-2xl font-medium font-['Inter'] leading-snug pt-32 pb-2 px-32">
-        1. 기본 입력
+    <div className="min-h-screen w-full bg-[#DDE6ED] relative">
+      {/* 로고 */}
+      <div className="absolute top-32 left-36 flex items-center space-x-3">
+        <img
+          src={bookLogo}
+          alt="logo"
+          className="w-[47px] h-[47px]"
+        />
+        <span className="text-[#27374D] text-3xl">Schedulo</span>
       </div>
 
-      <div
-        className="flex flex-1 items-center justify-center relative px-6"
-        style={{ marginTop: "-16rem" }}
-      >
-        {/* 입력 폼 */}
-        <div className="w-full max-w-[700px] mt-4 flex flex-col justify-center">
-          {/* 시험명 */}
-          <div className="flex items-center justify-center mb-8">
-            <label className="w-32 text-xl font-semibold">시험명</label>
-            <input
-              type="text"
-              name="examName"
-              value={localData.examName}
-              onChange={handleChange}
-              className="w-full p-4 text-lg border border-[#8E92BC] rounded-lg max-w-[400px] focus:outline-none h-14 box-border"
-            />
+      {/* 모달 박스 */}
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-[950px] h-[550px] bg-white rounded-3xl shadow-lg overflow-hidden">
+          {/* 헤더 */}
+          <div className="bg-[#27374D] h-[110px] py-8 px-8 flex justify-between items-center">
+            <span className="text-white text-2xl font-semibold mx-auto">
+              공부 계획 등록
+            </span>
+            <button
+              className="text-white text-2xl font-bold hover:opacity-70 transition-opacity"
+              onClick={handleClose}
+            >
+              ✕
+            </button>
           </div>
-
-          {/* 시험기간 */}
-          <div className="flex items-center justify-center mb-12 relative">
-            <label className="w-32 text-xl font-semibold">시험기간</label>
-            <div className="flex flex-col gap-2 w-full max-w-[400px] relative">
-              <div
-                onClick={() => setShowCalendar(!showCalendar)}
-                className="w-full p-4 text-lg border border-[#8E92BC] rounded-lg cursor-pointer bg-white flex items-center justify-between h-14 box-border"
+          {/* 본문 */}
+          <div className="px-8 py-16 flex flex-col items-center justify-center space-y-12 relative h-[calc(100%-110px)]">
+            <p className="text-center text-gray-700 text-xl">
+              1. 몇 주 전에 시험 공부를 시작하시나요?
+            </p>
+            <div className="relative">
+              <input
+                type="number"
+                min={1}
+                value={week}
+                onChange={(e) => setWeek(e.target.value)}
+                className="border-2 border-gray-300 rounded-lg px-6 py-4 w-80 text-center text-lg focus:outline-none focus:border-[#9DB2BF] transition-colors"
+                placeholder=""
+              />
+              <button
+                onClick={handleNext}
+                className="absolute top-1/2 -translate-y-1/2 right-[-110px] bg-[#9DB2BF] text-white rounded-full w-[48px] h-[48px] flex items-center justify-center hover:bg-[#8BA3B0] transition-colors shadow-md"
               >
-                <div className="text-lg font-normal font-['Inter'] leading-tight">
-                  {localData.startDate && localData.endDate
-                    ? `${format(
-                        new Date(localData.startDate),
-                        "M월 d일"
-                      )} ~ ${format(new Date(localData.endDate), "M월 d일")}`
-                    : ""}
-                </div>
-                {/* 캘린더 아이콘 */}
-                <img src={CalendarIcon} alt="calendar" className="w-6 h-6" />
-              </div>
-              {showCalendar && (
-                <div className="absolute z-10 top-full mt-8 left-1/2 transform -translate-x-1/2">
-                  <DateRange
-                    editableDateInputs={true}
-                    onChange={handleDateChange}
-                    moveRangeOnFirstSelection={false}
-                    ranges={range}
-                    months={1}
-                    direction="horizontal"
-                  />
-                </div>
-              )}
+                <ChevronRight size={24} />
+              </button>
             </div>
           </div>
         </div>
-
-        {/* 다음 버튼 */}
-        <button
-          type="button"
-          onClick={handleNext}
-          className="text-[#27374D] absolute right-32 top-1/2 -translate-y-1/2"
-        >
-          <ChevronRight size={49} />
-        </button>
       </div>
     </div>
   );
-}
+};
+
+export default StudyPlanStep1;

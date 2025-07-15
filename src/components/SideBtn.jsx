@@ -13,7 +13,7 @@ const iconObject = {
     Icon: TagIcon,
     alt: "태그",
   },
-  clock: {
+  timer: {
     Icon: ClockIcon,
     alt: "포커스 타이머",
   },

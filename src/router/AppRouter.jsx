@@ -5,8 +5,10 @@ import Timetable from "../pages/Timetable";
 import ChatbotComponent from "../components/chatbot/ChatbotComponent";
 import Loginpage from "../pages/Login";
 import MainLayout from "../components/layout/MainLayout";
-import StudyPlanStep from "../components/studyPlan/StudyPlanStep";
 import Tag from "../pages/Tag";
+import ExamPlanStep from "../components/examplan/ExamPlanStep";
+import StudyPlanStep from "../components/studyplan/StudyPlanStep";
+
 
 //setting에 사용되는 컴포넌트들
 import Profile from "../components/settingsDetail/Profile";
@@ -16,6 +18,7 @@ import DataVisualization from "../components/settingsDetail/DataVisualization";
 
 import PasswordChange from "../components/settingsDetail/PasswordChange";
 import Signup from "../pages/Signup";
+import Timer from "../pages/Timer";
 
 // 라우팅 함수 분리
 const AppRouter = () => {
@@ -41,7 +44,10 @@ const AppRouter = () => {
         <Route path="/timetable" element={<Timetable />} />
         <Route path="/chatbot" element={<ChatbotComponent />} />
         <Route path="/study-plan" element={<StudyPlanStep />} />
+        <Route path="/timer" element={<Timer />} />
+        <Route path="/examplan" element={<ExamPlanStep />} />
       </Route>
+      <Route path="/studyplan/setup" element={<StudyPlanStep />} />
       <Route path="/login" element={<Loginpage />} />
       <Route path="/signup" element={<Signup />} />
     </Routes>
