@@ -27,6 +27,8 @@ const SideBox = ({ closeSidebar }) => {
         nav("/");
         break;
       case "tag":
+        nav("/tag");
+        break;
       case "timer":
         nav("/timer");
         break;

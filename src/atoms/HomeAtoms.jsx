@@ -60,6 +60,9 @@ export const handleChangeAtom = atom(
 // 태그에 대한 atom
 export const tagListAtom = atom([]);
 
+// 태그에 대한 atom -> id 포함 버전
+export const tagIdListAtom = atom([]);
+
 const ScheduleCompleteOrNot = async ({ data }) => {
   const Logindata = await GetCookie();
   const token = Logindata.access;
