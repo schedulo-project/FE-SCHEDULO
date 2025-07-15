@@ -154,7 +154,6 @@ const ScheduleModal = () => {
     setIsModalOpen(false);
     setIsEditMode(false);
   };
-  console.log("data", data);
 
   const size =
     "min-w-[4.8125rem] text-[0.90238rem] pr-[1.80469rem] pl-[1.80469rem] pt-[0.15038rem] pb-[0.15038rem]";
@@ -323,7 +322,7 @@ const ScheduleModal = () => {
                 onChange={handleTagChange}
               />
             ) : (
-              <TagBox tagNames={data.tagName} size={size} />
+              <TagBox task={data} size={size} />
             )}
           </section>
         </section>

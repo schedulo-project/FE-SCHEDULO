@@ -34,7 +34,6 @@ function TodoItem({ task, checked }) {
     });
     setModalOpen(true);
   };
-  console.log("task", task);
 
   const bgColor = checked
     ? "bg-[#DDE6ED] border-[1px] border-[#9DB2BF]"

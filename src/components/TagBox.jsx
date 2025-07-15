@@ -7,10 +7,6 @@ import React from "react";
 // tagColors : 태그 이름과 색상을 매핑한 객체로, 각 태그에 해당하는 색상을 가져오기 위해 사용
 
 const TagBox = ({ task, size }) => {
-  console.log("task 전체:", task);
-  console.log("task.tagName:", task?.tagName);
-  console.log("task.tagColor:", task?.tagColor);
-
   const tags = task?.tagName
     ? task.tagName
         .split(",")
@@ -25,9 +21,6 @@ const TagBox = ({ task, size }) => {
           .map((color) => color.trim())
           .filter((color) => color !== "")
       : [];
-
-  console.log("tags", tags);
-  console.log("tagColors", tagColors);
 
   // 태그에 해당하는 색상을 가져오는 함수
   const getTagColor = (index) => {

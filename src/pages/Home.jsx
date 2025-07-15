@@ -114,6 +114,7 @@ const Home = () => {
     setSelectedDateEvents(eventsOnDate);
   }, [events, selectedDate, today]);
 
+  console.log("events", events);
   // 날짜 클릭 시 선택된 날짜 업데이트
   const handleDateClick = (date) => {
     setOpenGroups({});
@@ -136,9 +137,12 @@ const Home = () => {
       date: clickedEvent.startStr,
       content: clickedEvent.extendedProps.content || "",
       tagName: clickedEvent.extendedProps.tagName || "",
+      tagColor: clickedEvent.extendedProps.tagColor || "", // 태그 색상 추가
       is_completed: clickedEvent.extendedProps.is_completed,
       deadline: clickedEvent.extendedProps.deadline || null,
     };
+    console.log("clickedEvent", clickedEvent);
+    console.log("clickInfo", clickInfo);
 
     setModalData(clickedEventData);
     setIsModalOpen(true);
@@ -176,6 +180,7 @@ const Home = () => {
         title: event.title,
         date: event.date,
         tagName: event.tagName,
+        tagColor: event.tagColor || "", // 태그 색상 추가
         is_completed: event.is_completed,
         content: event.content,
         deadline: event.deadline,
