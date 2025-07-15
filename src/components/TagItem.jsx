@@ -100,6 +100,10 @@ const TagItem = ({ eventsList }) => {
 
   const doubleClickToEdit = (origin, tagId) => {
     const trimmedTempTag = tempTag.trim();
+    if (allTags.some((tag) => tag.name === trimmedTempTag)) {
+      alert("이미 존재하는 태그입니다.");
+      return;
+    }
     if (origin == trimmedTempTag) {
       setIsEditing(false);
       return;
