@@ -4,9 +4,13 @@ import { eventsAtoms, tagIdListAtom } from "../atoms/HomeAtoms";
 import { useEffect } from "react";
 import fetchSchedules from "../api/checkScheduleApi";
 import getTagList from "../api/getTagsListApi";
+import TagAddModal from "../components/TagAddModal";
+
+import plusBtn from "../assets/tag/plusBtn.svg";
 
 //모달
 import ScheduleModal from "../components/ScheduleModal";
+import { tagModalAtom } from "../atoms/TagAtoms";
 
 const Tag = () => {
   // 일정 데이터 불러오기(api)
@@ -14,6 +18,8 @@ const Tag = () => {
 
   //태그 리스트 불러오기(api)
   const [allTags, setAllTags] = useAtom(tagIdListAtom);
+
+  const [, setTagModalOpen] = useAtom(tagModalAtom);
 
   //페이지가 처음 로드 될 때 태그 목록을 가져온다.
   useEffect(() => {
@@ -176,6 +182,7 @@ const Tag = () => {
 
   return (
     <div className="flex justify-center">
+      <TagAddModal />
       <ScheduleModal />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {groupBy(allEvents, allTags).map((group) => (
@@ -184,7 +191,14 @@ const Tag = () => {
             eventsList={group}
           />
         ))}
-        <div className="w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8"></div>
+        <div
+          className="flex justify-center items-center w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8"
+          onClick={() => {
+            setTagModalOpen(true);
+          }}
+        >
+          <img src={plusBtn} />
+        </div>
       </div>
     </div>
   );

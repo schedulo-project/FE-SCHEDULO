@@ -162,7 +162,7 @@ const TagItem = ({ eventsList }) => {
             />
           ) : (
             <div
-              className="text-zinc-900 text-[17px] font-bold font-['Inter']"
+              className="w-[10rem] text-zinc-900 text-[17px] font-bold font-['Inter'] truncate"
               onDoubleClick={() => {
                 if (tempTag === "태그 없음") {
                   //태그가 비어있으면 수정 모드로 들어가지 않는다.
@@ -180,7 +180,7 @@ const TagItem = ({ eventsList }) => {
           <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
         </section>
         <div className="mt-4 flex-grow h-[0.04619rem] bg-[#ABABAB] max-w-[9.33019rem] mx-[0.44rem]"></div>
-        <section className="flex flex-col items-start gap-2 mt-4 overflow-y-scroll h-[16rem]">
+        <section className="flex flex-col items-start gap-2 mt-4 overflow-y-scroll [&::-webkit-scrollbar]:hidden h-[16rem]">
           {[...eventsList.task]
             .sort((a, b) => a.is_completed - b.is_completed)
             .map((event) => (
