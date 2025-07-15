@@ -18,6 +18,15 @@ const TagAddModal = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("태그 추가:", inputValue);
+    if (!inputValue.trim()) {
+      alert("태그를 입력해주세요.");
+      return;
+    } else if (
+      allTags.some((tag) => tag.name === inputValue.trim())
+    ) {
+      alert("이미 존재하는 태그입니다.");
+      return;
+    }
     const response = await addTag(inputValue); // API 호출
     const newTag = response.data; // 새 태그 객체
     setAllTags((prevTags) => [...prevTags, newTag]); // 기존 태그 목록에 새 태그 추가
