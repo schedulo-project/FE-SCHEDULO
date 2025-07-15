@@ -34,6 +34,7 @@ function TodoItem({ task, checked }) {
     });
     setModalOpen(true);
   };
+  console.log("task", task);
 
   const bgColor = checked
     ? "bg-[#DDE6ED] border-[1px] border-[#9DB2BF]"
@@ -51,7 +52,7 @@ function TodoItem({ task, checked }) {
           <span className="text-[0.625rem] text-[#1A1A1A] font-semibold font-[Inter]">
             {task.title}
           </span>
-          <TagBox tagNames={task.tagName} size={size} />
+          <TagBox task={task} size={size} />
         </section>
         <input
           type="checkbox"
