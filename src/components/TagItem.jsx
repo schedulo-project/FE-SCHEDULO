@@ -102,6 +102,8 @@ const TagItem = ({ eventsList }) => {
     const trimmedTempTag = tempTag.trim();
     if (allTags.some((tag) => tag.name === trimmedTempTag)) {
       alert("이미 존재하는 태그입니다.");
+      setTempTag(origin); // 원래 태그로 되돌리기
+      setIsEditing(false);
       return;
     }
     if (origin == trimmedTempTag) {
