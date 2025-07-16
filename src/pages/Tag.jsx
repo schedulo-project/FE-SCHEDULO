@@ -123,6 +123,7 @@ const Tag = () => {
       tagGroups.set(tag.id, {
         tagId: tag.id,
         tag: tag.name,
+        color: tag.color,
         task: [],
       });
     });
@@ -161,6 +162,8 @@ const Tag = () => {
       result.push({
         tagId: null,
         tag: "태그 없음",
+        color: "#E0E0E0",
+        //기본 색상
         task: noTagGroup,
       });
     }

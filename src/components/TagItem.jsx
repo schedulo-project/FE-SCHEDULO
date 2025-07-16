@@ -183,7 +183,10 @@ const TagItem = ({ eventsList }) => {
               {tempTag}
             </div>
           )}
-          <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+          <div
+            className="w-6 h-6 rounded-full"
+            style={{ backgroundColor: eventsList.color }}
+          ></div>
         </section>
         <div className="mt-4 flex-grow h-[0.04619rem] bg-[#ABABAB] max-w-[9.33019rem] mx-[0.44rem]"></div>
         <section className="flex flex-col items-start gap-2 mt-4 overflow-y-scroll [&::-webkit-scrollbar]:hidden h-[16rem]">
