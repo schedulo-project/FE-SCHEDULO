@@ -162,7 +162,7 @@ const Tag = () => {
       result.push({
         tagId: null,
         tag: "태그 없음",
-        color: "#E0E0E0",
+        color: "#9CA3AF",
         //기본 색상
         task: noTagGroup,
       });
