@@ -29,6 +29,7 @@ function TodoItem({ task, checked }) {
       date: task.date,
       content: task.content,
       tagName: task.tagName,
+      tagColor: task.tagColor || "", // 태그 색상 추가
       is_completed: task.is_completed,
       deadline: task.deadline,
     });
