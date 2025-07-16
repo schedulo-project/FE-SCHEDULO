@@ -129,6 +129,7 @@ const TagItem = ({ eventsList }) => {
       date: event.date,
       content: event.content || "",
       tagName: event.tagName || "",
+      tagColor: event.tagColor || "", // 태그 색상 추가
       is_completed: event.is_completed,
       deadline: event.deadline || null,
     };
