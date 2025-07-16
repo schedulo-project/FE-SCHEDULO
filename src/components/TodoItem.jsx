@@ -51,7 +51,7 @@ function TodoItem({ task, checked }) {
           <span className="text-[0.625rem] text-[#1A1A1A] font-semibold font-[Inter]">
             {task.title}
           </span>
-          <TagBox tagNames={task.tagName} size={size} />
+          <TagBox task={task} size={size} />
         </section>
         <input
           type="checkbox"

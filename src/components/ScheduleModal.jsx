@@ -322,7 +322,7 @@ const ScheduleModal = () => {
                 onChange={handleTagChange}
               />
             ) : (
-              <TagBox tagNames={data.tagName} size={size} />
+              <TagBox task={data} size={size} />
             )}
           </section>
         </section>

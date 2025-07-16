@@ -32,6 +32,9 @@ const fetchSchedules = async (firstDate, lastDate) => {
           tagName: schedule.tag
             .map((tag) => tag.name)
             .join(", "), // 태그 이름 합치기
+          tagColor: schedule.tag
+            .map((tag) => tag.color)
+            .join(", "), // 태그 색상 합치기
           date: date, // 날짜 설정
           is_completed: schedule.is_completed,
           content: schedule.content || "", // content 추가 (없으면 빈 문자열)
