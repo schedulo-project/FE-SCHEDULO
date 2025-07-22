@@ -10,12 +10,15 @@ const fetchECampusSchedule = async () => {
 
     const token = loginResult.access;
 
-    const response = await axios.get("http://schedulo.store/users/crawling/", {
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      "http://schedulo.store/users/crawling/",
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const { courses } = response.data;
     console.log("크롤링 데이터", courses);

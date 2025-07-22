@@ -9,7 +9,7 @@ const addSchedules = async (data) => {
 
   try {
     const response = await axios.post(
-      `http://13.124.140.60/schedules/`,
+      `https://schedulo.store/schedules/`,
       {
         title: data.title,
         content: data.content,

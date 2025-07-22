@@ -7,7 +7,7 @@ const getScores = async () => {
 
   try {
     const response = await axios.get(
-      `http://13.124.140.60/users/scores/`,
+      `https://schedulo.store/users/scores/`,
 
       {
         params: {

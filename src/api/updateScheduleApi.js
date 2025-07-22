@@ -7,7 +7,7 @@ const updateSchedules = async (data) => {
 
   try {
     const response = await axios.put(
-      `http://13.124.140.60/schedules/${data.id}/`,
+      `https://schedulo.store/schedules/${data.id}/`,
       {
         title: data.title,
         content: data.content,

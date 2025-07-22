@@ -3,7 +3,7 @@ import axios from "axios";
 const GetCookie = async () => {
   try {
     const response = await axios.post(
-      "http://13.124.140.60/users/login/",
+      "https://schedulo.store/users/login/",
       {
         email: "hyjoo0909@naver.com",
         password: "0909",

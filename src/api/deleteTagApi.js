@@ -9,7 +9,7 @@ const deleteTag = async (tagId) => {
 
   try {
     const response = await axios.delete(
-      `http://13.124.140.60/schedules/tags/${tagId}/`,
+      `https://schedulo.store/schedules/tags/${tagId}/`,
       {
         headers: {
           "Content-Type": "application/json",
