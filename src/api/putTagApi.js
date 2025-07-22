@@ -9,7 +9,7 @@ const putTag = async (tag, tagId) => {
 
   try {
     const response = await axios.put(
-      `http://13.124.140.60/schedules/tags/${tagId}/`,
+      `https://schedulo.store/schedules/tags/${tagId}/`,
       {
         name: tag,
       },

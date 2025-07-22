@@ -8,7 +8,7 @@ const getTagList = async () => {
 
   try {
     const response = await axios.get(
-      `http://13.124.140.60/schedules/tags/`,
+      `https://schedulo.store/schedules/tags/`,
       {
         headers: {
           "Content-Type": "application/json",
