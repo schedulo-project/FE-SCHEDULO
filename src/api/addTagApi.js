@@ -7,7 +7,7 @@ const addTag = async (tag) => {
 
   try {
     const response = await axios.post(
-      `http://13.124.140.60/schedules/tags/`,
+      `https://schedulo.store/schedules/tags/`,
       {
         name: tag,
       },

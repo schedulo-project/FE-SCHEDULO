@@ -75,7 +75,7 @@ const ScheduleCompleteOrNot = async ({ data }) => {
 
   try {
     const response = await fetch(
-      `http://13.124.140.60/schedules/${id}`,
+      `https://schedulo.store/schedules/${id}`,
       {
         method: "PUT",
         headers: {

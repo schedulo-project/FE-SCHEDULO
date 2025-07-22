@@ -9,7 +9,7 @@ const deleteSchedules = async (id) => {
   console.log("id", id);
   try {
     const response = await axios.delete(
-      `http://13.124.140.60/schedules/${id}/`,
+      `https://schedulo.store/schedules/${id}/`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -106,7 +106,7 @@ const TimeTableForm = () => {
     const fetchInitialSchedule = async () => {
       try {
         const response = await axios.get(
-          "http://13.124.140.60/schedules/timetables/",
+          "https://schedulo.store/schedules/timetables/",
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -8,7 +8,7 @@ const fetchSchedules = async (firstDate, lastDate) => {
 
   try {
     const response = await axios.get(
-      `http://13.124.140.60/schedules/list/`,
+      `https://schedulo.store/schedules/list/`,
       {
         params: {
           first: firstDate,
