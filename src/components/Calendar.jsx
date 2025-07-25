@@ -94,10 +94,11 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
   };
 
   const handleAddEventClick = () => {
+    const today = moment().format("YYYY-MM-DD");
     const clickedEventData = {
       id: null,
       title: "",
-      date: "",
+      date: today, // 기본값 : 오늘 날짜
       content: "",
       tagName: "",
       is_completed: false,
