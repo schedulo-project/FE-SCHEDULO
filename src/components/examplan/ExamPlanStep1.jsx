@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { DateRange } from "react-date-range";
 import { format } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import "../../styles/daterange.css";
@@ -61,14 +61,32 @@ const ExamPlanStep1 = ({
       alert("모든 항목을 입력해주세요.");
       return;
     }
-    updateFormData(localData);
+
+    // 공부 일수 계산: 오늘 ~ 시험 시작일 하루 전까지
+    const today = new Date();
+    const examStart = new Date(localData.startDate);
+    const examEnd = new Date(localData.endDate);
+
+    // 유효성 검사: 공부 시작일 > 시험 시작일
+    if (today > examStart) {
+      alert("공부 시작일이 시험 시작일보다 늦을 수 없습니다.");
+      return;
+    }
+
+    const diffTime = examStart.getTime() - today.getTime();
+    const studyDays = Math.max(
+      Math.ceil(diffTime / (1000 * 60 * 60 * 24)),
+      1
+    );
+
+    updateFormData({ ...localData, studyDays });
     nextStep();
   };
 
   return (
-    <div className="w-full min-h-screen bg-white flex flex-col">
+    <div className="w-full min-h-screen bg-white flex flex-col lg:pl-[11.75rem]">
       {/* 제목 */}
-      <div className="text-black text-2xl font-medium font-['Inter'] leading-snug pt-32 pb-2 px-32">
+      <div className="text-black text-2xl font-medium font-['Inter'] leading-snug pt-32 pb-2 px-4 lg:px-32">
         1. 기본 입력
       </div>
 
@@ -77,7 +95,7 @@ const ExamPlanStep1 = ({
         style={{ marginTop: "-16rem" }}
       >
         {/* 입력 폼 */}
-        <div className="w-full max-w-[700px] mt-4 flex flex-col justify-center">
+        <div className="w-full max-w-[700px] mt-4 flex flex-col justify-center pr-20 lg:pr-24">
           {/* 시험명 */}
           <div className="flex items-center justify-center mb-8">
             <label className="w-32 text-xl font-semibold">
@@ -136,11 +154,11 @@ const ExamPlanStep1 = ({
           </div>
         </div>
 
-        {/* 다음 버튼 */}
+        {/* 이동 버튼 */}
         <button
           type="button"
           onClick={handleNext}
-          className="text-[#27374D] absolute right-32 top-1/2 -translate-y-1/2"
+          className="fixed top-1/2 -translate-y-1/2 right-2 lg:right-10 z-50 text-[#27374D]"
         >
           <ChevronRight size={49} />
         </button>

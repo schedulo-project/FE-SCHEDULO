@@ -10,7 +10,7 @@ const StudyPlanModal = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 lg:pl-[11.75rem]">
       <div className="bg-white rounded-3xl p-6 shadow-lg w-[500px] text-center">
         <img
           src={planImage}

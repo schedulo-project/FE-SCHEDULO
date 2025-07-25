@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ExamPlanStep1 from "./ExamPlanStep1";
 import ExamPlanStep2 from "./ExamPlanStep2";
 import ExamPlanStep3 from "./ExamPlanStep3";
+import ExamPlanStep4 from "./ExamPlanStep4";
 
 const ExamPlanStep = () => {
   const [step, setStep] = useState(1);
@@ -65,12 +66,20 @@ const ExamPlanStep = () => {
           <ExamPlanStep2
             formData={formData}
             updateFormData={updateFormData}
-            nextStep={nextStep}
             prevStep={prevStep}
+            nextStep={nextStep}
           />
         )}
         {step === 3 && (
           <ExamPlanStep3
+            formData={formData}
+            updateFormData={updateFormData}
+            prevStep={prevStep}
+            nextStep={nextStep}
+          />
+        )}
+        {step === 4 && (
+          <ExamPlanStep4
             formData={formData}
             updateFormData={updateFormData}
             prevStep={prevStep}
