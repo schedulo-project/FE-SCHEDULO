@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import deleteUser from "../../api/deleteUser";
+//import deleteUser from "../../api/deleteUser";
 
 const ExitUser = () => {
   const handleExit = async () => {
