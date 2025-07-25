@@ -93,8 +93,14 @@ const TimeTableForm = () => {
 
   // const token =
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MTI3NDI1LCJpYXQiOjE3NDQxMDU4MjUsImp0aSI6IjM1N2U4ZjY3YWVjNDQ0MWJhMjhiNDk5ODk2NzkxY2FhIiwidXNlcl9pZCI6NH0.Og9x6IgnXlmc26jQLDdAFGxr9nBjXkdZhcYwo6FJSGQ";
-  const token = Logindata.access;
+
   //임시 토큰 불러오기 코드
+  const token = Logindata.access;
+
+  // schedule이 변경될 때마다 localStorage에 저장
+  useEffect(() => {
+    localStorage.setItem("schedule", JSON.stringify(schedule));
+  }, [schedule]);
 
   useEffect(() => {
     const fetchInitialSchedule = async () => {
@@ -107,7 +113,6 @@ const TimeTableForm = () => {
             },
           }
         );
-        console.log(response.data);
 
         const merged = mergeScheduleData(response.data);
         setSchedule(merged);
@@ -132,7 +137,8 @@ const TimeTableForm = () => {
           s.endHour === item.endHour
       );
     });
-    setSchedule([...schedule, ...data]);
+    const newSchedule = [...schedule, ...nonDuplicated];
+    setSchedule(newSchedule);
   };
 
   return (
