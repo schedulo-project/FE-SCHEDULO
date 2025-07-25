@@ -6,8 +6,17 @@ const ExitUser = () => {
     try {
       //const res = await deleteUser();
       // 성공 처리
+      //   if (res.status === 204) {
+      //     console.log("회원 탈퇴 성공");
+      //     // 예: 로그아웃 처리, 홈 리디렉션 등
+      //   } else {
+      //     alert("회원 탈퇴 실패");
+      //     홈으로 이동
+      //   }
     } catch (error) {
       // 실패 처리 (유저 알림, 로그 등)
+      //  alert("회원 탈퇴 중 오류 발생");
+      // 홈으로 이동
     }
     // console.log(response);
     console.log("회원 탈퇴 클릭됨");
