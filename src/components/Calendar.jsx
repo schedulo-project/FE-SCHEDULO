@@ -198,7 +198,7 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
           noEventsInRange: "이 기간에는 이벤트가 없습니다.",
           showMore: (total) => `+ ${total}개 더 보기`,
         }}
-        style={{ height: "100%" }}
+        style={{ height: "100%", width: "100%" }}
       />
     </div>
   );
