@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 function PasswordChange() {
   return (
     <div className="w-full bg-white p-5 rounded-lg shadow-md">

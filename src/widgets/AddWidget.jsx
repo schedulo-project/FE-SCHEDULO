@@ -26,7 +26,7 @@ const AddWidget = ({ state }) => {
     const TagArr = await SplitTag(refactorAddData.tag);
     try {
       const response = await fetch(
-        "http://13.124.140.60/schedules/",
+        "https://schedulo.store/schedules/",
         {
           method: "POST",
           headers: {

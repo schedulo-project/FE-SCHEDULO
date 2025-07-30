@@ -132,7 +132,7 @@ const DeleteWidget = ({ state }) => {
 const DeleteSchedules = async ({ data, token, actions }) => {
   try {
     const response = await fetch(
-      "http://13.124.140.60/schedules/",
+      "https://schedulo.store/schedules/",
       {
         method: "DELETE",
         headers: {
