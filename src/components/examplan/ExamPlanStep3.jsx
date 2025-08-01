@@ -24,7 +24,11 @@ const ExamPlanStep3 = ({
       });
       setRatios(initialRatios);
     }
-  }, [formData.subjects, formData.subjectRatios]);
+
+    if (formData.isSubjectRatiosSaved) {
+      setIsSaved(true);
+    }
+  }, [formData.subjects, formData.subjectRatios, formData.isSubjectRatiosSaved]);
 
   const handleRatioChange = (subject, value) => {
     setRatios((prev) => ({
@@ -59,6 +63,10 @@ const ExamPlanStep3 = ({
   const handleSaveRatioSetting = () => {
     if (validateAndSaveRatios()) {
       alert("비율 설정이 저장되었습니다.");
+      updateFormData({
+        subjectRatios: ratios,
+        isSubjectRatiosSaved: true, 
+      });
       setIsSaved(true);
     }
   };
@@ -113,6 +121,7 @@ const ExamPlanStep3 = ({
                     min="0"
                     max="100"
                     step="1"
+                    disabled={isSaved}
                     value={ratios[subject] || 0}
                     onChange={(e) =>
                       handleRatioChange(subject, e.target.value)
@@ -156,14 +165,16 @@ const ExamPlanStep3 = ({
           </div>
 
           {/* 저장 버튼 */}
-          <div className="flex justify-center">
-            <button
-              onClick={handleSaveRatioSetting}
-              className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl"
-            >
-              저장
-            </button>
-          </div>
+          {!isSaved && (
+            <div className="flex justify-center">
+              <button
+                onClick={handleSaveRatioSetting}
+                className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl"
+              >
+                저장
+              </button>
+            </div>
+          )}
         </div>
 
         {/* 이동 버튼 */}

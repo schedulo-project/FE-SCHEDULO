@@ -22,6 +22,12 @@ const ExamPlanStep2 = ({
     useState(false);
   const [isAddingCustom, setIsAddingCustom] = useState(false); // 직접 추가
   const [customInput, setCustomInput] = useState("");
+  const [isSubjectsLocked, setIsSubjectsLocked] = useState(
+    formData.subjects && formData.subjects.length > 0
+  );
+  const [isDetailLocked, setIsDetailLocked] = useState(
+    formData.averageSubjectsPerDay > 0
+  );
 
   // 로컬스토리지에서 시간표 가져오기
   useEffect(() => {
@@ -107,6 +113,7 @@ const ExamPlanStep2 = ({
       return;
     }
     setShowDetailSetting(true);
+    setIsSubjectsLocked(true);
   };
 
   // 오른쪽 저장 버튼
@@ -115,6 +122,7 @@ const ExamPlanStep2 = ({
       subjects: selectedSubjects,
       averageSubjectsPerDay,
     });
+    setIsDetailLocked(true);
     alert("상세 설정이 저장되었습니다.");
   };
 
@@ -209,12 +217,18 @@ const ExamPlanStep2 = ({
                 {subjects.map((subject) => (
                   <button
                     key={subject}
+                    onClick={() =>
+                      !isSubjectsLocked && toggleSubject(subject)
+                    }
                     className={`w-[200px] lg:w-[250px] min-h-[60px] border px-4 py-3 rounded-lg text-left font-semibold mb-2 ${
                       selectedSubjects.includes(subject)
                         ? "bg-[#D0D7E2] border-[#27374D]"
                         : "bg-white"
+                    } ${
+                      isSubjectsLocked
+                        ? "pointer-events-none opacity-50"
+                        : ""
                     }`}
-                    onClick={() => toggleSubject(subject)}
                   >
                     {subject}
                   </button>
@@ -222,17 +236,21 @@ const ExamPlanStep2 = ({
               </div>
 
               {/* 직접 추가 버튼 */}
-              {!isAddingCustom ? (
+              {!isAddingCustom && !isSubjectsLocked ? (
                 <button
                   className="w-[200px] lg:w-[250px] min-h-[60px] border px-4 py-3 rounded-lg font-semibold text-left mb-2"
                   onClick={() => setIsAddingCustom(true)}
                 >
                   + 직접 추가
                 </button>
-              ) : (
+              ) : null}
+
+              {/* 직접 추가 입력창 */}
+              {isAddingCustom && (
                 <div className="relative w-[200px] lg:w-[250px]">
                   <input
                     type="text"
+                    disabled={isSubjectsLocked}
                     value={customInput}
                     onChange={(e) =>
                       setCustomInput(e.target.value)
@@ -256,8 +274,13 @@ const ExamPlanStep2 = ({
                     autoFocus
                   />
                   <button
+                    disabled={isSubjectsLocked}
                     onClick={handleAddCustomSubject}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-[#27374D] text-white rounded flex items-center justify-center text-lg font-bold hover:bg-[#1e2832]"
+                    className={`absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded flex items-center justify-center text-lg font-bold ${
+                      isSubjectsLocked
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-[#27374D] text-white hover:bg-[#1e2832]"
+                    }`}
                   >
                     +
                   </button>
@@ -265,12 +288,14 @@ const ExamPlanStep2 = ({
               )}
 
               {/* 저장 버튼 */}
-              <button
-                onClick={handleSaveSubjects}
-                className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl absolute bottom-0 left-1/2 transform -translate-x-1/2"
-              >
-                저장
-              </button>
+              {!isSubjectsLocked && (
+                <button
+                  onClick={handleSaveSubjects}
+                  className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl absolute bottom-0 left-1/2 transform -translate-x-1/2"
+                >
+                  저장
+                </button>
+              )}
             </div>
           </div>
 
@@ -292,11 +317,17 @@ const ExamPlanStep2 = ({
                 <div className="flex items-center mt-32 gap-6">
                   <button
                     onClick={() =>
+                      !isDetailLocked &&
                       setAverageSubjectsPerDay((prev) =>
                         Math.max(1, prev - 1)
                       )
                     }
-                    className="border p-2 rounded"
+                    disabled={isDetailLocked}
+                    className={`border p-2 rounded ${
+                      isDetailLocked
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
                   >
                     <Minus size={24} />
                   </button>
@@ -305,21 +336,31 @@ const ExamPlanStep2 = ({
                   </span>
                   <button
                     onClick={() =>
+                      !isDetailLocked &&
                       setAverageSubjectsPerDay(
                         (prev) => prev + 1
                       )
                     }
-                    className="border p-2 rounded"
+                    disabled={isDetailLocked}
+                    className={`border p-2 rounded ${
+                      isDetailLocked
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
                   >
                     <Plus size={24} />
                   </button>
                 </div>
-                <button
-                  onClick={handleSaveDetailSetting}
-                  className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl absolute bottom-0 left-1/2 transform -translate-x-1/2"
-                >
-                  저장
-                </button>
+
+                {/* 저장 버튼 */}
+                {!isDetailLocked && (
+                  <button
+                    onClick={handleSaveDetailSetting}
+                    className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl absolute bottom-0 left-1/2 transform -translate-x-1/2"
+                  >
+                    저장
+                  </button>
+                )}
               </div>
             )}
           </div>

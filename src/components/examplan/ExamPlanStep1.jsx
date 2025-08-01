@@ -31,8 +31,12 @@ const ExamPlanStep1 = ({
   ]);
 
   const [showCalendar, setShowCalendar] = useState(false);
+  const isReadonly =
+    formData.subjects && formData.subjects.length > 0;
 
   const handleChange = (e) => {
+    if (isReadonly) return;
+
     const { name, value } = e.target;
     setLocalData((prev) => ({
       ...prev,
@@ -41,6 +45,8 @@ const ExamPlanStep1 = ({
   };
 
   const handleDateChange = (item) => {
+    if (isReadonly) return;
+
     const newStart = item.selection.startDate;
     const newEnd = item.selection.endDate;
 
@@ -52,7 +58,17 @@ const ExamPlanStep1 = ({
     }));
   };
 
+  const handleCalendarToggle = () => {
+    if (isReadonly) return; // readonly 상태에서는 캘린더 열 수 없음
+    setShowCalendar(!showCalendar);
+  };
+
   const handleNext = () => {
+    if (isReadonly) {
+      nextStep();
+      return;
+    }
+
     if (
       !localData.examName ||
       !localData.startDate ||
@@ -106,7 +122,12 @@ const ExamPlanStep1 = ({
               name="examName"
               value={localData.examName}
               onChange={handleChange}
-              className="w-full p-4 text-lg border border-[#8E92BC] rounded-lg max-w-[400px] focus:outline-none h-14 box-border"
+              readOnly={isReadonly}
+              className={`w-full p-4 text-lg border border-[#8E92BC] rounded-lg max-w-[400px] focus:outline-none h-14 box-border ${
+                isReadonly
+                  ? "bg-gray-100 cursor-not-allowed text-gray-600"
+                  : "bg-white"
+              }`}
             />
           </div>
 
@@ -117,8 +138,12 @@ const ExamPlanStep1 = ({
             </label>
             <div className="flex flex-col gap-2 w-full max-w-[400px] relative">
               <div
-                onClick={() => setShowCalendar(!showCalendar)}
-                className="w-full p-4 text-lg border border-[#8E92BC] rounded-lg cursor-pointer bg-white flex items-center justify-between h-14 box-border"
+                onClick={handleCalendarToggle}
+                className={`w-full p-4 text-lg border border-[#8E92BC] rounded-lg flex items-center justify-between h-14 box-border ${
+                  isReadonly
+                    ? "bg-gray-100 cursor-not-allowed text-gray-600"
+                    : "bg-white cursor-pointer"
+                }`}
               >
                 <div className="text-lg font-normal font-['Inter'] leading-tight">
                   {localData.startDate && localData.endDate
@@ -135,10 +160,12 @@ const ExamPlanStep1 = ({
                 <img
                   src={CalendarIcon}
                   alt="calendar"
-                  className="w-6 h-6"
+                  className={`w-6 h-6 ${
+                    isReadonly ? "opacity-50" : ""
+                  }`}
                 />
               </div>
-              {showCalendar && (
+              {showCalendar && !isReadonly && (
                 <div className="absolute z-10 top-full mt-8 left-1/2 transform -translate-x-1/2">
                   <DateRange
                     editableDateInputs={true}
