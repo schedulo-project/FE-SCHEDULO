@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 
-const paths = ["password", "exit"]; // 수정 가능한 경로 목록
+const paths = ["password", "exit", "smul"]; // 수정 가능한 경로 목록
 
 const Profile = () => {
   const location = useLocation();
@@ -33,6 +33,12 @@ const Profile = () => {
               className="text-xs font-normal font-['Inter'] "
             >
               비밀번호 변경
+            </Link>
+            <Link
+              to="smul"
+              className="text-xs font-normal font-['Inter'] "
+            >
+              샘물 정보 수정
             </Link>
             <Link
               to="exit"
