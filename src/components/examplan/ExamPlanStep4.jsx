@@ -217,14 +217,14 @@ const ExamPlanStep4 = ({
       <button
         type="button"
         onClick={prevStep}
-        className="fixed top-1/2 -translate-y-1/2 left-2 lg:left-[calc(11.75rem+1.5rem)] z-50 text-[#27374D]"
+        className="fixed top-1/2 -translate-y-1/2 left-4 lg:left-[calc(11.75rem+1.5rem)] z-50 text-[#27374D]"
       >
         <ChevronLeft size={49} />
       </button>
 
-      <div className="flex items-end max-w-7xl w-full px-4 gap-12 ml-16 lg:ml-0">
+      <div className="flex items-end max-w-7xl w-full px-4 gap-12">
         {/* 캘린더 */}
-        <div className="flex-1">
+        <div className="flex-1 pl-16 lg:pl-0">
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"

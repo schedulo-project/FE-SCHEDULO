@@ -17,7 +17,7 @@ const MessageParser = ({ children, actions }) => {
       switch (ExData.answer.method) {
         case "조회":
         case "수정":
-        case "삭제":
+        case "삭제": {
           const ScheduleData = await SchedulePass(
             ExData,
             actions
@@ -33,6 +33,7 @@ const MessageParser = ({ children, actions }) => {
               actions.handleDelete({ data: ScheduleData });
           }
           break;
+        }
         case "등록":
           actions.handleAdd({ data: ExData });
           break;
@@ -61,7 +62,7 @@ const MessageParser = ({ children, actions }) => {
 const MessagePass = async ({ message, token }) => {
   try {
     const response = await fetch(
-      "http://13.124.140.60/chatbots/",
+      "https://schedulo.store/chatbots/",
       {
         method: "POST",
         headers: {
@@ -127,7 +128,7 @@ const SchedulePass = async (ExData, actions) => {
 
   // URL 생성
   const queryString = queryParams.join("&");
-  const url = `http://13.124.140.60/schedules/list/?${queryString}`;
+  const url = `https://schedulo.store/schedules/list/?${queryString}`;
 
   console.log("URL:", queryString); // URL 확인
 

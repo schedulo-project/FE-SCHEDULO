@@ -7,7 +7,7 @@ const deleteUser = async () => {
 
   try {
     const response = await axios.delete(
-      `http://schedulo.store/users/`,
+      `https://schedulo.store/users/`,
       {
         headers: {
           "Content-Type": "application/json",

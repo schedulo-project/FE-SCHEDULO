@@ -181,16 +181,16 @@ const Tag = () => {
   };
 
   // 데이터 없으면 로딩 표시
-  if (
-    !allTags ||
-    allTags.length === 0 ||
-    !allEvents ||
-    allEvents.length === 0
-  ) {
-    return (
-      <div className="text-center mt-10">데이터 로딩 중...</div>
-    );
-  }
+  // if (
+  //   !allTags ||
+  //   allTags.length === 0 ||
+  //   !allEvents ||
+  //   allEvents.length === 0
+  // ) {
+  //   return (
+  //     <div className="text-center mt-10">데이터 로딩 중...</div>
+  //   );
+  // }
 
   return (
     <div className="flex justify-center">
