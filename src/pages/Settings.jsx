@@ -1,5 +1,4 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
-import PasswordChange from "../components/settingsDetail/PasswordChange";
 
 function Settings() {
   const tabs = [

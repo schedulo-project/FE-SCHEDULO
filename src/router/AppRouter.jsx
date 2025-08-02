@@ -17,6 +17,8 @@ import DataVisualization from "../components/settingsDetail/DataVisualization";
 
 import PasswordChange from "../components/settingsDetail/PasswordChange";
 import ExitUser from "../components/settingsDetail/ExitUser"; // 회원 탈퇴 컴포넌트
+import SamwaterChange from "../components/settingsDetail/SamwaterChange";
+
 import Signup from "../pages/Signup";
 import Timer from "../pages/Timer";
 
@@ -33,6 +35,7 @@ const AppRouter = () => {
               element={<PasswordChange />}
             />
             <Route path="exit" element={<ExitUser />} />
+            <Route path="smul" element={<SamwaterChange />} />
           </Route>
           <Route path="alarm" element={<Alarm />} />
           <Route
