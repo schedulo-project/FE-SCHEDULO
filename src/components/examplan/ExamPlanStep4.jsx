@@ -11,6 +11,8 @@ import {
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import axios from "axios";
+import GetCookie from "../../api/GetCookie";
 
 // 민사고 공부법에 따른 일정 생성 함수
 const generateStudySchedule = (formData) => {
@@ -205,10 +207,37 @@ const ExamPlanStep4 = ({
   };
 
   // 저장 버튼
-  const handleSave = () => {
-    updateFormData({ ...formData, finalSchedule: events });
-    alert("일정이 저장되었습니다.");
-    navigate("/");
+  const handleSave = async () => {
+    const Logindata = await GetCookie();
+    const token = Logindata.access;
+
+    const payload = events.map((event) => ({
+      title: event.title,
+      content: `${event.title} 공부`,
+      scheduled_date: event.date,
+      deadline: event.date,
+    }));
+
+    try {
+      const response = await axios.post(
+        "https://schedulo.store/schedules/bulk/",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      updateFormData({ ...formData, finalSchedule: events });
+      localStorage.setItem("planSetupCompleted", "true");
+      alert("일정이 저장되었습니다.");
+      navigate("/");
+    } catch (error) {
+      console.error("저장 중 오류:", error);
+      alert("일정 저장 중 문제가 발생했습니다.");
+    }
   };
 
   return (
