@@ -15,7 +15,7 @@ const addSchedules = async (data) => {
         content: data.content,
         scheduled_date: data.date,
         tag: tag,
-        deadline: data.date,
+        deadline: data.deadline,
         is_completed: data.completed,
       },
       {
