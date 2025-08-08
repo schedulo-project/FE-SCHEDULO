@@ -13,7 +13,7 @@ const updateSchedules = async (data) => {
         content: data.content,
         scheduled_date: data.date,
         tag: data.tag.map((t) => t.value),
-        deadline: data.date,
+        deadline: data.deadline,
         is_completed: data.completed,
       },
       {

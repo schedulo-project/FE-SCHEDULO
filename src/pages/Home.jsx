@@ -148,60 +148,19 @@ const Home = () => {
     setIsModalOpen(true);
   };
 
-  // FullCalendar에 맞게 이벤트 형식 변환 (3개까지만 표시, 초과 시 "..." 추가)
+  // react-big-calendar에 맞게 이벤트 형식 변환
   const calendarEvents = events
     .filter((event) => !event.is_completed) // 완료되지 않은 일정만 포함
-    .reduce((acc, event) => {
-      const existingDate = acc.find(
-        (item) => item.date === event.date
-      );
-      if (existingDate) {
-        // 이미 해당 날짜가 있는 경우
-        if (existingDate.events.length < 3) {
-          existingDate.events.push(event);
-        } else if (!existingDate.hasMore) {
-          existingDate.hasMore = true; // 초과 일정 표시
-        }
-      } else {
-        // 새로운 날짜 추가
-        acc.push({
-          date: event.date,
-          events: [event],
-          hasMore: false,
-        });
-      }
-      return acc;
-    }, [])
-    // FullCalendar에 맞는 이벤트 배열로 변환
-    .flatMap((item) => {
-      // 날짜별로 일정과 "..." 추가
-      const limitedEvents = item.events.map((event) => ({
-        id: event.id,
-        title: event.title,
-        date: event.date,
-        tagName: event.tagName,
-        tagColor: event.tagColor || "", // 태그 색상 추가
-        is_completed: event.is_completed,
-        content: event.content,
-        deadline: event.deadline,
-      }));
-
-      // "..."을 가장 위에 추가
-      if (item.hasMore) {
-        limitedEvents.push({
-          id: `${item.date}`,
-          title: "etc..",
-          date: item.date,
-          tagName: "",
-          is_completed: false,
-          content: "",
-          deadline: null,
-          classname: "event-item-dots",
-        });
-      }
-
-      return limitedEvents;
-    });
+    .map((event) => ({
+      id: event.id,
+      title: event.title,
+      date: event.date,
+      tagName: event.tagName,
+      tagColor: event.tagColor || "", // 태그 색상 추가
+      is_completed: event.is_completed,
+      content: event.content,
+      deadline: event.deadline,
+    }));
 
   // 이캠퍼스 크롤링 데이터 가져오기
   const handleFetchECampus = async () => {
