@@ -1,11 +1,9 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import ECampusMode from "./timetable/ECampusMode";
-import ManualMode from "./timetable/ManualMode";
+import axios from "axios";
+import TimeTableModal from "./TimeTableModal";
 import TimeTableGrid from "./TimeTableGrid";
-import GetCookie from "../api/GetCookie";
-import homeIcon from "../assets/timetableform/home_btn.svg";
+import GetCookie from "../../api/GetCookie";
+
 const Logindata = await GetCookie();
 
 const dayMap = {
@@ -18,25 +16,33 @@ const dayMap = {
   sun: "일",
 };
 
+// "HH:MM" 형식을 실수 시간으로 변환
 const timeToFloat = (timeStr) => {
   const [hour, minute] = timeStr.split(":").map(Number);
   return hour + minute / 60;
 };
 
-// 병합 함수
+// 시간표 데이터 병합 함수
 const mergeScheduleData = (data) => {
   const groupedBySubjectAndDay = {};
 
+  // 1) 과목명 + 요일별로 데이터 묶기
   data.forEach((item) => {
-    const key = `${item.subject}_${item.day_of_week}`;
+    const koreanDay =
+      dayMap[item.day_of_week] || item.day_of_week;
+    const key = `${item.subject}_${koreanDay}`;
     if (!groupedBySubjectAndDay[key]) {
       groupedBySubjectAndDay[key] = [];
     }
-    groupedBySubjectAndDay[key].push(item);
+    groupedBySubjectAndDay[key].push({
+      ...item,
+      day_of_week: koreanDay, // 한국어로 통일
+    });
   });
 
   const merged = [];
 
+  // 2) 묶인 데이터별로 시간 정렬 후 병합
   Object.entries(groupedBySubjectAndDay).forEach(
     ([_, slots]) => {
       const sorted = slots.sort(
@@ -60,7 +66,7 @@ const mergeScheduleData = (data) => {
         } else {
           merged.push({
             name: subject,
-            day: dayMap[day],
+            day: day,
             startHour: timeToFloat(currentStart),
             endHour: timeToFloat(currentEnd),
             location: currentLocation,
@@ -74,7 +80,7 @@ const mergeScheduleData = (data) => {
 
       merged.push({
         name: subject,
-        day: dayMap[day],
+        day: day,
         startHour: timeToFloat(currentStart),
         endHour: timeToFloat(currentEnd),
         location: currentLocation,
@@ -87,21 +93,16 @@ const mergeScheduleData = (data) => {
 };
 
 const TimeTableForm = () => {
-  const [mode, setMode] = useState(null);
   const [schedule, setSchedule] = useState([]);
-  const nav = useNavigate();
-
-  // const token =
-  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MTI3NDI1LCJpYXQiOjE3NDQxMDU4MjUsImp0aSI6IjM1N2U4ZjY3YWVjNDQ0MWJhMjhiNDk5ODk2NzkxY2FhIiwidXNlcl9pZCI6NH0.Og9x6IgnXlmc26jQLDdAFGxr9nBjXkdZhcYwo6FJSGQ";
-
-  //임시 토큰 불러오기 코드
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const token = Logindata.access;
 
-  // schedule이 변경될 때마다 localStorage에 저장
-  useEffect(() => {
-    localStorage.setItem("schedule", JSON.stringify(schedule));
-  }, [schedule]);
+  // schedule 변경 시 localStorage에 저장
+  // useEffect(() => {
+  //   localStorage.setItem("schedule", JSON.stringify(schedule));
+  // }, [schedule]);
 
+  // 초기 시간표 데이터 불러오기
   useEffect(() => {
     const fetchInitialSchedule = async () => {
       try {
@@ -127,8 +128,22 @@ const TimeTableForm = () => {
     fetchInitialSchedule();
   }, []);
 
+  // 새 데이터 제출 핸들러 (기존 schedule과 중복되지 않는 항목만 추가)
   const handleDataSubmit = (data) => {
-    const nonDuplicated = data.filter((item) => {
+    console.log("새로 추가할 데이터:", data);
+
+    // 모달 입력값을 시간표 형식으로 변환
+    const convertedData = data.map((item) => ({
+      name: item.name,
+      day: item.day,
+      startHour: item.startHour,
+      endHour: item.endHour,
+      location: item.location || "",
+      professor: item.professor || "",
+    }));
+
+    // 기존 schedule과 중복되지 않는 항목만 필터링
+    const nonDuplicated = convertedData.filter((item) => {
       return !schedule.some(
         (s) =>
           s.name === item.name &&
@@ -137,49 +152,44 @@ const TimeTableForm = () => {
           s.endHour === item.endHour
       );
     });
+
     const newSchedule = [...schedule, ...nonDuplicated];
     setSchedule(newSchedule);
+    setIsModalOpen(false);
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        시간표 등록
-      </h1>
-      {!mode && (
-        <div className="flex justify-center space-x-4 mb-6">
-          <button
-            onClick={() => setMode("ecampus")}
-            className="border py-2 px-4 rounded"
-          >
-            시간표 불러오기
-          </button>
-          <button
-            onClick={() => setMode("manual")}
-            className="border  py-2 px-4 rounded"
-          >
-            직접 등록
-          </button>
+    <div className="p-4">
+      {/* 제목 */}
+      <div className="mb-2 text-center">
+        <h2 className="text-3xl font-bold">시간표 등록</h2>
+      </div>
+
+      {/* 직접 등록 버튼 */}
+      <div className="flex justify-end mb-6">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="w-[120px] text-[#27374D] text-sm bg-[#DDE6ED] py-2 px-4 rounded-2xl"
+        >
+          직접 등록하기
+        </button>
+      </div>
+
+      {/* 시간표 컴포넌트 */}
+      <TimeTableGrid schedule={schedule} />
+
+      {/* 직접 등록 모달 */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex items-center justify-center">
+          <div className="h-full flex items-center justify-center lg:ml-[11.75rem]">
+            <TimeTableModal
+              onSubmit={handleDataSubmit}
+              onClose={() => setIsModalOpen(false)}
+              schedule={schedule}
+            />
+          </div>
         </div>
       )}
-      {mode === "ecampus" && (
-        <ECampusMode
-          onSubmit={handleDataSubmit}
-          setSchedule={setSchedule}
-          schedule={schedule}
-        />
-      )}
-      {mode === "manual" && (
-        <ManualMode
-          onSubmit={handleDataSubmit}
-          setSchedule={setSchedule}
-        />
-      )}
-
-      <h2 className="text-2xl font-semibold mt-8 mb-4 text-center">
-        시간표
-      </h2>
-      <TimeTableGrid schedule={schedule} />
     </div>
   );
 };

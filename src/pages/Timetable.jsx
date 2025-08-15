@@ -1,4 +1,4 @@
-import TimeTableForm from "../components/TimeTableForm";
+import TimeTableForm from "../components/timetable/TimeTableForm";
 
 const Timetable = () => {
   return (
