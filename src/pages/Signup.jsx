@@ -1,55 +1,162 @@
+import { useForm } from "react-hook-form";
 import logoimage from "../assets/logo/logoimage.svg";
-import signupimage from "../assets/signup/signup_img.svg";
 
 const Signup = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  const password = watch("password");
+
+  const onSubmit = (data) => {
+    console.log(data);
+    // 여기에 회원가입 API 호출 로직 추가
+  };
+
   return (
-    <div className=" flex justify-center items-center w-[100vw] h-[100vh] bg-stone-700/60 shadow-[0.7483852505683899px_0px_2.9935410022735596px_0px_rgba(0,0,0,0.25)]">
-      <div className="flex flex-col justify-top items-center w-[435px] h-[620.58px] bg-[#F3F3E0] rounded-[50px]">
+    <div className="w-full h-screen flex justify-center items-center bg-white p-4">
+      <div className="flex flex-col items-center max-w-md w-full">
         {/* 로고 + 서비스명 */}
-        <div className="w-44 inline-flex justify-center items-center gap-2.5 mt-[68.95px] mb-[26.15px]">
+        <div className="flex items-center gap-2 mb-8">
           <img
             src={logoimage}
             alt="로고 이미지"
             className="w-10 h-10"
           />
-          <p className="justify-center text-blue-950 text-2xl font-semibold font-['Plus_Jakarta_Sans'] leading-loose">
+          <p className="text-[#2D3748] text-2xl font-semibold">
             Schedulo
           </p>
         </div>
 
-        {/* 회원 가입 로고 */}
-        <div className="flex justify-center items-center gap-[3.27px] mb-[32.65px]">
-          <img
-            src={signupimage}
-            alt="회원가입 이미지"
-            className="w-5 h-5"
-          />
-          <p className="text-center justify-start text-zinc-900 text-xl font-normal font-['Noto_Sans_KR']">
+        {/* 회원가입 제목 */}
+        <div className="flex items-center gap-2 mb-8">
+          <span className="text-xl">회원가입</span>
+        </div>
+
+        {/* 회원가입 입력 폼 */}
+        <form
+          className="w-full flex flex-col gap-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="w-full">
+            <input
+              className={`w-full p-3 rounded-md bg-gray-100 text-sm ${
+                errors.email ? "border border-red-500" : ""
+              }`}
+              placeholder="이메일"
+              {...register("email", {
+                required: "이메일을 입력해주세요",
+                pattern: {
+                  value:
+                    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "올바른 이메일 형식이 아닙니다",
+                },
+              })}
+            />
+            {errors.email && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          <div className="w-full">
+            <input
+              className={`w-full p-3 rounded-md bg-gray-100 text-sm ${
+                errors.password ? "border border-red-500" : ""
+              }`}
+              type="password"
+              placeholder="비밀번호"
+              {...register("password", {
+                required: "비밀번호를 입력해주세요",
+                minLength: {
+                  value: 6,
+                  message:
+                    "비밀번호는 최소 6자 이상이어야 합니다",
+                },
+              })}
+            />
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <div className="w-full">
+            <input
+              className={`w-full p-3 rounded-md bg-gray-100 text-sm ${
+                errors.confirmPassword
+                  ? "border border-red-500"
+                  : ""
+              }`}
+              type="password"
+              placeholder="비밀번호 확인"
+              {...register("confirmPassword", {
+                required: "비밀번호 확인을 입력해주세요",
+                validate: (value) =>
+                  value === password ||
+                  "비밀번호가 일치하지 않습니다",
+              })}
+            />
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
+
+          {/* 약관 동의 */}
+          <div className="flex flex-col gap-2 mt-4">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="serviceTerms"
+                className="h-4 w-4 text-blue-600"
+                {...register("serviceTerms", {
+                  required: "서비스 이용약관에 동의해주세요",
+                })}
+              />
+              <label
+                htmlFor="serviceTerms"
+                className="text-sm text-gray-700"
+              >
+                [필수] 서비스 이용약관 동의
+              </label>
+            </div>
+            {errors.serviceTerms && (
+              <p className="text-red-500 text-xs">
+                {errors.serviceTerms.message}
+              </p>
+            )}
+
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="marketingTerms"
+                className="h-4 w-4 text-blue-600"
+                {...register("marketingTerms")}
+              />
+              <label
+                htmlFor="marketingTerms"
+                className="text-sm text-gray-700"
+              >
+                [선택] 광고성 정보 수신 동의
+              </label>
+            </div>
+          </div>
+
+          {/* 회원가입 버튼 */}
+          <button
+            type="submit"
+            className="w-full p-3 bg-[#2D3748] text-white rounded-md mt-6 text-center"
+          >
             회원가입
-          </p>
-        </div>
-
-        {/* 회원가입 입력 창 */}
-        <div className="flex flex-col gap-2 w-36 h-7 rounded-xl mb-[0px]">
-          <input type="email" />
-          <input type="password" />
-          <input type="password" />
-        </div>
-
-        {/* 이용약관 등 */}
-        <div className="flex flex-col">
-          <p className="text-stone-500 text-[10px] font-normal font-['Noto_Sans_KR']">
-            [필수] 서비스 이용 약관 동의
-          </p>
-          <p className="text-stone-500 text-[10px] font-normal font-['Noto_Sans_KR']">
-            [선택] 광고성 정보 수신 동의
-          </p>
-        </div>
-
-        {/* 회원가입 버튼 */}
-        <button className="w-40 h-10 px-12 py-6 left-0 top-0 bg-gradient-to-b from-white/70 to-white/40 rounded-2xl outline outline-[1.28px] outline-offset-[-1.28px] outline-white/80 backdrop-blur-[19.15px] inline-flex justify-center items-center gap-2">
-          회원가입
-        </button>
+          </button>
+        </form>
       </div>
     </div>
   );
