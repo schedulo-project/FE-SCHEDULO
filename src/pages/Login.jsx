@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import logoimage from "../assets/logo/logoimage.svg";
 import loginIcon from "../assets/login/loginIcon.svg";
-import loginApi from "../api/loginApi";
+import loginApi from "../api/Auth/loginApi";
 
 const Login = () => {
   const {
