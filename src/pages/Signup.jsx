@@ -31,7 +31,6 @@ const Signup = () => {
   // 두 번째 단계: 샘물 연동
   const onStudentAuthSubmit = (data) => {
     const finalData = { ...signupData, ...data };
-    console.log(finalData);
     signupApi(
       finalData.email,
       finalData.password,
