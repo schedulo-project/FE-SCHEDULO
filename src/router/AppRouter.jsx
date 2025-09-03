@@ -27,11 +27,7 @@ import SamwaterChange from "../components/settingsDetail/SamwaterChange";
 const AppRouter = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <MainLayout>
-        <Outlet />
-      </MainLayout>
-    ),
+    element: <MainLayout />,
     children: [
       { index: true, element: <Home /> },
       { path: "tag", element: <Tag /> },
@@ -42,11 +38,7 @@ const AppRouter = createBrowserRouter([
       { path: "examplan", element: <ExamPlanStep /> },
       {
         path: "settings",
-        element: (
-          <Settings>
-            <Outlet />
-          </Settings>
-        ),
+        element: <Settings />,
         children: [
           {
             index: true,
@@ -54,11 +46,7 @@ const AppRouter = createBrowserRouter([
           },
           {
             path: "profile",
-            element: (
-              <Profile>
-                <Outlet />
-              </Profile>
-            ),
+            element: <Profile />,
             children: [
               { path: "password", element: <PasswordChange /> },
               { path: "exit", element: <ExitUser /> },
