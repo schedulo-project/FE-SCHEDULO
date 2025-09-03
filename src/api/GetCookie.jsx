@@ -5,7 +5,7 @@ const GetCookie = async () => {
     const response = await axios.post(
       "https://schedulo.store/users/login/",
       {
-        email: "hyjoo0909@naver.com",
+        email: "mac@test.com",
         password: "0909",
       },
       {

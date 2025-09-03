@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import checkCurrentPassword from "../../api/checkCurrentPasswordApi";
-import changePassword from "../../api/changePasswordApi";
-
+import {
+  checkCurrentPassword,
+  changePassword,
+} from "../../api/settingApi";
 
 function PasswordChange() {
   const [isPasswordChecked, setIsPasswordChecked] =
@@ -14,34 +15,30 @@ function PasswordChange() {
 
   const navigate = useNavigate();
 
-  const handlePasswordChange = (event) => {
+  const handlePasswordChange = async (event) => {
     event.preventDefault();
-    changePassword(newPassword)
-      .then((response) => {
-        alert("비밀번호가 변경되었습니다.");
-        navigate("/settings/profile");
-      })
-      .catch((error) => {
-        console.error("비밀번호 변경 중 오류 발생:", error);
-        alert("비밀번호 변경에 실패했습니다.");
-        navigate("/settings/profile");
-      });
+    try {
+      await changePassword({ newPassword });
+      alert("비밀번호가 변경되었습니다.");
+      navigate("/settings/profile");
+    } catch (error) {
+      alert("비밀번호 변경에 실패했습니다.");
+      navigate("/settings/profile");
+    }
   };
 
-  const handlePasswordCheck = () => {
+  const handlePasswordCheck = async () => {
     if (!currentPassword) {
       alert("현재 비밀번호를 입력해주세요.");
       return;
     }
-    checkCurrentPassword(currentPassword)
-      .then((response) => {
-        console.log("현재 비밀번호가 확인되었습니다.");
-        setIsPasswordChecked(true);
-      })
-      .catch((error) => {
-        console.error("비밀번호 확인 중 오류 발생:", error);
-        alert("비밀번호 확인에 실패했습니다.");
-      });
+    try {
+      await checkCurrentPassword({ currentPassword });
+      setIsPasswordChecked(true);
+    } catch (error) {
+      alert("비밀번호 확인에 실패했습니다.");
+      navigate("/settings/profile");
+    }
   };
 
   return (

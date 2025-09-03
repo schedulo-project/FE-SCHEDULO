@@ -1,25 +1,30 @@
 import { useState, useEffect } from "react";
 import ToggleForSettings from "./ToggleForSettings";
-import alarmToggle from "../../api/alarmToggleApi";
-import getAlarmState from "../../api/getAlarmState";
+import {
+  alarmToggle,
+  getAlarmState,
+} from "../../api/settingApi";
 
 const Alarm = () => {
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await getAlarmState();
-      console.log("Alarm state:", res);
-      if (res.data) {
-        if (
-          res.data.notify_deadline_schedule ||
-          res.data.notify_today_schedule
-        ) {
-          setMainOn(true);
-          setSub1(res.data.notify_today_schedule);
-          setSub2(res.data.notify_deadline_schedule);
+    async function fetchAlarmState() {
+      try {
+        const data = await getAlarmState();
+        if (data) {
+          if (
+            data.notify_deadline_schedule ||
+            data.notify_today_schedule
+          ) {
+            setMainOn(true);
+            setSub1(data.notify_today_schedule);
+            setSub2(data.notify_deadline_schedule);
+          }
         }
+      } catch (error) {
+        alert("알림 설정 값을 불러오지 못했습니다.");
       }
-    };
-    fetchData();
+    }
+    fetchAlarmState();
   }, []);
   // 메인 토글 상태
   const [mainOn, setMainOn] = useState(false);
@@ -28,15 +33,19 @@ const Alarm = () => {
   const [sub2, setSub2] = useState(false);
 
   const handleMainToggle = async (checked) => {
-    setMainOn(checked);
-    if (!checked) {
-      await alarmToggle({ today: 0, deadline: 0 });
-      setSub1(false);
-      setSub2(false);
-    } else {
-      await alarmToggle({ today: 1, deadline: 1 });
-      setSub1(true);
-      setSub2(true);
+    try {
+      setMainOn(checked);
+      if (!checked) {
+        await alarmToggle({ today: 0, deadline: 0 });
+        setSub1(false);
+        setSub2(false);
+      } else {
+        await alarmToggle({ today: 1, deadline: 1 });
+        setSub1(true);
+        setSub2(true);
+      }
+    } catch (error) {
+      alert("알림 설정에 실패했습니다.");
     }
   };
 

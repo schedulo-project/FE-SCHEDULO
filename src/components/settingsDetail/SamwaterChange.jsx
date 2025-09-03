@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import changeSamwater from "../../api/changeSamWaterApi";
+import { changeSamwater } from "../../api/settingApi";
 
 const SamwaterChange = () => {
   const [samwaterId, setSamwaterId] = useState("");
@@ -8,20 +8,16 @@ const SamwaterChange = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
-    changeSamwater(samwaterId, samwaterPassword)
-      .then((response) => {
-        console.log("샘물 정보 수정 성공:", response);
-        alert("샘물 정보가 수정되었습니다.");
-        navigate("/settings/profile");
-      })
-      .catch((error) => {
-        console.error("샘물 정보 수정 실패:", error);
-        alert("샘물 정보 수정에 실패했습니다.");
-        navigate("/settings/profile");
-      });
+    try {
+      await changeSamwater({ samwaterId, samwaterPassword });
+      alert("샘물 정보가 수정되었습니다.");
+      navigate("/settings/profile");
+    } catch (error) {
+      alert("샘물 정보 수정에 실패했습니다.");
+      navigate("/settings/profile");
+    }
   };
 
   const inputSytle =

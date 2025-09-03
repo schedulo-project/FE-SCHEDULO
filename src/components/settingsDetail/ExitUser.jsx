@@ -1,24 +1,25 @@
 import { Link } from "react-router-dom";
-import deleteUser from "../../api/deleteUser";
+import { useNavigate } from "react-router-dom";
+import { deleteUser } from "../../api/settingApi";
 
 const ExitUser = () => {
+  const navigate = useNavigate();
+
   const handleExit = async () => {
+    //혹시 몰라 일단 막아둠
     // try {
     //   const res = await deleteUser();
-    // 성공 처리
-    // if (res.status === 204) {
-    //   console.log("회원 탈퇴 성공");
-    // 예: 로그아웃 처리, 홈 리디렉션 등
-    // } else {
-    //   alert("회원 탈퇴 실패");
-    // 홈으로 이동
-    // }
+    //   if (res.status === 204) {
+    //     alert("회원 탈퇴에 성공하였습니다.");
+    //     navigate("/login");
+    //   } else {
+    //     alert("회원 탈퇴에 실패하였습니다.");
+    //     navigate("/settings/profile");
+    //   }
     // } catch (error) {
-    // 실패 처리 (유저 알림, 로그 등)
-    // alert("회원 탈퇴 중 오류 발생");
-    // 홈으로 이동
+    //   alert("회원 탈퇴 중 오류가 발생하였습니다.");
+    //   navigate("/settings/profile");
     // }
-    console.log("회원 탈퇴 클릭됨");
   };
 
   return (

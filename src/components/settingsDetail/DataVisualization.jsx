@@ -1,5 +1,5 @@
 import { ResponsiveLine } from "@nivo/line";
-import getScores from "../../api/getUserScoresApi";
+import { getScores } from "../../api/settingApi";
 import { useState, useEffect } from "react";
 
 const DataVisualization = () => {
@@ -7,8 +7,12 @@ const DataVisualization = () => {
 
   //Promise 객체는 비동기 처리를 해줘야 한다.
   const fetchData = async () => {
-    const result = await getScores();
-    setData(result);
+    try {
+      const result = await getScores();
+      setData(result);
+    } catch (error) {
+      alert("데이터 조회에 실패했습니다.");
+    }
   };
 
   //렌더링 되면 함수를 실행 시키기 위해 사용한다.
