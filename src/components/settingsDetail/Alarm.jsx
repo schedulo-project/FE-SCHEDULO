@@ -1,8 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ToggleForSettings from "./ToggleForSettings";
 import alarmToggle from "../../api/alarmToggleApi";
+import getAlarmState from "../../api/getAlarmState";
 
 const Alarm = () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getAlarmState();
+      console.log("Alarm state:", res);
+      if (res.data) {
+        if (
+          res.data.notify_deadline_schedule ||
+          res.data.notify_today_schedule
+        ) {
+          setMainOn(true);
+          setSub1(res.data.notify_today_schedule);
+          setSub2(res.data.notify_deadline_schedule);
+        }
+      }
+    };
+    fetchData();
+  }, []);
   // 메인 토글 상태
   const [mainOn, setMainOn] = useState(false);
   // 세부 토글 상태
