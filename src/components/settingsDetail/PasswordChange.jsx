@@ -18,7 +18,7 @@ function PasswordChange() {
   const handlePasswordChange = async (event) => {
     event.preventDefault();
     try {
-      await changePassword(newPassword);
+      await changePassword({ newPassword });
       alert("비밀번호가 변경되었습니다.");
       navigate("/settings/profile");
     } catch (error) {

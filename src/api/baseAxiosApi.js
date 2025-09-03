@@ -41,6 +41,14 @@ baseAxiosInstance.interceptors.response.use(
       try {
         const refreshToken =
           localStorage.getItem("refreshToken");
+
+        // refreshToken이 없으면 로그아웃 처리
+        if (!refreshToken) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          window.location.href = "/login";
+          return Promise.reject(error);
+        }
         //여기에 나중에 실제 주소를 넣어줘야 한다.
         const response = await axios.post(
           "/api/v1/auth/refresh",
@@ -61,6 +69,8 @@ baseAxiosInstance.interceptors.response.use(
         }
       } catch {
         // 토큰 갱신에 실패하면 로그인 페이지로 리다이렉트
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         window.location.href = "/login";
       }
     }

@@ -34,6 +34,7 @@ const Alarm = () => {
 
   const handleMainToggle = async (checked) => {
     try {
+      setMainOn(checked);
       if (!checked) {
         await alarmToggle({ today: 0, deadline: 0 });
         setSub1(false);

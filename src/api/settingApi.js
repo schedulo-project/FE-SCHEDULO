@@ -63,5 +63,5 @@ export async function changeSamwater({
 //회원 탈퇴
 export async function deleteUser() {
   const res = await baseAxiosInstance.delete("/users/");
-  return res.data;
+  return res;
 }

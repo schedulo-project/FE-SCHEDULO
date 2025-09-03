@@ -1,4 +1,8 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Outlet,
+  Navigate,
+} from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
 import Settings from "../pages/Settings";
 import Home from "../pages/Home";
@@ -44,6 +48,10 @@ const AppRouter = createBrowserRouter([
           </Settings>
         ),
         children: [
+          {
+            index: true,
+            element: <Navigate to="profile" replace />,
+          },
           {
             path: "profile",
             element: (
