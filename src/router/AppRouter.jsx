@@ -1,64 +1,72 @@
-import { Route, Routes } from "react-router-dom";
-import Home from "../pages/Home";
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import MainLayout from "../components/layout/MainLayout";
 import Settings from "../pages/Settings";
+import Home from "../pages/Home";
+import Tag from "../pages/Tag";
 import Timetable from "../pages/Timetable";
 import ChatbotComponent from "../components/chatbot/ChatbotComponent";
 import Loginpage from "../pages/Login";
-import MainLayout from "../components/layout/MainLayout";
-import Tag from "../pages/Tag";
+import Signup from "../pages/Signup";
+import Timer from "../pages/Timer";
 import ExamPlanStep from "../components/examplan/ExamPlanStep";
 import StudyPlanStep from "../components/studyplan/StudyPlanStep";
 
-//setting에 사용되는 컴포넌트들
+// settings detail
 import Profile from "../components/settingsDetail/Profile";
 import Alarm from "../components/settingsDetail/Alarm";
 import StudyPlanSetting from "../components/settingsDetail/StudyPlanSetting";
 import DataVisualization from "../components/settingsDetail/DataVisualization";
-
 import PasswordChange from "../components/settingsDetail/PasswordChange";
-import ExitUser from "../components/settingsDetail/ExitUser"; // 회원 탈퇴 컴포넌트
+import ExitUser from "../components/settingsDetail/ExitUser";
 import SamwaterChange from "../components/settingsDetail/SamwaterChange";
 
-import Signup from "../pages/Signup";
-import Timer from "../pages/Timer";
-
-// 라우팅 함수 분리
-const AppRouter = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<MainLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/settings" element={<Settings />}>
-          <Route path="profile" element={<Profile />}>
-            <Route
-              path="password"
-              element={<PasswordChange />}
-            />
-            <Route path="exit" element={<ExitUser />} />
-            <Route path="smul" element={<SamwaterChange />} />
-          </Route>
-          <Route path="alarm" element={<Alarm />} />
-          <Route
-            path="studyplan"
-            element={<StudyPlanSetting />}
-          />
-          <Route path="data" element={<DataVisualization />} />
-        </Route>
-        <Route path="/tag" element={<Tag />} />
-        <Route path="/timetable" element={<Timetable />} />
-        <Route path="/chatbot" element={<ChatbotComponent />} />
-        <Route path="/study-plan" element={<StudyPlanStep />} />
-        <Route path="/timer" element={<Timer />} />
-        <Route path="/examplan" element={<ExamPlanStep />} />
-      </Route>
-      <Route
-        path="/studyplan/setup"
-        element={<StudyPlanStep />}
-      />
-      <Route path="/login" element={<Loginpage />} />
-      <Route path="/signup" element={<Signup />} />
-    </Routes>
-  );
-};
+const AppRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <MainLayout>
+        <Outlet />
+      </MainLayout>
+    ),
+    children: [
+      { index: true, element: <Home /> },
+      { path: "tag", element: <Tag /> },
+      { path: "timetable", element: <Timetable /> },
+      { path: "chatbot", element: <ChatbotComponent /> },
+      { path: "study-plan", element: <StudyPlanStep /> },
+      { path: "timer", element: <Timer /> },
+      { path: "examplan", element: <ExamPlanStep /> },
+      {
+        path: "settings",
+        element: (
+          <Settings>
+            <Outlet />
+          </Settings>
+        ),
+        children: [
+          {
+            path: "profile",
+            element: (
+              <Profile>
+                <Outlet />
+              </Profile>
+            ),
+            children: [
+              { path: "password", element: <PasswordChange /> },
+              { path: "exit", element: <ExitUser /> },
+              { path: "smul", element: <SamwaterChange /> },
+            ],
+          },
+          { path: "alarm", element: <Alarm /> },
+          { path: "studyplan", element: <StudyPlanSetting /> },
+          { path: "data", element: <DataVisualization /> },
+        ],
+      },
+    ],
+  },
+  { path: "/login", element: <Loginpage /> },
+  { path: "/signup", element: <Signup /> },
+  // 기타 라우트 추가
+]);
 
 export default AppRouter;
