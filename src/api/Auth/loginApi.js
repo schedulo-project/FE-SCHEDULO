@@ -1,19 +1,16 @@
-import axios from "axios";
+import baseAxiosInstance from "../baseAxiosApi";
+
 const login = async (email, password) => {
   try {
-    const response = await axios.post(
-      "https://schedulo.store/users/login/",
-      {
-        email,
-        password,
-      }
-    );
+    const response = await baseAxiosInstance.post("/users/login/", {
+      email,
+      password,
+    });
     const { access, refresh } = response.data;
-    if (access) localStorage.setItem("accessToken", access);
-    if (refresh) localStorage.setItem("refreshToken", refresh);
-    return response.data;
+    return { access, refresh, success: true };
   } catch (error) {
     console.error("로그인 실패:", error);
+    throw error;
   }
 };
 

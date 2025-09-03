@@ -1,24 +1,11 @@
-import axios from "axios";
-import GetCookie from "./GetCookie";
+import baseAxiosInstance from "./baseAxiosApi";
 
 const addAndPatchStudyPlan = async ({ exam, review }) => {
-  const Logindata = await GetCookie();
-  const token = Logindata.access;
-
   try {
-    const response = await axios.post(
-      `https://schedulo.store/users/studyroutine/`,
-      {
-        weeks_before_exam: exam,
-        review_type: review,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await baseAxiosInstance.post(`/users/studyroutine/`, {
+      weeks_before_exam: exam,
+      review_type: review,
+    });
 
     console.log("response", response);
     return response;

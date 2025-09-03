@@ -1,21 +1,8 @@
-import axios from "axios";
-import GetCookie from "./GetCookie";
+import baseAxiosInstance from "./baseAxiosApi";
 
 const getScores = async () => {
-  const Logindata = await GetCookie();
-  const token = Logindata.access;
-
   try {
-    const response = await axios.get(
-      `https://schedulo.store/users/scores/`,
-
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await baseAxiosInstance.get(`/users/scores/`);
 
     return response.data;
   } catch (error) {

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import GetCookie from "../../api/GetCookie";
-const Logindata = await GetCookie();
+import { getTokenFromAuth } from "../utils/authApi";
 
 const dayMap = {
   mon: "월",
@@ -41,58 +40,51 @@ const mergeContinuousSlots = (data) => {
 
   const merged = [];
 
-  Object.entries(groupedBySubjectAndDay).forEach(
-    ([_, slots]) => {
-      // 시간대 기준으로 정렬
-      const sorted = slots.sort(
-        (a, b) => a.startHour - b.startHour
-      );
+  Object.entries(groupedBySubjectAndDay).forEach(([_, slots]) => {
+    // 시간대 기준으로 정렬
+    const sorted = slots.sort((a, b) => a.startHour - b.startHour);
 
-      let currentStart = sorted[0].startHour;
-      let currentEnd = sorted[0].endHour;
-      let currentLocation = sorted[0].location;
-      let currentName = sorted[0].name;
-      let currentDay = sorted[0].day;
-      let currentProfessor = sorted[0].professor;
+    let currentStart = sorted[0].startHour;
+    let currentEnd = sorted[0].endHour;
+    let currentLocation = sorted[0].location;
+    let currentName = sorted[0].name;
+    let currentDay = sorted[0].day;
+    let currentProfessor = sorted[0].professor;
 
-      for (let i = 1; i < sorted.length; i++) {
-        const item = sorted[i];
+    for (let i = 1; i < sorted.length; i++) {
+      const item = sorted[i];
 
-        // 연속된 교시이고 강의실이 동일한 경우 병합
-        if (
-          item.startHour === currentEnd &&
-          item.location === currentLocation
-        ) {
-          currentEnd = item.endHour;
-        } else {
-          merged.push({
-            name: currentName,
-            day: currentDay,
-            startHour: currentStart,
-            endHour: currentEnd,
-            location: currentLocation,
-            professor: currentProfessor,
-          });
-          currentStart = item.startHour;
-          currentEnd = item.endHour;
-          currentLocation = item.location;
-          currentName = item.name;
-          currentDay = item.day;
-          currentProfessor = item.professor;
-        }
+      // 연속된 교시이고 강의실이 동일한 경우 병합
+      if (item.startHour === currentEnd && item.location === currentLocation) {
+        currentEnd = item.endHour;
+      } else {
+        merged.push({
+          name: currentName,
+          day: currentDay,
+          startHour: currentStart,
+          endHour: currentEnd,
+          location: currentLocation,
+          professor: currentProfessor,
+        });
+        currentStart = item.startHour;
+        currentEnd = item.endHour;
+        currentLocation = item.location;
+        currentName = item.name;
+        currentDay = item.day;
+        currentProfessor = item.professor;
       }
-
-      // 마지막 항목 추가
-      merged.push({
-        name: currentName,
-        day: currentDay,
-        startHour: currentStart,
-        endHour: currentEnd,
-        location: currentLocation,
-        professor: currentProfessor,
-      });
     }
-  );
+
+    // 마지막 항목 추가
+    merged.push({
+      name: currentName,
+      day: currentDay,
+      startHour: currentStart,
+      endHour: currentEnd,
+      location: currentLocation,
+      professor: currentProfessor,
+    });
+  });
 
   return merged;
 };
@@ -107,7 +99,7 @@ const ECampusMode = ({ onSubmit, setSchedule, schedule }) => {
       try {
         // const token =
         //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MTI3NDI1LCJpYXQiOjE3NDQxMDU4MjUsImp0aSI6IjM1N2U4ZjY3YWVjNDQ0MWJhMjhiNDk5ODk2NzkxY2FhIiwidXNlcl9pZCI6NH0.Og9x6IgnXlmc26jQLDdAFGxr9nBjXkdZhcYwo6FJSGQ";
-        const token = Logindata.access;
+        const token = getTokenFromAuth();
         console.log("token", token);
         //토큰 임시 불러오기 코드
 
@@ -166,9 +158,7 @@ const ECampusMode = ({ onSubmit, setSchedule, schedule }) => {
             updatedSchedule[index] = {
               ...updatedSchedule[index],
               location: newItem.location, // 강의실 정보 덮어쓰기
-              professor:
-                newItem.professor ||
-                updatedSchedule[index].professor,
+              professor: newItem.professor || updatedSchedule[index].professor,
             };
           } else {
             updatedSchedule.push(newItem);
@@ -176,18 +166,14 @@ const ECampusMode = ({ onSubmit, setSchedule, schedule }) => {
         });
 
         // 같은 요일에 연속된 교시 병합
-        const mergedSchedule =
-          mergeContinuousSlots(updatedSchedule);
+        const mergedSchedule = mergeContinuousSlots(updatedSchedule);
 
         onSubmit(mergedSchedule);
         setSchedule(mergedSchedule);
         setIsFetched(true);
         console.table(mergedSchedule);
       } catch (error) {
-        console.error(
-          "시간표 데이터를 불러오는 데 실패했습니다.",
-          error
-        );
+        console.error("시간표 데이터를 불러오는 데 실패했습니다.", error);
       }
     };
 

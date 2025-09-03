@@ -1,24 +1,10 @@
-import axios from "axios";
-import GetCookie from "./GetCookie";
+import baseAxiosInstance from "./baseAxiosApi";
 
 const fetchECampusSchedule = async () => {
   try {
-    const loginResult = await GetCookie();
-    if (!loginResult || !loginResult.access) {
-      throw new Error("로그인 실패");
-    }
-
-    const token = loginResult.access;
-
-    const response = await axios.get(
-      "http://schedulo.store/users/crawling/",
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await baseAxiosInstance.get("/users/crawling/", {
+      withCredentials: true,
+    });
 
     const { courses } = response.data;
     console.log("크롤링 데이터", courses);

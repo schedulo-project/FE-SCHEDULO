@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus, Minus } from "lucide-react";
-import {
-  format,
-  addDays,
-  subDays,
-  isAfter,
-  differenceInDays,
-} from "date-fns";
+import { format, addDays, subDays, isAfter, differenceInDays } from "date-fns";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import axios from "axios";
-import GetCookie from "../../api/GetCookie";
+import baseAxiosInstance from "../../api/baseAxiosApi";
+import { useAuth } from "../../contexts/AuthContext";
 
 // 민사고 공부법에 따른 일정 생성 함수
 const generateStudySchedule = (formData) => {
@@ -31,18 +25,15 @@ const generateStudySchedule = (formData) => {
     : new Date();
   const studyEndDate = subDays(examStartDate, 1); // 시험 하루 전까지
 
-  const totalStudyDays =
-    differenceInDays(studyEndDate, studyStartDate) + 1;
-  const totalStudySessions =
-    totalStudyDays * averageSubjectsPerDay;
+  const totalStudyDays = differenceInDays(studyEndDate, studyStartDate) + 1;
+  const totalStudySessions = totalStudyDays * averageSubjectsPerDay;
 
   // 과목별 세션 수 계산
   const subjectSessions = {};
   if (subjectRatios && Object.keys(subjectRatios).length > 0) {
     subjects.forEach((subject) => {
       subjectSessions[subject] = Math.round(
-        ((subjectRatios[subject] || 0) / 100) *
-          totalStudySessions
+        ((subjectRatios[subject] || 0) / 100) * totalStudySessions
       );
     });
   } else {
@@ -50,12 +41,10 @@ const generateStudySchedule = (formData) => {
       totalStudySessions / subjects.length
     );
     const remainingSessions =
-      totalStudySessions -
-      baseSessionsPerSubject * subjects.length;
+      totalStudySessions - baseSessionsPerSubject * subjects.length;
     subjects.forEach((subject, idx) => {
       subjectSessions[subject] =
-        baseSessionsPerSubject +
-        (idx < remainingSessions ? 1 : 0);
+        baseSessionsPerSubject + (idx < remainingSessions ? 1 : 0);
     });
   }
 
@@ -82,10 +71,7 @@ const generateStudySchedule = (formData) => {
     let assigned = 0;
     let index = 0;
 
-    while (
-      assigned < sessionCount &&
-      index < studyDays.length * 2
-    ) {
+    while (assigned < sessionCount && index < studyDays.length * 2) {
       const day = studyDays[index % studyDays.length];
 
       if (dateToSubjects[day].length < averageSubjectsPerDay) {
@@ -110,11 +96,8 @@ const generateStudySchedule = (formData) => {
   };
 };
 
-const ExamPlanStep4 = ({
-  formData,
-  updateFormData,
-  prevStep,
-}) => {
+const ExamPlanStep4 = ({ formData, updateFormData, prevStep }) => {
+  const { accessToken } = useAuth();
   const [events, setEvents] = useState([]);
   const [scheduleInfo, setScheduleInfo] = useState({});
   const navigate = useNavigate();
@@ -208,9 +191,6 @@ const ExamPlanStep4 = ({
 
   // 저장 버튼
   const handleSave = async () => {
-    const Logindata = await GetCookie();
-    const token = Logindata.access;
-
     const payload = events.map((event) => ({
       title: event.title,
       content: `${event.title} 공부`,
@@ -219,15 +199,9 @@ const ExamPlanStep4 = ({
     }));
 
     try {
-      const response = await axios.post(
-        "https://schedulo.store/schedules/bulk/",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
+      const response = await baseAxiosInstance.post(
+        "/schedules/bulk/",
+        payload
       );
 
       updateFormData({ ...formData, finalSchedule: events });

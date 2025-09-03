@@ -1,20 +1,8 @@
-import axios from "axios";
-import GetCookie from "./GetCookie";
+import baseAxiosInstance from "./baseAxiosApi";
 
 const getTags = async () => {
-  const Logindata = await GetCookie();
-  const token = Logindata.access;
-
   try {
-    const response = await axios.get(
-      `https://schedulo.store/schedules/tags/`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await baseAxiosInstance.get(`/schedules/tags/`);
 
     const tagNames = response.data
       .map((tag) => tag.name)

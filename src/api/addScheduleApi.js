@@ -1,30 +1,17 @@
-import axios from "axios";
-import GetCookie from "./GetCookie";
+import baseAxiosInstance from "./baseAxiosApi";
 
 const addSchedules = async (data) => {
-  const Logindata = await GetCookie();
-  const token = Logindata.access;
-
   const tag = data.selectedTags.map((tag) => tag.label);
 
   try {
-    const response = await axios.post(
-      `https://schedulo.store/schedules/`,
-      {
-        title: data.title,
-        content: data.content,
-        scheduled_date: data.date,
-        tag: tag,
-        deadline: data.deadline,
-        is_completed: data.completed,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await baseAxiosInstance.post(`/schedules/`, {
+      title: data.title,
+      content: data.content,
+      scheduled_date: data.date,
+      tag: tag,
+      deadline: data.deadline,
+      is_completed: data.completed,
+    });
     console.log("response", response);
     return response;
   } catch (error) {

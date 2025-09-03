@@ -1,23 +1,10 @@
-import axios from "axios";
-import GetCookie from "./GetCookie";
+import baseAxiosInstance from "./baseAxiosApi";
 
 const checkCurrentPassword = async (currentPassword) => {
-  const Logindata = await GetCookie();
-  const token = Logindata.access;
-
   try {
-    const response = await axios.post(
-      `https://schedulo.store/users/pw/check/`,
-      {
-        current_password: currentPassword,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await baseAxiosInstance.post(`/users/pw/check/`, {
+      current_password: currentPassword,
+    });
 
     console.log("response", response);
     return response;

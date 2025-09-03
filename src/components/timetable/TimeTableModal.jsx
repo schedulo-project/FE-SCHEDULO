@@ -1,7 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
+import baseAxiosInstance from "../../api/baseAxiosApi";
 import { ChevronDown } from "lucide-react";
-import GetCookie from "../../api/GetCookie";
+import { useAuth } from "../../contexts/AuthContext";
 
 const days = ["월", "화", "수", "목", "금", "토", "일"];
 const hours = Array.from({ length: 15 }, (_, i) => i + 9);
@@ -19,12 +19,9 @@ const LabeledField = ({ label, children }) => (
 );
 
 const SubjectInput = ({ subject, index, handleChange }) => {
-  const [isDayDropdownOpen, setIsDayDropdownOpen] =
-    useState(false);
-  const [isStartHourDropdownOpen, setIsStartHourDropdownOpen] =
-    useState(false);
-  const [isEndHourDropdownOpen, setIsEndHourDropdownOpen] =
-    useState(false);
+  const [isDayDropdownOpen, setIsDayDropdownOpen] = useState(false);
+  const [isStartHourDropdownOpen, setIsStartHourDropdownOpen] = useState(false);
+  const [isEndHourDropdownOpen, setIsEndHourDropdownOpen] = useState(false);
 
   const CustomDropdown = ({
     value,
@@ -40,9 +37,7 @@ const SubjectInput = ({ subject, index, handleChange }) => {
         onClick={onToggle}
         className={`${baseInputClass} bg-white shadow-sm cursor-pointer flex justify-between items-center`}
       >
-        <span className="flex-1 text-center">
-          {formatOption(value)}
-        </span>
+        <span className="flex-1 text-center">{formatOption(value)}</span>
         <ChevronDown
           className={`w-4 h-4 transition-transform ${
             isOpen ? "rotate-180" : ""
@@ -76,9 +71,7 @@ const SubjectInput = ({ subject, index, handleChange }) => {
         <input
           type="text"
           value={subject.name}
-          onChange={(e) =>
-            handleChange(index, "name", e.target.value)
-          }
+          onChange={(e) => handleChange(index, "name", e.target.value)}
           className={baseInputClass}
         />
       </LabeledField>
@@ -87,9 +80,7 @@ const SubjectInput = ({ subject, index, handleChange }) => {
         <input
           type="text"
           value={subject.professor}
-          onChange={(e) =>
-            handleChange(index, "professor", e.target.value)
-          }
+          onChange={(e) => handleChange(index, "professor", e.target.value)}
           className={baseInputClass}
         />
       </LabeledField>
@@ -100,9 +91,7 @@ const SubjectInput = ({ subject, index, handleChange }) => {
           options={days}
           onSelect={(value) => handleChange(index, "day", value)}
           isOpen={isDayDropdownOpen}
-          onToggle={() =>
-            setIsDayDropdownOpen(!isDayDropdownOpen)
-          }
+          onToggle={() => setIsDayDropdownOpen(!isDayDropdownOpen)}
         />
       </LabeledField>
 
@@ -111,14 +100,10 @@ const SubjectInput = ({ subject, index, handleChange }) => {
           <CustomDropdown
             value={subject.startHour}
             options={hours}
-            onSelect={(value) =>
-              handleChange(index, "startHour", value)
-            }
+            onSelect={(value) => handleChange(index, "startHour", value)}
             isOpen={isStartHourDropdownOpen}
             onToggle={() =>
-              setIsStartHourDropdownOpen(
-                !isStartHourDropdownOpen
-              )
+              setIsStartHourDropdownOpen(!isStartHourDropdownOpen)
             }
             formatOption={(hour) => `${hour}:00`}
           />
@@ -126,13 +111,9 @@ const SubjectInput = ({ subject, index, handleChange }) => {
           <CustomDropdown
             value={subject.endHour}
             options={hours}
-            onSelect={(value) =>
-              handleChange(index, "endHour", value)
-            }
+            onSelect={(value) => handleChange(index, "endHour", value)}
             isOpen={isEndHourDropdownOpen}
-            onToggle={() =>
-              setIsEndHourDropdownOpen(!isEndHourDropdownOpen)
-            }
+            onToggle={() => setIsEndHourDropdownOpen(!isEndHourDropdownOpen)}
             formatOption={(hour) => `${hour}:00`}
           />
         </div>
@@ -142,9 +123,7 @@ const SubjectInput = ({ subject, index, handleChange }) => {
         <input
           type="text"
           value={subject.location}
-          onChange={(e) =>
-            handleChange(index, "location", e.target.value)
-          }
+          onChange={(e) => handleChange(index, "location", e.target.value)}
           className={baseInputClass}
         />
       </LabeledField>
@@ -153,6 +132,7 @@ const SubjectInput = ({ subject, index, handleChange }) => {
 };
 
 const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
+  const { accessToken } = useAuth();
   const [subjects, setSubjects] = useState([
     {
       name: "",
@@ -185,9 +165,6 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
 
   const handleSubmit = async () => {
     try {
-      const Logindata = await GetCookie();
-      const token = Logindata.access;
-
       // 입력 검증: 과목명, 시간 유효성 체크
       for (const subject of subjects) {
         if (!subject.name.trim()) {
@@ -214,9 +191,7 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
         });
 
         if (overlapInModal) {
-          alert(
-            `${subject.name}의 시간이 모달 내 다른 강의와 겹칩니다.`
-          );
+          alert(`${subject.name}의 시간이 모달 내 다른 강의와 겹칩니다.`);
           return;
         }
 
@@ -234,8 +209,7 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
           if (s.day !== newDay) return false;
 
           // 겹침 여부 계산
-          const isOverlap =
-            newStart < s.endHour && newEnd > s.startHour;
+          const isOverlap = newStart < s.endHour && newEnd > s.startHour;
           return isOverlap;
         });
 
@@ -252,12 +226,8 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
         const requestData = {
           subject: subject.name.trim(),
           day_of_week: koreanToEnglishDay[subject.day],
-          start_time: `${subject.startHour
-            .toString()
-            .padStart(2, "0")}:00:00`,
-          end_time: `${subject.endHour
-            .toString()
-            .padStart(2, "0")}:00:00`,
+          start_time: `${subject.startHour.toString().padStart(2, "0")}:00:00`,
+          end_time: `${subject.endHour.toString().padStart(2, "0")}:00:00`,
         };
 
         // 선택적 필드들은 값이 있을 때만 추가
@@ -270,15 +240,9 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
 
         console.log("전송할 데이터:", requestData);
 
-        const response = await axios.post(
-          "https://schedulo.store/schedules/timetables/",
-          requestData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
+        const response = await baseAxiosInstance.post(
+          "/schedules/timetables/",
+          requestData
         );
         console.log("응답:", response.data);
       }
@@ -300,9 +264,9 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
         console.error("응답 데이터:", error.response.data);
         console.error("응답 상태:", error.response.status);
         alert(
-          `서버 오류: ${
-            error.response.status
-          } - ${JSON.stringify(error.response.data)}`
+          `서버 오류: ${error.response.status} - ${JSON.stringify(
+            error.response.data
+          )}`
         );
       } else {
         alert("네트워크 오류가 발생했습니다.");
@@ -314,10 +278,7 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
     <div className="w-[480px] rounded-[20px] overflow-hidden shadow-lg">
       <div className="h-[75px] bg-[#526D82] text-white flex justify-between items-center px-8">
         <h3 className="text-lg font-semibold">강의 추가</h3>
-        <button
-          onClick={onClose}
-          className="text-white hover:opacity-80"
-        >
+        <button onClick={onClose} className="text-white hover:opacity-80">
           ✕
         </button>
       </div>

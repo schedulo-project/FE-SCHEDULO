@@ -1,16 +1,17 @@
-import axios from "axios";
+import baseAxiosInstance from "../baseAxiosApi";
 
 const signup = async (email, password, studentId, studentPassword) => {
   try {
-    const response = await axios.post("https://schedulo.store/users/signup/", {
+    const response = await baseAxiosInstance.post("/users/signup/", {
       email,
       password,
       studentId,
       studentPassword,
     });
-    return response.data;
+    return { data: response.data, success: true };
   } catch (error) {
     console.error("회원가입 실패:", error);
+    throw error;
   }
 };
 

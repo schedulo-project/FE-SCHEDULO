@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from "react";
-import GetCookie from "../api/GetCookie";
+import { useAuth } from "../contexts/AuthContext";
 
-const Logindata = await GetCookie();
-const token = Logindata.access;
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const DeleteWidget = ({ state }) => {
+  const { accessToken } = useAuth();
   const [scheduleData, setScheduleData] = useState({});
   const [checked, setChecked] = useState([]);
-  const [isButtonDisabled, setIsButtonDisabled] =
-    useState(false); // 버튼 비활성화 상태
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // 버튼 비활성화 상태
   const actions = state.actions;
 
   useEffect(() => {
-    const lastMessage =
-      state.messages[state.messages.length - 1];
+    const lastMessage = state.messages[state.messages.length - 1];
 
     if (lastMessage?.widgetProps?.scheduleData) {
       setScheduleData(lastMessage.widgetProps.scheduleData);
@@ -131,17 +129,14 @@ const DeleteWidget = ({ state }) => {
 
 const DeleteSchedules = async ({ data, token, actions }) => {
   try {
-    const response = await fetch(
-      "https://schedulo.store/schedules/",
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ids: data }),
-      }
-    );
+    const response = await fetch(`${baseURL}/schedules/`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ ids: data }),
+    });
 
     console.log("Response Status:", response.status);
 

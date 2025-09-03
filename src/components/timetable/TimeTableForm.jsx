@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import baseAxiosInstance from "../../api/baseAxiosApi";
 import TimeTableModal from "./TimeTableModal";
 import TimeTableGrid from "./TimeTableGrid";
-import GetCookie from "../../api/GetCookie";
-
-const Logindata = await GetCookie();
+import { useAuth } from "../../contexts/AuthContext";
 
 const dayMap = {
   mon: "월",
@@ -28,8 +26,7 @@ const mergeScheduleData = (data) => {
 
   // 1) 과목명 + 요일별로 데이터 묶기
   data.forEach((item) => {
-    const koreanDay =
-      dayMap[item.day_of_week] || item.day_of_week;
+    const koreanDay = dayMap[item.day_of_week] || item.day_of_week;
     const key = `${item.subject}_${koreanDay}`;
     if (!groupedBySubjectAndDay[key]) {
       groupedBySubjectAndDay[key] = [];
@@ -43,59 +40,54 @@ const mergeScheduleData = (data) => {
   const merged = [];
 
   // 2) 묶인 데이터별로 시간 정렬 후 병합
-  Object.entries(groupedBySubjectAndDay).forEach(
-    ([_, slots]) => {
-      const sorted = slots.sort(
-        (a, b) => parseInt(a.start_time) - parseInt(b.start_time)
-      );
+  Object.entries(groupedBySubjectAndDay).forEach(([_, slots]) => {
+    const sorted = slots.sort(
+      (a, b) => parseInt(a.start_time) - parseInt(b.start_time)
+    );
 
-      let currentStart = sorted[0].start_time;
-      let currentEnd = sorted[0].end_time;
-      let currentLocation = sorted[0].location;
-      let subject = sorted[0].subject;
-      let day = sorted[0].day_of_week;
+    let currentStart = sorted[0].start_time;
+    let currentEnd = sorted[0].end_time;
+    let currentLocation = sorted[0].location;
+    let subject = sorted[0].subject;
+    let day = sorted[0].day_of_week;
 
-      for (let i = 1; i < sorted.length; i++) {
-        const item = sorted[i];
+    for (let i = 1; i < sorted.length; i++) {
+      const item = sorted[i];
 
-        if (
-          item.start_time === currentEnd &&
-          item.location === currentLocation
-        ) {
-          currentEnd = item.end_time;
-        } else {
-          merged.push({
-            name: subject,
-            day: day,
-            startHour: timeToFloat(currentStart),
-            endHour: timeToFloat(currentEnd),
-            location: currentLocation,
-            professor: "",
-          });
-          currentStart = item.start_time;
-          currentEnd = item.end_time;
-          currentLocation = item.location;
-        }
+      if (item.start_time === currentEnd && item.location === currentLocation) {
+        currentEnd = item.end_time;
+      } else {
+        merged.push({
+          name: subject,
+          day: day,
+          startHour: timeToFloat(currentStart),
+          endHour: timeToFloat(currentEnd),
+          location: currentLocation,
+          professor: "",
+        });
+        currentStart = item.start_time;
+        currentEnd = item.end_time;
+        currentLocation = item.location;
       }
-
-      merged.push({
-        name: subject,
-        day: day,
-        startHour: timeToFloat(currentStart),
-        endHour: timeToFloat(currentEnd),
-        location: currentLocation,
-        professor: "",
-      });
     }
-  );
+
+    merged.push({
+      name: subject,
+      day: day,
+      startHour: timeToFloat(currentStart),
+      endHour: timeToFloat(currentEnd),
+      location: currentLocation,
+      professor: "",
+    });
+  });
 
   return merged;
 };
 
 const TimeTableForm = () => {
+  const { accessToken } = useAuth();
   const [schedule, setSchedule] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const token = Logindata.access;
 
   // schedule 변경 시 localStorage에 저장
   // useEffect(() => {
@@ -106,22 +98,12 @@ const TimeTableForm = () => {
   useEffect(() => {
     const fetchInitialSchedule = async () => {
       try {
-        const response = await axios.get(
-          "https://schedulo.store/schedules/timetables/",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await baseAxiosInstance.get("/schedules/timetables/");
 
         const merged = mergeScheduleData(response.data);
         setSchedule(merged);
       } catch (error) {
-        console.error(
-          "기존 시간표를 불러오는 데 실패했습니다.",
-          error
-        );
+        console.error("기존 시간표를 불러오는 데 실패했습니다.", error);
       }
     };
 

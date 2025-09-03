@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
-import GetCookie from "../api/GetCookie";
+import { useAuth } from "../contexts/AuthContext";
 
-const Logindata = await GetCookie();
-const token = Logindata.access;
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const AddWidget = ({ state }) => {
+  const { accessToken } = useAuth();
   const [refactorAddData, setRefactorAddData] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false); // 버튼 클릭 후 상태를 관리하기 위한 state
   const actions = state.actions;
 
   // refactorAddData 관리
   useEffect(() => {
-    const lastMessage =
-      state.messages[state.messages.length - 1];
+    const lastMessage = state.messages[state.messages.length - 1];
 
     if (lastMessage?.widgetProps?.scheduleData) {
       // scheduleData가 존재하면 상태에 저장
@@ -25,22 +24,19 @@ const AddWidget = ({ state }) => {
     console.log("refactorAddData", refactorAddData);
     const TagArr = await SplitTag(refactorAddData.tag);
     try {
-      const response = await fetch(
-        "https://schedulo.store/schedules/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            title: refactorAddData.details,
-            content: refactorAddData.details,
-            scheduled_date: refactorAddData.date,
-            tag: TagArr, // 생성된 태그 ID 사용
-          }),
-        }
-      );
+      const response = await fetch(`${baseURL}/schedules/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          title: refactorAddData.details,
+          content: refactorAddData.details,
+          scheduled_date: refactorAddData.date,
+          tag: TagArr, // 생성된 태그 ID 사용
+        }),
+      });
 
       if (!response.ok) {
         const errorText = await response.text(); // 서버 응답 메시지 확인

@@ -1,10 +1,14 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logoimage from "../assets/logo/logoimage.svg";
 import signupApi from "../api/Auth/signupApi";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [signupError, setSignupError] = useState("");
   const [signupData, setSignupData] = useState({
     email: "",
     password: "",
@@ -29,14 +33,29 @@ const Signup = () => {
   };
 
   // 두 번째 단계: 샘물 연동
-  const onStudentAuthSubmit = (data) => {
-    const finalData = { ...signupData, ...data };
-    signupApi(
-      finalData.email,
-      finalData.password,
-      finalData.studentId,
-      finalData.studentPassword
-    );
+  const onStudentAuthSubmit = async (data) => {
+    setIsLoading(true);
+    setSignupError("");
+
+    try {
+      const finalData = { ...signupData, ...data };
+      const response = await signupApi(
+        finalData.email,
+        finalData.password,
+        finalData.studentId || "",
+        finalData.studentPassword || ""
+      );
+
+      if (response.success) {
+        alert("회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.");
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+      setSignupError("회원가입에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // 이전 단계로 돌아가기
@@ -98,6 +117,13 @@ const Signup = () => {
             {currentStep === 1 ? "회원가입" : "샘물 연동"}
           </span>
         </div>
+
+        {/* 에러 메시지 */}
+        {signupError && (
+          <div className="w-full p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-center mb-4">
+            {signupError}
+          </div>
+        )}
         {/* 첫 번째 단계: 서비스 회원가입 */}
         {currentStep === 1 && (
           <form
@@ -307,9 +333,10 @@ const Signup = () => {
               </button>
               <button
                 type="submit"
-                className="flex-1 p-3 bg-[#2D3748] text-white rounded-md text-center"
+                disabled={isLoading}
+                className="flex-1 p-3 bg-[#2D3748] text-white rounded-md text-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                회원가입 완료
+                {isLoading ? "회원가입 중..." : "회원가입 완료"}
               </button>
             </div>
           </form>

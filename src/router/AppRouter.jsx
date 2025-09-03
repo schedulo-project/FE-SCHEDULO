@@ -9,6 +9,8 @@ import Tag from "../pages/Tag";
 import ExamPlanStep from "../components/examplan/ExamPlanStep";
 import StudyPlanStep from "../components/studyplan/StudyPlanStep";
 
+import ProtectedRoute from "../components/auth/ProtectedRoute";
+
 //setting에 사용되는 컴포넌트들
 import Profile from "../components/settingsDetail/Profile";
 import Alarm from "../components/settingsDetail/Alarm";
@@ -26,22 +28,23 @@ import Timer from "../pages/Timer";
 const AppRouter = () => {
   return (
     <Routes>
-      <Route path="/" element={<MainLayout />}>
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path="/" element={<Home />} />
         <Route path="/settings" element={<Settings />}>
           <Route path="profile" element={<Profile />}>
-            <Route
-              path="password"
-              element={<PasswordChange />}
-            />
+            <Route path="password" element={<PasswordChange />} />
             <Route path="exit" element={<ExitUser />} />
             <Route path="smul" element={<SamwaterChange />} />
           </Route>
           <Route path="alarm" element={<Alarm />} />
-          <Route
-            path="studyplan"
-            element={<StudyPlanSetting />}
-          />
+          <Route path="studyplan" element={<StudyPlanSetting />} />
           <Route path="data" element={<DataVisualization />} />
         </Route>
         <Route path="/tag" element={<Tag />} />
@@ -53,7 +56,11 @@ const AppRouter = () => {
       </Route>
       <Route
         path="/studyplan/setup"
-        element={<StudyPlanStep />}
+        element={
+          <ProtectedRoute>
+            <StudyPlanStep />
+          </ProtectedRoute>
+        }
       />
       <Route path="/login" element={<Loginpage />} />
       <Route path="/signup" element={<Signup />} />

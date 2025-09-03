@@ -1,25 +1,14 @@
 // 일정 조회 api
-import GetCookie from "./GetCookie";
-import axios from "axios";
+import baseAxiosInstance from "./baseAxiosApi";
 
 const fetchSchedules = async (firstDate, lastDate) => {
-  const Logindata = await GetCookie();
-  const token = Logindata.access;
-
   try {
-    const response = await axios.get(
-      `https://schedulo.store/schedules/list/`,
-      {
-        params: {
-          first: firstDate,
-          last: lastDate,
-        },
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await baseAxiosInstance.get(`/schedules/list/`, {
+      params: {
+        first: firstDate,
+        last: lastDate,
+      },
+    });
 
     console.log("순수한 서버 데이터", response.data);
 
@@ -29,12 +18,8 @@ const fetchSchedules = async (firstDate, lastDate) => {
         schedules.map((schedule) => ({
           id: schedule.id,
           title: schedule.title || "제목 없음", // 일정의 제목 설정 (없으면 "제목 없음")
-          tagName: schedule.tag
-            .map((tag) => tag.name)
-            .join(", "), // 태그 이름 합치기
-          tagColor: schedule.tag
-            .map((tag) => tag.color)
-            .join(", "), // 태그 색상 합치기
+          tagName: schedule.tag.map((tag) => tag.name).join(", "), // 태그 이름 합치기
+          tagColor: schedule.tag.map((tag) => tag.color).join(", "), // 태그 색상 합치기
           date: date, // 날짜 설정
           is_completed: schedule.is_completed,
           content: schedule.content || "", // content 추가 (없으면 빈 문자열)

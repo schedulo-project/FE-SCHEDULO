@@ -1,13 +1,13 @@
 // in MessageParser.js
 import React from "react";
-import GetCookie from "../../api/GetCookie";
+import { getTokenFromAuth } from "../../utils/authApi";
 
-const Logindata = await GetCookie();
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const MessageParser = ({ children, actions }) => {
   const parse = async (message) => {
     try {
-      const token = Logindata.access;
+      const token = getTokenFromAuth();
       const ExData = await MessagePass({ message, token });
 
       if (!ExData) {
@@ -18,10 +18,7 @@ const MessageParser = ({ children, actions }) => {
         case "조회":
         case "수정":
         case "삭제": {
-          const ScheduleData = await SchedulePass(
-            ExData,
-            actions
-          );
+          const ScheduleData = await SchedulePass(ExData, actions);
           if (ScheduleData) {
             if (ExData.answer.method === "조회") {
               console.log("조회일 때 ExData", ExData);
@@ -61,19 +58,16 @@ const MessageParser = ({ children, actions }) => {
 // 사용자 메세지를 백에 보낸 후 받는 응답
 const MessagePass = async ({ message, token }) => {
   try {
-    const response = await fetch(
-      "https://schedulo.store/chatbots/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          query: message,
-        }), // ExData를 서버로 전송
-      }
-    );
+    const response = await fetch(`${baseURL}/chatbots/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        query: message,
+      }), // ExData를 서버로 전송
+    });
 
     const ExCheckData = await response.json();
     // 서버에서 받은 응답을 처리
@@ -86,7 +80,7 @@ const MessagePass = async ({ message, token }) => {
 };
 
 const SchedulePass = async (ExData, actions) => {
-  const token = Logindata.access;
+  const token = getTokenFromAuth();
 
   let queryParams = [];
 
@@ -117,18 +111,13 @@ const SchedulePass = async (ExData, actions) => {
 
   // 제목 파라미터 처리
   // 제목이 title이 없어서 details로 사용
-  if (
-    ExData.answer.details &&
-    ExData.answer.details !== "unknown"
-  ) {
-    queryParams.push(
-      `title=${encodeURIComponent(ExData.answer.details)}`
-    );
+  if (ExData.answer.details && ExData.answer.details !== "unknown") {
+    queryParams.push(`title=${encodeURIComponent(ExData.answer.details)}`);
   }
 
   // URL 생성
   const queryString = queryParams.join("&");
-  const url = `https://schedulo.store/schedules/list/?${queryString}`;
+  const url = `${baseURL}/schedules/list/?${queryString}`;
 
   console.log("URL:", queryString); // URL 확인
 

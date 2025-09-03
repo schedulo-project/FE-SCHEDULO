@@ -1,17 +1,39 @@
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import logoimage from "../assets/logo/logoimage.svg";
 import loginIcon from "../assets/login/loginIcon.svg";
 import loginApi from "../api/Auth/loginApi";
+import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState("");
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    loginApi(data.email, data.password);
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    setLoginError("");
+
+    try {
+      const response = await loginApi(data.email, data.password);
+      if (response.success) {
+        login(response.access, response.refresh);
+        navigate("/", { replace: true });
+      }
+    } catch (error) {
+      console.error("로그인 실패:", error);
+      setLoginError("이메일 또는 비밀번호가 올바르지 않습니다.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -26,6 +48,13 @@ const Login = () => {
         <img src={loginIcon} alt="로그인 아이콘" className="w-6 h-6" />
         <span className="text-xl">로그인</span>
       </div>
+
+      {/* 에러 메시지 */}
+      {loginError && (
+        <div className="w-full p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-center">
+          {loginError}
+        </div>
+      )}
 
       {/* 로그인 입력창 */}
       <form
@@ -76,9 +105,10 @@ const Login = () => {
         {/* 로그인 버튼 */}
         <button
           type="submit"
-          className="w-full p-3 bg-[#2D3748] text-white rounded-md mt-6 text-center"
+          disabled={isLoading}
+          className="w-full p-3 bg-[#2D3748] text-white rounded-md mt-6 text-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          로그인
+          {isLoading ? "로그인 중..." : "로그인"}
         </button>
       </form>
 
