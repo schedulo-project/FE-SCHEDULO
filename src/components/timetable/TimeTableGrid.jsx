@@ -11,18 +11,50 @@ const colors = [
 ];
 
 // 스케줄 중복 제거 함수
-// - 같은 과목명(name), 요일(day), 시작/종료 시간대가 같으면 하나로 합침
-// - 같은 수업일 경우 location(강의실 정보)이 있는 데이터를 우선 유지
 const deduplicateSchedule = (schedule) => {
-  const map = new Map();
+  const grouped = {};
+
   schedule.forEach((item) => {
-    const key = `${item.name}-${item.day}-${item.startHour}-${item.endHour}`;
-    const existing = map.get(key);
-    if (!existing || (item.location && !existing.location)) {
-      map.set(key, item);
-    }
+    const key = `${item.name}-${item.day}`;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(item);
   });
-  return Array.from(map.values());
+
+  const merged = [];
+
+  Object.values(grouped).forEach((items) => {
+    // 시작 시간 기준 정렬
+    items.sort((a, b) => a.startHour - b.startHour);
+
+    let current = items[0];
+
+    for (let i = 1; i < items.length; i++) {
+      const next = items[i];
+
+      // 같은 요일 + 같은 과목 + 시간이 이어지거나 겹치면 병합
+      if (current.endHour >= next.startHour) {
+        current.endHour = Math.max(
+          current.endHour,
+          next.endHour
+        );
+
+        if (!current.location && next.location) {
+          current.location = next.location;
+        }
+
+        if (!current.professor && next.professor) {
+          current.professor = next.professor;
+        }
+      } else {
+        merged.push(current);
+        current = next;
+      }
+    }
+
+    merged.push(current);
+  });
+
+  return merged;
 };
 
 const TimeTableGrid = ({ schedule }) => {
@@ -46,16 +78,25 @@ const TimeTableGrid = ({ schedule }) => {
   const allStart = refinedSchedule.map((s) => s.startHour);
   const allEnd = refinedSchedule.map((s) => s.endHour);
 
-  const minGridHour = Math.floor(Math.min(...allStart)); // 가장 이른 시작 시간
-  const maxGridHour = Math.ceil(Math.max(...allEnd)); // 가장 늦은 종료 시간
+  const defaultStartHour = 8;
+  const defaultEndHour = 22;
+
+  const minGridHour =
+    allStart.length > 0
+      ? Math.floor(Math.min(...allStart))
+      : defaultStartHour;
+  const maxGridHour =
+    allEnd.length > 0
+      ? Math.ceil(Math.max(...allEnd))
+      : defaultEndHour;
 
   // 실제 표시할 시간 목록
   const hours = Array.from(
-    { length: maxGridHour - minGridHour },
+    { length: maxGridHour - minGridHour + 1 },
     (_, i) => i + minGridHour
   );
 
-  const gridRowCount = hours.length; // 그리드 행 개수
+  const gridRowCount = hours.length - 1; // 그리드 행 개수
 
   return (
     <div className="w-full overflow-x-auto font-[Montserrat]">
@@ -76,7 +117,7 @@ const TimeTableGrid = ({ schedule }) => {
         </div>
 
         {/* 시간표 메인 그리드 */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-[600px]">
           {/* 요일 헤더 */}
           <div className="grid grid-cols-7 text-center text-gray-400">
             {days.map((day) => (
@@ -97,16 +138,17 @@ const TimeTableGrid = ({ schedule }) => {
             }}
           >
             {/* 빈 셀 + 가로선 */}
-            {Array.from({ length: gridRowCount - 1 }).map(
-              (_, i) =>
-                days.map((_, j) => (
-                  <div
-                    key={`${i}-${j}`}
-                    className="h-[64px] relative"
-                  >
+            {Array.from({ length: gridRowCount }).map((_, i) =>
+              days.map((_, j) => (
+                <div
+                  key={`${i}-${j}`}
+                  className="h-[64px] relative"
+                >
+                  {i < gridRowCount - 1 && (
                     <div className="absolute left-0 right-0 border-t border-gray-200" />
-                  </div>
-                ))
+                  )}
+                </div>
+              ))
             )}
 
             {/* 수업 카드 렌더링 */}

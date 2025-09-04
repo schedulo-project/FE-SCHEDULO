@@ -14,6 +14,8 @@
     "@fullcalendar/react": "^6.1.18",
     "@nivo/core": "^0.98.0",
     "@nivo/line": "^0.98.0",
+    "@tanstack/react-query": "^5.86.0",
+    "@tanstack/react-query-devtools": "^5.86.0",
     "axios": "^1.9.0",
     "date-fns": "^4.1.0",
     "firebase": "^12.0.0",
