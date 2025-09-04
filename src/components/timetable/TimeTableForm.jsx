@@ -1,9 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo, useCallback } from "react";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import baseAxiosInstance from "../../api/baseAxiosApi";
 import TimeTableModal from "./TimeTableModal";
 import TimeTableGrid from "./TimeTableGrid";
 import { useAuth } from "../../contexts/AuthContext";
 
+// 요일 매핑
 const dayMap = {
   mon: "월",
   tue: "화",
@@ -14,131 +20,306 @@ const dayMap = {
   sun: "일",
 };
 
-// "HH:MM" 형식을 실수 시간으로 변환
+// "HH:MM" → 소수 시간으로 변환
 const timeToFloat = (timeStr) => {
   const [hour, minute] = timeStr.split(":").map(Number);
   return hour + minute / 60;
 };
 
-// 시간표 데이터 병합 함수
-const mergeScheduleData = (data) => {
-  const groupedBySubjectAndDay = {};
+// 크롤링된 시간표 데이터 병합 함수
+const normalizeCrawledSchedule = (coursesData) => {
+  if (!coursesData) return [];
 
-  // 1) 과목명 + 요일별로 데이터 묶기
+  const converted = [];
+
+  coursesData.forEach(([courseName, timeSlots]) => {
+    const groupedByDay = {};
+
+    timeSlots.forEach(([day, timeRange, location]) => {
+      if (!groupedByDay[day]) {
+        groupedByDay[day] = [];
+      }
+      groupedByDay[day].push({
+        timeRange,
+        location,
+      });
+    });
+
+    Object.entries(groupedByDay).forEach(([day, slots]) => {
+      const sortedSlots = slots.sort((a, b) => {
+        const timeA = a.timeRange.split("~")[0];
+        const timeB = b.timeRange.split("~")[0];
+        return timeToFloat(timeA) - timeToFloat(timeB);
+      });
+
+      let currentGroup = {
+        startTime: null,
+        endTime: null,
+        location: null,
+      };
+
+      sortedSlots.forEach((slot, index) => {
+        const [startTime, endTime] = slot.timeRange.split("~");
+
+        if (currentGroup.startTime === null) {
+          currentGroup.startTime = startTime;
+          currentGroup.endTime = endTime;
+          currentGroup.location = slot.location;
+        } else if (
+          currentGroup.endTime === startTime &&
+          currentGroup.location === slot.location
+        ) {
+          currentGroup.endTime = endTime;
+        } else {
+          converted.push({
+            name: courseName,
+            day: day,
+            startHour: timeToFloat(currentGroup.startTime),
+            endHour: timeToFloat(currentGroup.endTime),
+            location: currentGroup.location,
+            professor: "",
+          });
+
+          currentGroup.startTime = startTime;
+          currentGroup.endTime = endTime;
+          currentGroup.location = slot.location;
+        }
+
+        if (index === sortedSlots.length - 1) {
+          converted.push({
+            name: courseName,
+            day: day,
+            startHour: timeToFloat(currentGroup.startTime),
+            endHour: timeToFloat(currentGroup.endTime),
+            location: currentGroup.location,
+            professor: "",
+          });
+        }
+      });
+    });
+  });
+
+  return converted;
+};
+
+// 직접 등록한 시간표 데이터 병합 함수
+const normalizeManualSchedule = (data) => {
+  if (!data || !Array.isArray(data)) return [];
+
+  const groupedBySubjectAndDay = {};
   data.forEach((item) => {
-    const koreanDay = dayMap[item.day_of_week] || item.day_of_week;
+    const koreanDay =
+      dayMap[item.day_of_week] || item.day_of_week;
     const key = `${item.subject}_${koreanDay}`;
     if (!groupedBySubjectAndDay[key]) {
       groupedBySubjectAndDay[key] = [];
     }
     groupedBySubjectAndDay[key].push({
       ...item,
-      day_of_week: koreanDay, // 한국어로 통일
+      day_of_week: koreanDay,
     });
   });
 
   const merged = [];
+  Object.entries(groupedBySubjectAndDay).forEach(
+    ([_, slots]) => {
+      const sorted = slots.sort(
+        (a, b) => parseInt(a.start_time) - parseInt(b.start_time)
+      );
 
-  // 2) 묶인 데이터별로 시간 정렬 후 병합
-  Object.entries(groupedBySubjectAndDay).forEach(([_, slots]) => {
-    const sorted = slots.sort(
-      (a, b) => parseInt(a.start_time) - parseInt(b.start_time)
-    );
+      let currentStart = sorted[0].start_time;
+      let currentEnd = sorted[0].end_time;
+      let currentLocation = sorted[0].location;
+      let subject = sorted[0].subject;
+      let day = sorted[0].day_of_week;
 
-    let currentStart = sorted[0].start_time;
-    let currentEnd = sorted[0].end_time;
-    let currentLocation = sorted[0].location;
-    let subject = sorted[0].subject;
-    let day = sorted[0].day_of_week;
+      for (let i = 1; i < sorted.length; i++) {
+        const item = sorted[i];
 
-    for (let i = 1; i < sorted.length; i++) {
-      const item = sorted[i];
-
-      if (item.start_time === currentEnd && item.location === currentLocation) {
-        currentEnd = item.end_time;
-      } else {
-        merged.push({
-          name: subject,
-          day: day,
-          startHour: timeToFloat(currentStart),
-          endHour: timeToFloat(currentEnd),
-          location: currentLocation,
-          professor: "",
-        });
-        currentStart = item.start_time;
-        currentEnd = item.end_time;
-        currentLocation = item.location;
+        if (
+          item.start_time === currentEnd &&
+          item.location === currentLocation
+        ) {
+          currentEnd = item.end_time;
+        } else {
+          merged.push({
+            name: subject,
+            day: day,
+            startHour: timeToFloat(currentStart),
+            endHour: timeToFloat(currentEnd),
+            location: currentLocation,
+            professor: "",
+          });
+          currentStart = item.start_time;
+          currentEnd = item.end_time;
+          currentLocation = item.location;
+        }
       }
-    }
 
-    merged.push({
-      name: subject,
-      day: day,
-      startHour: timeToFloat(currentStart),
-      endHour: timeToFloat(currentEnd),
-      location: currentLocation,
-      professor: "",
-    });
-  });
+      merged.push({
+        name: subject,
+        day: day,
+        startHour: timeToFloat(currentStart),
+        endHour: timeToFloat(currentEnd),
+        location: currentLocation,
+        professor: "",
+      });
+    }
+  );
 
   return merged;
 };
 
 const TimeTableForm = () => {
   const { accessToken } = useAuth();
-  const [schedule, setSchedule] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const queryClient = useQueryClient();
 
-  // schedule 변경 시 localStorage에 저장
-  // useEffect(() => {
-  //   localStorage.setItem("schedule", JSON.stringify(schedule));
-  // }, [schedule]);
+  // 회원정보 조회 - TanStack Query 사용
+  const {
+    data: userInfo = { email: "", student_id: "" },
+    isLoading: userInfoLoading,
+    error: userInfoError,
+  } = useQuery({
+    queryKey: ["userInfo"],
+    queryFn: async () => {
+      const response = await baseAxiosInstance.get("/users/", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    },
+    enabled: !!accessToken, 
+    staleTime: 5 * 60 * 1000, // 5분간 캐시 유지
+    cacheTime: 10 * 60 * 1000, // 10분간 메모리에 보관
+  });
 
-  // 초기 시간표 데이터 불러오기
-  useEffect(() => {
-    const fetchInitialSchedule = async () => {
-      try {
-        const response = await baseAxiosInstance.get("/schedules/timetables/");
+  // 크롤링된 시간표 조회
+  const {
+    data: crawledData,
+    isLoading: crawledLoading,
+    error: crawledError,
+  } = useQuery({
+    queryKey: ["crawledTimetable"],
+    queryFn: async () => {
+      const response = await baseAxiosInstance.get(
+        "/users/getTimeTable/",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    },
+    enabled: !!accessToken,
+    staleTime: 2 * 60 * 1000, // 2분간 캐시 유지
+    cacheTime: 5 * 60 * 1000,
+  });
 
-        const merged = mergeScheduleData(response.data);
-        setSchedule(merged);
-      } catch (error) {
-        console.error("기존 시간표를 불러오는 데 실패했습니다.", error);
-      }
-    };
+  // 직접 등록한 시간표 조회 
+  const {
+    data: manualData = [],
+    isLoading: manualLoading,
+    error: manualError,
+  } = useQuery({
+    queryKey: ["manualTimetable"],
+    queryFn: async () => {
+      const response = await baseAxiosInstance.get(
+        "/schedules/timetables/",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    },
+    enabled: !!accessToken,
+    staleTime: 2 * 60 * 1000,
+    cacheTime: 5 * 60 * 1000,
+  });
 
-    fetchInitialSchedule();
+  // 시간표 저장 mutation
+  const saveTimeTableMutation = useMutation({
+    mutationFn: async (data) => {
+      const payload = data.map((item) => ({
+        subject: item.name,
+        day_of_week:
+          Object.keys(dayMap).find(
+            (key) => dayMap[key] === item.day
+          ) || item.day,
+        start_time: `${String(
+          Math.floor(item.startHour)
+        ).padStart(2, "0")}:00:00`,
+        end_time: `${String(Math.floor(item.endHour)).padStart(
+          2,
+          "0"
+        )}:00:00`,
+        location: item.location || "",
+      }));
+
+      // 병렬로 모든 시간표 저장
+      return Promise.all(
+        payload.map((timetable) =>
+          baseAxiosInstance.post(
+            "/schedules/timetables/",
+            timetable,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          )
+        )
+      );
+    },
+    onSuccess: () => {
+      // 저장 성공 후 관련 쿼리들을 무효화하여 다시 불러오기
+      queryClient.invalidateQueries(["manualTimetable"]);
+      queryClient.invalidateQueries(["crawledTimetable"]);
+      setIsModalOpen(false);
+    },
+    onError: (error) => {
+      console.error("시간표 저장 실패:", error);
+    },
+  });
+
+  // 전체 시간표 데이터 메모이제이션
+  const schedule = useMemo(() => {
+    const crawled = crawledData?.courses_data
+      ? normalizeCrawledSchedule(crawledData.courses_data)
+      : [];
+    const manual = normalizeManualSchedule(manualData);
+    return [...crawled, ...manual];
+  }, [crawledData, manualData]);
+
+  // 시간표 저장 핸들러
+  const handleDataSubmit = useCallback(
+    (data) => {
+      saveTimeTableMutation.mutate(data);
+    },
+    [saveTimeTableMutation]
+  );
+
+  // 모달 열기/닫기 핸들러
+  const handleModalOpen = useCallback(() => {
+    setIsModalOpen(true);
   }, []);
 
-  // 새 데이터 제출 핸들러 (기존 schedule과 중복되지 않는 항목만 추가)
-  const handleDataSubmit = (data) => {
-    console.log("새로 추가할 데이터:", data);
-
-    // 모달 입력값을 시간표 형식으로 변환
-    const convertedData = data.map((item) => ({
-      name: item.name,
-      day: item.day,
-      startHour: item.startHour,
-      endHour: item.endHour,
-      location: item.location || "",
-      professor: item.professor || "",
-    }));
-
-    // 기존 schedule과 중복되지 않는 항목만 필터링
-    const nonDuplicated = convertedData.filter((item) => {
-      return !schedule.some(
-        (s) =>
-          s.name === item.name &&
-          s.day === item.day &&
-          s.startHour === item.startHour &&
-          s.endHour === item.endHour
-      );
-    });
-
-    const newSchedule = [...schedule, ...nonDuplicated];
-    setSchedule(newSchedule);
+  const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
-  };
+  }, []);
+
+  // 로딩 상태
+  const isLoading =
+    userInfoLoading || crawledLoading || manualLoading;
+
+  // 에러 상태
+  if (userInfoError || crawledError || manualError) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-red-500">
+          데이터를 불러오는 중 오류가 발생했습니다.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4">
@@ -148,17 +329,33 @@ const TimeTableForm = () => {
       </div>
 
       {/* 직접 등록 버튼 */}
-      <div className="flex justify-end mb-6">
+      <div
+        className={`flex mb-6 ${
+          isLoading ? "justify-center" : "justify-end"
+        }`}
+      >
         <button
-          onClick={() => setIsModalOpen(true)}
-          className="w-[120px] text-[#27374D] text-sm bg-[#DDE6ED] py-2 px-4 rounded-2xl"
+          onClick={handleModalOpen}
+          disabled={isLoading || saveTimeTableMutation.isLoading}
+          className="w-[120px] text-[#27374D] text-sm bg-[#DDE6ED] py-2 px-4 rounded-2xl disabled:opacity-50"
         >
-          직접 등록하기
+          {saveTimeTableMutation.isLoading
+            ? "저장 중..."
+            : "직접 등록하기"}
         </button>
       </div>
 
+      {/* 로딩 상태 표시 */}
+      {isLoading && (
+        <div className="flex justify-center items-center py-8">
+          <div className="text-gray-500">
+            시간표를 불러오는 중...
+          </div>
+        </div>
+      )}
+
       {/* 시간표 컴포넌트 */}
-      <TimeTableGrid schedule={schedule} />
+      {!isLoading && <TimeTableGrid schedule={schedule} />}
 
       {/* 직접 등록 모달 */}
       {isModalOpen && (
@@ -166,7 +363,7 @@ const TimeTableForm = () => {
           <div className="h-full flex items-center justify-center lg:ml-[11.75rem]">
             <TimeTableModal
               onSubmit={handleDataSubmit}
-              onClose={() => setIsModalOpen(false)}
+              onClose={handleModalClose}
               schedule={schedule}
             />
           </div>
