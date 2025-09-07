@@ -22,7 +22,7 @@ const ToggleForSettings = ({
         onChange={onChange}
         disabled={disabled}
       />
-      <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+      <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
         {name}
       </span>
       <div
