@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StudyPlanStep1 from "./StudyPlanStep1";
 import StudyPlanStep2 from "./StudyPlanStep2";
 import StudyPlanDoneModal from "./StudyPlanDoneModal";
 import studyRoutineApi from "../../api/studyRoutineApi";
+import { getStudyRoutine } from "../../api/studyRoutineApi";
 
 const StudyPlanStep = () => {
   const [step, setStep] = useState(1);
@@ -12,6 +13,36 @@ const StudyPlanStep = () => {
     useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchExistingData = async () => {
+      try {
+        const data = await getStudyRoutine();
+        console.log("기존 공부 습관 불러오기 성공:", data);
+        if (data.weeks_before_exam && data.review_type) {
+          if (data.review_type.split(" ")[0].length === 3) {
+            // "FRI WED" → ["FRI", "WED"]
+            setFormData({
+              weeksBeforeExam: data.weeks_before_exam ?? "",
+              reviewType: "특정 요일에 복습",
+              selectedWeekdays: data.review_type
+                ? data.review_type.split(" ")
+                : [],
+            });
+          } else {
+            setFormData({
+              weeksBeforeExam: data.weeks_before_exam ?? "",
+              reviewType: "특정 루틴으로 복습",
+              selectedRoutine: data.review_type,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("기존 공부 습관 불러오기 실패:", error);
+      }
+    };
+    fetchExistingData();
+  }, []);
 
   const nextStep = () => {
     if (step < 2) {

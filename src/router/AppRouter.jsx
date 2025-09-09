@@ -13,8 +13,6 @@ import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 //setting에 사용되는 컴포넌트들
 import Profile from "../components/settingsDetail/Profile";
-import Alarm from "../components/settingsDetail/Alarm";
-import StudyPlanSetting from "../components/settingsDetail/StudyPlanSetting";
 import DataVisualization from "../components/settingsDetail/DataVisualization";
 
 import PasswordChange from "../components/settingsDetail/PasswordChange";
@@ -39,12 +37,13 @@ const AppRouter = () => {
         <Route path="/" element={<Home />} />
         <Route path="/settings" element={<Settings />}>
           <Route path="profile" element={<Profile />}>
-            <Route path="password" element={<PasswordChange />} />
+            <Route
+              path="password"
+              element={<PasswordChange />}
+            />
             <Route path="exit" element={<ExitUser />} />
             <Route path="smul" element={<SamwaterChange />} />
           </Route>
-          <Route path="alarm" element={<Alarm />} />
-          <Route path="studyplan" element={<StudyPlanSetting />} />
           <Route path="data" element={<DataVisualization />} />
         </Route>
         <Route path="/tag" element={<Tag />} />
