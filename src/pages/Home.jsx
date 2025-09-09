@@ -210,7 +210,7 @@ const Home = () => {
   return (
     <>
       {!isPlanCompleted && <StudyPlanModal />}
-      <div className="flex flex-row gap-8 ml-10 mr-10 ">
+      <div className="flex flex-row gap-8 ml-10 mr-10 mt-10">
         <div className="grow-[3]">
           <Calendar
             events={calendarEvents}
@@ -243,7 +243,7 @@ const Home = () => {
                 : "translate-x-full"
             } `}
           >
-            <div className="flex flex-col h-full items-center justify-center">
+            <div className="flex flex-col h-full items-center justify-center mr-4">
               <CheckSchedule
                 selectedDateEvents={selectedDateEvents}
               />

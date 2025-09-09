@@ -3,21 +3,10 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 function Settings() {
   const tabs = [
     { label: "프로필", path: "profile" },
-    { label: "알림", path: "alarm" },
-    { label: "공부계획설정", path: "studyplan" },
     { label: "통계 및 시각화", path: "data" },
   ];
 
   const location = useLocation();
-
-  // const renderSettingComponent = () => {
-  //   if (
-  //     location.pathname.startsWith("/settings/profile/password")
-  //   ) {
-  //     return <PasswordChange />;
-  //   }
-  //   // 추가적으로 다른 설정들 처리 가능
-  // };
 
   return (
     <div className="flex justify-center w-full p-5 scroll-m-0">
@@ -48,20 +37,4 @@ function Settings() {
   );
 }
 
-export default Settings; // 반드시 있어야 함!
-
-{
-  /* <section
-className={`grow-[1] min-w-[25.25rem] max-w-[40.25rem] min-h-[10.4375rem] p-5
-  ${
-    location.pathname.startsWith(
-      "/settings/profile/password"
-    )
-      ? "bg-[#F0F0F0]"
-      : "bg-white"
-  }
-  `}
->
-{renderSettingComponent()}
-</section> */
-}
+export default Settings;
