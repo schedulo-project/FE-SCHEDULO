@@ -5,6 +5,7 @@ import MessageParser from "../chatbot/MessageParser";
 import ActionProvider from "../chatbot/ActionProvider";
 import "react-chatbot-kit/build/main.css";
 import "./ChatbotComponent.css";
+import ScheduleModal from "../ScheduleModal";
 
 const ChatbotComponent = () => {
   return (
@@ -16,6 +17,7 @@ const ChatbotComponent = () => {
         headerText={`일정 관리 챗봇`}
         placeholderText={`Chat BOT에게 질문하기`}
       />
+      <ScheduleModal />
     </div>
   );
 };
