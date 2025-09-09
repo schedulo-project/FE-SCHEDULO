@@ -25,20 +25,24 @@ const StudyPlanStep1 = ({
       reference: "exam",
     };
 
+   const updatedData = {
+      weeksBeforeExam: Number(week),
+      weeksBeforeExamStructured: structuredValue,
+    };
+
     console.log("선택한 값:", week);
     console.log("구조화된 값:", structuredValue);
+    console.log("updateFormData에 전달할 데이터:", updatedData);
 
-    updateFormData({
-      weeksBeforeExam: week,
-      weeksBeforeExamStructured: structuredValue,
-    });
+    updateFormData(updatedData);
+
     nextStep();
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#DDE6ED] relative">
+    <div className="min-h-screen w-full bg-[#DDE6ED] flex flex-col items-center">
       {/* 로고 */}
-      <div className="absolute top-32 left-36 flex items-center space-x-3">
+      <div className="w-full my-16 ml-64 flex items-center space-x-3">
         <img
           src={bookLogo}
           alt="logo"
@@ -48,12 +52,12 @@ const StudyPlanStep1 = ({
       </div>
 
       {/* 모달 박스 */}
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-[950px] h-[550px] bg-white rounded-3xl shadow-lg overflow-hidden">
+      <div className="flex items-center justify-center">
+        <div className="w-[850px] h-[450px] bg-white rounded-3xl shadow-lg overflow-hidden">
           {/* 헤더 */}
-          <div className="bg-[#27374D] h-[110px] py-8 px-8 flex justify-between items-center">
+          <div className="bg-[#27374D] h-[100px] py-8 px-8 flex justify-between items-center">
             <span className="text-white text-2xl font-semibold mx-auto">
-              공부 계획 등록
+              공부 습관 등록
             </span>
             <button
               className="text-white text-2xl font-bold hover:opacity-70 transition-opacity"

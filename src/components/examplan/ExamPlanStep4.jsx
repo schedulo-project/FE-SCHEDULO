@@ -1,102 +1,187 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus, Minus } from "lucide-react";
-import { format, addDays, subDays, isAfter, differenceInDays } from "date-fns";
+import {
+  format,
+  addDays,
+  subDays,
+  isAfter,
+  differenceInDays,
+} from "date-fns";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import baseAxiosInstance from "../../api/baseAxiosApi";
 import { useAuth } from "../../contexts/AuthContext";
 
-// 민사고 공부법에 따른 일정 생성 함수
+// 일정 생성 함수
 const generateStudySchedule = (formData) => {
   const {
     startDate,
     endDate,
-    studyStartDate: rawStudyStartDate,
     subjects,
     averageSubjectsPerDay,
-    subjectRatios,
+    weeksBeforeExam,
+    reviewType,
+    studyRoutine,
   } = formData;
 
   const examStartDate = new Date(startDate);
-  const studyStartDate = rawStudyStartDate
-    ? new Date(rawStudyStartDate)
-    : new Date();
-  const studyEndDate = subDays(examStartDate, 1); // 시험 하루 전까지
+  const weeksBack =
+    weeksBeforeExam || studyRoutine?.weeks_before_exam || 1;
+  const studyStartDate = subDays(examStartDate, weeksBack * 7);
+  const studyEndDate = subDays(examStartDate, 1);
 
-  const totalStudyDays = differenceInDays(studyEndDate, studyStartDate) + 1;
-  const totalStudySessions = totalStudyDays * averageSubjectsPerDay;
+  // 복습 타입 매핑
+  const finalReviewType =
+    reviewType || studyRoutine?.review_type || "EVERYDAY";
+  console.log("복습 타입:", finalReviewType);
 
-  // 과목별 세션 수 계산
-  const subjectSessions = {};
-  if (subjectRatios && Object.keys(subjectRatios).length > 0) {
-    subjects.forEach((subject) => {
-      subjectSessions[subject] = Math.round(
-        ((subjectRatios[subject] || 0) / 100) * totalStudySessions
-      );
-    });
-  } else {
-    const baseSessionsPerSubject = Math.floor(
-      totalStudySessions / subjects.length
-    );
-    const remainingSessions =
-      totalStudySessions - baseSessionsPerSubject * subjects.length;
-    subjects.forEach((subject, idx) => {
-      subjectSessions[subject] =
-        baseSessionsPerSubject + (idx < remainingSessions ? 1 : 0);
-    });
-  }
+  // 복습 가능한 요일 결정
+  const getValidDays = (reviewType) => {
+    switch (reviewType) {
+      case "WEEKEND":
+        return [0, 6];
+      case "WEEKDAY":
+        return [1, 2, 3, 4, 5];
+      case "EVERYDAY":
+        return [0, 1, 2, 3, 4, 5, 6];
+      case "SAMEDAY":
+        return [0, 1, 2, 3, 4, 5, 6];
+      default:
+        // 특정 요일 선택된 경우
+        if (
+          typeof reviewType === "string" &&
+          reviewType.includes(" ")
+        ) {
+          const dayMap = {
+            MON: 1,
+            TUE: 2,
+            WED: 3,
+            THU: 4,
+            FRI: 5,
+            SAT: 6,
+            SUN: 0,
+          };
+          return reviewType
+            .split(" ")
+            .map((day) => dayMap[day])
+            .filter((d) => d !== undefined);
+        }
+        return [0, 1, 2, 3, 4, 5, 6];
+    }
+  };
 
-  // 공부 날짜 목록 생성
+  const validDays = getValidDays(finalReviewType);
+
+  // 복습 가능한 날짜
   const studyDays = [];
   let currentDate = new Date(studyStartDate);
   while (!isAfter(currentDate, studyEndDate)) {
-    studyDays.push(format(new Date(currentDate), "yyyy-MM-dd"));
+    const dayOfWeek = currentDate.getDay();
+    if (validDays.includes(dayOfWeek)) {
+      studyDays.push(
+        format(new Date(currentDate), "yyyy-MM-dd")
+      );
+    }
     currentDate = addDays(currentDate, 1);
   }
 
-  // 날짜별 할당된 과목 수 추적
+  if (studyDays.length === 0) {
+    console.warn("복습 가능한 날짜가 없습니다!");
+    return {
+      events: [],
+      studyStartDate: format(studyStartDate, "yyyy-MM-dd"),
+      studyEndDate: format(studyEndDate, "yyyy-MM-dd"),
+      subjectSessions: {},
+    };
+  }
+
+  // 과목별 세션 수 계산
+  const totalStudySessions =
+    studyDays.length * averageSubjectsPerDay;
+  const subjectSessions = {};
+  const baseSessionsPerSubject = Math.floor(
+    totalStudySessions / subjects.length
+  );
+  const remainingSlots =
+    totalStudySessions -
+    baseSessionsPerSubject * subjects.length;
+
+  subjects.forEach((subject, idx) => {
+    subjectSessions[subject] =
+      baseSessionsPerSubject + (idx < remainingSlots ? 1 : 0);
+  });
+
+  // 날짜별 과목 배치
   const dateToSubjects = {};
   studyDays.forEach((date) => {
     dateToSubjects[date] = [];
   });
 
-  // 일정 생성
   const events = [];
   let eventId = 0;
+  let dayIndex = 0;
+  let allSessionsPlaced = false;
+  const remainingSessions = { ...subjectSessions };
 
-  subjects.forEach((subject) => {
-    const sessionCount = subjectSessions[subject];
-    let assigned = 0;
-    let index = 0;
+  while (
+    !allSessionsPlaced &&
+    dayIndex < studyDays.length * 10
+  ) {
+    const currentDay = studyDays[dayIndex % studyDays.length];
 
-    while (assigned < sessionCount && index < studyDays.length * 2) {
-      const day = studyDays[index % studyDays.length];
+    if (
+      dateToSubjects[currentDay].length < averageSubjectsPerDay
+    ) {
+      const availableSubjects = subjects.filter(
+        (subject) => remainingSessions[subject] > 0
+      );
 
-      if (dateToSubjects[day].length < averageSubjectsPerDay) {
-        dateToSubjects[day].push(subject);
+      if (availableSubjects.length > 0) {
+        // 해당 날짜에 아직 배치되지 않은 과목 우선 배정
+        const subjectToPlace =
+          availableSubjects.find(
+            (subject) =>
+              !dateToSubjects[currentDay].includes(subject)
+          ) || availableSubjects[0];
+
+        dateToSubjects[currentDay].push(subjectToPlace);
         events.push({
           id: `study-${eventId++}`,
-          title: subject,
-          date: day,
+          title: subjectToPlace,
+          date: currentDay,
         });
-        assigned++;
-      }
 
-      index++;
+        remainingSessions[subjectToPlace]--;
+      }
     }
-  });
+
+    dayIndex++;
+
+    // 모든 세션이 배치되었는지 확인
+    allSessionsPlaced = Object.values(remainingSessions).every(
+      (count) => count === 0
+    );
+  }
+
+  console.log("최종 생성된 이벤트:", events);
 
   return {
     events,
     studyStartDate: format(studyStartDate, "yyyy-MM-dd"),
     studyEndDate: format(studyEndDate, "yyyy-MM-dd"),
     subjectSessions,
+    validDays,
+    totalStudyDays: studyDays.length,
   };
 };
 
-const ExamPlanStep4 = ({ formData, updateFormData, prevStep }) => {
+const ExamPlanStep4 = ({
+  formData,
+  updateFormData,
+  prevStep,
+}) => {
   const { accessToken } = useAuth();
   const [events, setEvents] = useState([]);
   const [scheduleInfo, setScheduleInfo] = useState({});
@@ -131,7 +216,7 @@ const ExamPlanStep4 = ({ formData, updateFormData, prevStep }) => {
 
     const newEvent = {
       ...original,
-      id: `study-${Date.now()}`, // 새로운 ID
+      id: `study-${Date.now()}`,
     };
 
     setEvents((prevEvents) => [...prevEvents, newEvent]);
@@ -150,7 +235,7 @@ const ExamPlanStep4 = ({ formData, updateFormData, prevStep }) => {
     setEvents(updatedEvents);
   };
 
-  // 이벤트 콘텐츠 렌더 함수
+  // 이벤트 카드 렌더링
   const renderEventContent = (eventInfo) => {
     return (
       <div className="relative group flex items-center justify-between gap-1 px-1 py-1">
@@ -189,7 +274,7 @@ const ExamPlanStep4 = ({ formData, updateFormData, prevStep }) => {
     );
   };
 
-  // 저장 버튼
+  // 일정 저장
   const handleSave = async () => {
     const payload = events.map((event) => ({
       title: event.title,
@@ -225,9 +310,9 @@ const ExamPlanStep4 = ({ formData, updateFormData, prevStep }) => {
         <ChevronLeft size={49} />
       </button>
 
-      <div className="flex items-end max-w-7xl w-full px-4 gap-12">
+      <div className="flex max-w-6xl w-full px-4 gap-12">
         {/* 캘린더 */}
-        <div className="flex-1 pl-16 lg:pl-0">
+        <div className="flex-1 pl-20 lg:pl-8">
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
@@ -235,17 +320,16 @@ const ExamPlanStep4 = ({ formData, updateFormData, prevStep }) => {
             events={events}
             eventDrop={handleEventDrop}
             eventContent={renderEventContent}
-            height={800}
-            aspectRatio={1.35}
-            contentHeight={800}
+            height={600}
+            contentHeight={600}
           />
         </div>
 
         {/* 저장 버튼 */}
-        <div className="flex items-end">
+        <div className="flex flex-col justify-end h-[600px] pr-4">
           <button
             onClick={handleSave}
-            className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl"
+            className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl self-end"
           >
             저장
           </button>

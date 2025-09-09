@@ -1,8 +1,5 @@
-import StudyPlanStep1 from "../studyPlan/StudyPlanStep1";
-import StudyPlanStep2 from "../studyPlan/StudyPlanStep2";
-import StudyPlanStep3 from "../studyPlan/StudyPlanStep3";
-import StudyPlanStep4 from "../studyPlan/StudyPlanStep4";
-import StudyPlanStep5 from "../studyPlan/StudyPlanStep5";
+import StudyPlanStep1 from "../studyplan/StudyPlanStep1"
+import StudyPlanStep2 from "../studyplan/StudyPlanStep2";
 import { useState } from "react";
 import SpInput from "./SpInput";
 import SpSelect from "./SpSelect";

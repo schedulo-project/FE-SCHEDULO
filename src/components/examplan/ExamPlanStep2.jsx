@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   ChevronLeft,
   ChevronRight,
   Plus,
   Minus,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import baseAxiosInstance from "../../api/baseAxiosApi";
+import { getStudyRoutine } from "../../api/studyRoutineApi";
+import { useAuth } from "../../contexts/AuthContext";
 
 const ExamPlanStep2 = ({
   formData,
@@ -12,6 +16,7 @@ const ExamPlanStep2 = ({
   prevStep,
   nextStep,
 }) => {
+  const { accessToken } = useAuth();
   const [subjects, setSubjects] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState(
     formData.subjects || []
@@ -24,50 +29,123 @@ const ExamPlanStep2 = ({
   const [customInput, setCustomInput] = useState("");
   const [isSubjectsLocked, setIsSubjectsLocked] = useState(
     formData.subjects && formData.subjects.length > 0
-  );
+  ); // 과목 확정 여부
   const [isDetailLocked, setIsDetailLocked] = useState(
     formData.averageSubjectsPerDay > 0
-  );
+  ); // 상세 설정 확정 여부
 
-  // 로컬스토리지에서 시간표 가져오기
-  useEffect(() => {
-    const timetable = localStorage.getItem("schedule");
+  // 공부 습관 API 조회
+  const {
+    data: studyRoutineData,
+    isLoading: studyRoutineLoading,
+    error: studyRoutineError,
+  } = useQuery({
+    queryKey: ["studyRoutine"],
+    queryFn: getStudyRoutine,
+    enabled: !!accessToken,
+    staleTime: 2 * 60 * 1000,
+    cacheTime: 5 * 60 * 1000,
+  });
+
+  // 크롤링된 시간표 조회
+  const {
+    data: crawledData,
+    isLoading: crawledLoading,
+    error: crawledError,
+  } = useQuery({
+    queryKey: ["crawledTimetable"],
+    queryFn: async () => {
+      const response = await baseAxiosInstance.get(
+        "/users/getTimeTable/",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    },
+    enabled: !!accessToken,
+    staleTime: 2 * 60 * 1000,
+    cacheTime: 5 * 60 * 1000,
+  });
+
+  // 직접 등록한 시간표 조회
+  const {
+    data: manualData = [],
+    isLoading: manualLoading,
+    error: manualError,
+  } = useQuery({
+    queryKey: ["manualTimetable"],
+    queryFn: async () => {
+      const response = await baseAxiosInstance.get(
+        "/schedules/timetables/",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    },
+    enabled: !!accessToken,
+    staleTime: 2 * 60 * 1000,
+    cacheTime: 5 * 60 * 1000,
+  });
+
+  // 시간표에서 과목 추출 (중복 제거 포함)
+  const extractedSubjects = useMemo(() => {
     let uniqueSubjects = [];
 
-    if (timetable) {
-      try {
-        const parsed = JSON.parse(timetable);
-        uniqueSubjects = [
-          ...new Set(parsed.map((item) => item.name)),
-        ];
-      } catch (error) {
-        console.error("Error parsing localStorage data:", error);
-      }
-    } else {
-      console.log("No schedule found in localStorage");
+    if (crawledData?.courses_data) {
+      const crawledSubjects = crawledData.courses_data.map(
+        ([courseName]) => courseName
+      );
+      uniqueSubjects = [...uniqueSubjects, ...crawledSubjects];
     }
 
-    if (formData.customSubjects) {
-      uniqueSubjects = [
-        ...uniqueSubjects,
-        ...formData.customSubjects,
-      ];
+    if (manualData && Array.isArray(manualData)) {
+      const manualSubjects = manualData.map(
+        (item) => item.subject
+      );
+      uniqueSubjects = [...uniqueSubjects, ...manualSubjects];
     }
 
-    setSubjects(uniqueSubjects);
+    return [...new Set(uniqueSubjects)];
+  }, [crawledData, manualData]);
+
+  // formData에 저장된 customSubjects 반영
+  const customSubjects = useMemo(() => {
+    return formData.customSubjects || [];
   }, [formData.customSubjects]);
 
+  // 최종 과목 목록 설정
   useEffect(() => {
-    if (formData.subjects) {
+    const finalSubjects = [
+      ...extractedSubjects,
+      ...customSubjects,
+    ];
+    const uniqueFinalSubjects = [...new Set(finalSubjects)];
+
+    if (
+      JSON.stringify(subjects) !==
+      JSON.stringify(uniqueFinalSubjects)
+    ) {
+      setSubjects(uniqueFinalSubjects);
+    }
+  }, [extractedSubjects, customSubjects, subjects]);
+
+  // 초기값 설정 (처음 한 번만 실행)
+  useEffect(() => {
+    if (formData.subjects && formData.subjects.length > 0) {
       setSelectedSubjects(formData.subjects);
     }
-    if (formData.averageSubjectsPerDay) {
+    if (
+      formData.averageSubjectsPerDay &&
+      formData.averageSubjectsPerDay > 0
+    ) {
       setAverageSubjectsPerDay(formData.averageSubjectsPerDay);
-      setShowDetailSetting(true); // 이미 저장된 상세 설정이 있으면 표시
+      setShowDetailSetting(true);
     }
   }, []);
 
-  // 과목 선택/해제 토글
+  // 과목 선택/해제
   const toggleSubject = (subject) => {
     const alreadySelected = selectedSubjects.includes(subject);
     const updated = alreadySelected
@@ -77,23 +155,20 @@ const ExamPlanStep2 = ({
     setSelectedSubjects(updated);
   };
 
-  // 직접 추가 과목 처리
+  // 직접 과목 추가
   const handleAddCustomSubject = () => {
     if (!customInput.trim()) return;
 
     const newSubject = customInput.trim();
 
-    // subjects 배열에 추가
     if (!subjects.includes(newSubject)) {
       setSubjects((prev) => [...prev, newSubject]);
     }
 
-    // selectedSubjects에 추가
     if (!selectedSubjects.includes(newSubject)) {
       setSelectedSubjects((prev) => [...prev, newSubject]);
     }
 
-    // formData에 직접 추가한 과목들 저장
     const currentCustomSubjects = formData.customSubjects || [];
     if (!currentCustomSubjects.includes(newSubject)) {
       updateFormData({
@@ -106,7 +181,7 @@ const ExamPlanStep2 = ({
     setIsAddingCustom(false);
   };
 
-  // 왼쪽 저장 버튼
+  // 과목 저장 -> 상세 설정 단계로 이동
   const handleSaveSubjects = () => {
     if (selectedSubjects.length === 0) {
       alert("최소 1개 이상의 과목을 선택해주세요.");
@@ -116,7 +191,26 @@ const ExamPlanStep2 = ({
     setIsSubjectsLocked(true);
   };
 
-  // 오른쪽 저장 버튼
+  const calculateStudyWeeks = () => {
+    if (
+      formData.weeksBeforeExam &&
+      !isNaN(formData.weeksBeforeExam)
+    )
+      return parseInt(formData.weeksBeforeExam, 10);
+
+    if (
+      studyRoutineData?.weeks_before_exam &&
+      !isNaN(studyRoutineData.weeks_before_exam)
+    )
+      return parseInt(studyRoutineData.weeks_before_exam, 10);
+
+    console.log(
+      "weeksBeforeExam이 유효하지 않음, 기본값 1 사용"
+    );
+    return 1;
+  };
+
+  // 상세 설정 저장
   const handleSaveDetailSetting = () => {
     updateFormData({
       subjects: selectedSubjects,
@@ -126,7 +220,7 @@ const ExamPlanStep2 = ({
     alert("상세 설정이 저장되었습니다.");
   };
 
-  // 오른쪽 이동 화살표 클릭
+  // 다음 단계 이동
   const handleNext = () => {
     if (selectedSubjects.length === 0) {
       alert("최소 1개 이상의 과목을 선택해주세요.");
@@ -146,14 +240,23 @@ const ExamPlanStep2 = ({
     updateFormData({
       subjects: selectedSubjects,
       averageSubjectsPerDay,
+      studyRoutine: studyRoutineData,
+      weeksBeforeExam:
+        studyRoutineData?.weeks_before_exam ||
+        calculateStudyWeeks(),
+      reviewType: studyRoutineData?.review_type,
     });
     nextStep();
   };
 
+  // 로딩 상태
+  const isLoading =
+    crawledLoading || manualLoading || studyRoutineLoading;
+
   return (
     <div className="w-full min-h-screen bg-white flex flex-col lg:pl-[11.75rem] relative">
       {/* 제목 */}
-      <div className="flex w-full px-4 lg:px-32 pt-32 pb-2">
+      <div className="flex w-full px-4 lg:px-32 pt-16 pb-2">
         <div className="w-1/2">
           <div className="text-black text-2xl font-medium font-['Inter'] leading-snug">
             2. 과목 선택
@@ -172,7 +275,7 @@ const ExamPlanStep2 = ({
       {/* 본문 영역 */}
       <div
         className="relative flex flex-1 items-center px-6"
-        style={{ marginTop: "-16rem" }}
+        style={{ marginTop: "-4rem" }}
       >
         {/* 이동 버튼 */}
         <button
@@ -198,52 +301,64 @@ const ExamPlanStep2 = ({
             }`}
           >
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 relative">
+              {/* 로딩 표시 */}
+              {isLoading && (
+                <div className="text-gray-500">
+                  시간표에서 과목을 불러오는 중...
+                </div>
+              )}
+
               {/* 과목 목록 */}
-              <div
-                className="flex flex-col items-center w-full max-h-[45vh] overflow-y-auto"
-                style={{
-                  scrollbarWidth: "none",
-                  msOverflowStyle: "none",
-                }}
-              >
+              {!isLoading && subjects.length > 0 && (
                 <div
+                  className="flex flex-col items-center w-full max-h-[45vh] overflow-y-auto"
                   style={{
-                    display: "none",
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
                   }}
                 >
-                  ::-webkit-scrollbar
-                </div>
-
-                {subjects.map((subject) => (
-                  <button
-                    key={subject}
-                    onClick={() =>
-                      !isSubjectsLocked && toggleSubject(subject)
-                    }
-                    className={`w-[200px] lg:w-[250px] min-h-[60px] border px-4 py-3 rounded-lg text-left font-semibold mb-2 ${
-                      selectedSubjects.includes(subject)
-                        ? "bg-[#D0D7E2] border-[#27374D]"
-                        : "bg-white"
-                    } ${
-                      isSubjectsLocked
-                        ? "pointer-events-none opacity-50"
-                        : ""
-                    }`}
+                  <div
+                    style={{
+                      display: "none",
+                    }}
                   >
-                    {subject}
-                  </button>
-                ))}
-              </div>
+                    ::-webkit-scrollbar
+                  </div>
+
+                  {subjects.map((subject) => (
+                    <button
+                      key={subject}
+                      onClick={() =>
+                        !isSubjectsLocked &&
+                        toggleSubject(subject)
+                      }
+                      className={`w-[200px] lg:w-[250px] min-h-[60px] border px-4 py-3 rounded-lg text-left font-semibold mb-2 ${
+                        selectedSubjects.includes(subject)
+                          ? "bg-[#D0D7E2] border-[#27374D]"
+                          : "bg-white"
+                      } ${
+                        isSubjectsLocked
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }`}
+                    >
+                      {subject}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {/* 직접 추가 버튼 */}
-              {!isAddingCustom && !isSubjectsLocked ? (
-                <button
-                  className="w-[200px] lg:w-[250px] min-h-[60px] border px-4 py-3 rounded-lg font-semibold text-left mb-2"
-                  onClick={() => setIsAddingCustom(true)}
-                >
-                  + 직접 추가
-                </button>
-              ) : null}
+              {!isLoading &&
+                !isAddingCustom &&
+                !isSubjectsLocked && (
+                  <button
+                    className="w-[200px] lg:w-[250px] min-h-[60px] border px-4 py-3 rounded-lg font-semibold text-left mb-2"
+                    onClick={() => setIsAddingCustom(true)}
+                  >
+                    + 직접 추가
+                  </button>
+                )}
 
               {/* 직접 추가 입력창 */}
               {isAddingCustom && (
@@ -291,7 +406,7 @@ const ExamPlanStep2 = ({
               {!isSubjectsLocked && (
                 <button
                   onClick={handleSaveSubjects}
-                  className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl absolute bottom-0 left-1/2 transform -translate-x-1/2"
+                  className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl mt-2"
                 >
                   저장
                 </button>
@@ -311,7 +426,7 @@ const ExamPlanStep2 = ({
               <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 relative">
                 {/* 본문 영역 */}
                 <p className="text-lg text-center">
-                  Q. {formData.studyDays}일 동안 하루 평균 몇
+                  Q. {calculateStudyWeeks()}주 동안 하루 평균 몇
                   과목 공부할 계획인가요?
                 </p>
                 <div className="flex items-center mt-32 gap-6">

@@ -2,30 +2,40 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudyPlanStep1 from "./StudyPlanStep1";
 import StudyPlanStep2 from "./StudyPlanStep2";
-import StudyPlanStep3 from "./StudyPlanStep3";
-import StudyPlanStep4 from "./StudyPlanStep4";
-import StudyPlanStep5 from "./StudyPlanStep5";
 import StudyPlanDoneModal from "./StudyPlanDoneModal";
+import studyRoutineApi from "../../api/studyRoutineApi";
 
 const StudyPlanStep = () => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    weeksBeforeExam: "",
-    reviewTiming: "",
-    studyRestRatio: "",
-    studyAmountCriteria: "",
-    assignmentTiming: "",
-  });
+  const [formData, setFormData] = useState({});
   const [showCompleteModal, setShowCompleteModal] =
     useState(false);
 
   const navigate = useNavigate();
 
   const nextStep = () => {
-    if (step < 5) {
+    if (step < 2) {
       setStep((prev) => prev + 1);
-    } else {
+    }
+  };
+
+  const handleFinalSubmit = async (reviewType) => {
+    try {
+      console.log("최종 전송 데이터:", {
+        weeksBeforeExam: formData.weeksBeforeExam,
+        reviewType: reviewType,
+      });
+
+      const response = await studyRoutineApi(
+        formData.weeksBeforeExam, // Step1 값
+        reviewType // Step2에서 직접 전달받은 값
+      );
+
+      console.log("공부 습관 저장 성공:", response.data);
       setShowCompleteModal(true);
+    } catch (error) {
+      console.error("공부 습관 저장 실패:", error);
+      alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -34,6 +44,11 @@ const StudyPlanStep = () => {
   };
 
   const handleClose = () => {
+    navigate("/");
+  };
+
+  const handleCompleteModalClose = () => {
+    setShowCompleteModal(false);
     navigate("/");
   };
 
@@ -55,44 +70,20 @@ const StudyPlanStep = () => {
             updateFormData={updateFormData}
             formData={formData}
             handleClose={handleClose}
-          />
-        );
-      case 3:
-        return (
-          <StudyPlanStep3
-            nextStep={nextStep}
-            updateFormData={updateFormData}
-            formData={formData}
-            handleClose={handleClose}
-          />
-        );
-      case 4:
-        return (
-          <StudyPlanStep4
-            nextStep={nextStep}
-            updateFormData={updateFormData}
-            formData={formData}
-            handleClose={handleClose}
-          />
-        );
-      case 5:
-        return (
-          <StudyPlanStep5
-            nextStep={nextStep}
-            updateFormData={updateFormData}
-            formData={formData}
-            handleClose={handleClose}
+            onFinalSubmit={handleFinalSubmit}
           />
         );
       default:
-        return;
+        return null;
     }
   };
 
   return (
     <>
       {renderStep()}
-      {showCompleteModal && <StudyPlanDoneModal />}
+      {showCompleteModal && (
+        <StudyPlanDoneModal onClose={handleCompleteModalClose} />
+      )}
     </>
   );
 };
