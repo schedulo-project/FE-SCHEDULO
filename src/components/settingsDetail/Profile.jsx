@@ -29,6 +29,7 @@ const Profile = () => {
   // 세부 토글 상태
   const [sub1, setSub1] = useState(false);
   const [sub2, setSub2] = useState(false);
+
   useEffect(() => {
     async function fetchAlarmState() {
       try {
@@ -50,37 +51,54 @@ const Profile = () => {
     fetchAlarmState();
   }, []);
 
+  // 메인 토글 핸들러 (롤백 포함)
   const handleMainToggle = async (checked) => {
+    const prev = { mainOn, sub1, sub2 };
+    setMainOn(checked);
+    setSub1(checked);
+    setSub2(checked);
     try {
-      setMainOn(checked);
-      if (!checked) {
-        await alarmToggle({ today: 0, deadline: 0 });
-        setSub1(false);
-        setSub2(false);
-      } else {
-        await alarmToggle({ today: 1, deadline: 1 });
-        setSub1(true);
-        setSub2(true);
-      }
+      await alarmToggle({
+        today: checked ? 1 : 0,
+        deadline: checked ? 1 : 0,
+      });
     } catch (error) {
+      // rollback
+      setMainOn(prev.mainOn);
+      setSub1(prev.sub1);
+      setSub2(prev.sub2);
       alert("알림 설정에 실패했습니다.");
     }
   };
 
+  // 오늘 할일 토글 핸들러 (롤백 포함)
   const handleTodayToggle = async (checked) => {
+    const prev = sub1;
     setSub1(checked);
-    await alarmToggle({
-      today: checked ? 1 : 0,
-      deadline: sub2 ? 1 : 0,
-    });
+    try {
+      await alarmToggle({
+        today: checked ? 1 : 0,
+        deadline: sub2 ? 1 : 0,
+      });
+    } catch {
+      setSub1(prev);
+      alert("알림 설정에 실패했습니다.");
+    }
   };
 
+  // 마감 기한 토글 핸들러 (롤백 포함)
   const handleDeadlineToggle = async (checked) => {
+    const prev = sub2;
     setSub2(checked);
-    await alarmToggle({
-      today: sub1 ? 1 : 0,
-      deadline: checked ? 1 : 0,
-    });
+    try {
+      await alarmToggle({
+        today: sub1 ? 1 : 0,
+        deadline: checked ? 1 : 0,
+      });
+    } catch {
+      setSub2(prev);
+      alert("알림 설정에 실패했습니다.");
+    }
   };
 
   //--- 공부 계획 설정 관련 코드 ---
@@ -174,4 +192,5 @@ const Profile = () => {
     </div>
   );
 };
+
 export default Profile;
