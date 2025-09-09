@@ -1,14 +1,11 @@
 // in MessageParser.js
 import React from "react";
-import { getTokenFromAuth } from "../../utils/authApi";
-
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+import baseAxiosInstance from "../../api/baseAxiosApi";
 
 const MessageParser = ({ children, actions }) => {
   const parse = async (message) => {
     try {
-      const token = getTokenFromAuth();
-      const ExData = await MessagePass({ message, token });
+      const ExData = await MessagePass({ message });
 
       if (!ExData) {
         return actions.handleDefault();
@@ -56,20 +53,12 @@ const MessageParser = ({ children, actions }) => {
 };
 
 // 사용자 메세지를 백에 보낸 후 받는 응답
-const MessagePass = async ({ message, token }) => {
+const MessagePass = async ({ message }) => {
   try {
-    const response = await fetch(`${baseURL}/chatbots/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        query: message,
-      }), // ExData를 서버로 전송
+    const response = await baseAxiosInstance.post("/chatbots/", {
+      query: message,
     });
-
-    const ExCheckData = await response.json();
+    const ExCheckData = response.data;
     // 서버에서 받은 응답을 처리
     console.log("ExCheckData : ", ExCheckData);
     return ExCheckData;
@@ -80,8 +69,6 @@ const MessagePass = async ({ message, token }) => {
 };
 
 const SchedulePass = async (ExData, actions) => {
-  const token = getTokenFromAuth();
-
   let queryParams = [];
 
   // 날짜 파라미터 처리
@@ -117,27 +104,21 @@ const SchedulePass = async (ExData, actions) => {
 
   // URL 생성
   const queryString = queryParams.join("&");
-  const url = `${baseURL}/schedules/list/?${queryString}`;
-
   console.log("URL:", queryString); // URL 확인
 
   try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const paramsObject = queryParams.reduce((acc, cur) => {
+      const [k, v] = cur.split("=");
+      acc[k] = decodeURIComponent(v);
+      return acc;
+    }, {});
 
-    if (!response.ok) {
-      const errorText = await response.text(); // 서버 응답 메시지 확인
-      throw new Error(
-        `HTTP error! status: ${response.status}, message: ${errorText}`
-      );
-    }
+    const response = await baseAxiosInstance.get(
+      "/schedules/list/",
+      { params: paramsObject }
+    );
 
-    const ScheduleData = await response.json();
+    const ScheduleData = response.data;
     console.log("일정 조회 성공:", ScheduleData);
 
     // 조회된 일정 데이터를 반환

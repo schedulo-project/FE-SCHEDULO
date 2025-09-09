@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
-
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+import baseAxiosInstance from "../api/baseAxiosApi";
 
 const DeleteWidget = ({ state }) => {
-  const { accessToken } = useAuth();
   const [scheduleData, setScheduleData] = useState({});
   const [checked, setChecked] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // 버튼 비활성화 상태
@@ -37,7 +34,7 @@ const DeleteWidget = ({ state }) => {
       alert("삭제할 항목을 선택하세요.");
       return;
     }
-    DeleteSchedules({ data: checked, token, actions: actions });
+    DeleteSchedules({ data: checked, actions: actions });
     setIsButtonDisabled(true); // 버튼 비활성화
     console.log("삭제할 항목들:", checked);
 
@@ -127,29 +124,18 @@ const DeleteWidget = ({ state }) => {
   );
 };
 
-const DeleteSchedules = async ({ data, token, actions }) => {
+const DeleteSchedules = async ({ data, actions }) => {
   try {
-    const response = await fetch(`${baseURL}/schedules/`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ ids: data }),
+    const response = await baseAxiosInstance.delete("/schedules/", {
+      data: { ids: data },
     });
 
-    console.log("Response Status:", response.status);
-
-    // ✅ 204 No Content → 성공 처리 후 종료
-    if (response.status === 204) {
-      console.log("✅ 삭제 성공 (204 No Content)");
-      console.log("삭제된 항목들:", actions);
+    // 204 또는 200 둘 다 성공 처리
+    if (response.status === 204 || response.status === 200) {
       return actions.handleDeleteRequest();
     }
 
-    // ❌ 204가 아니면 무조건 에러 처리
-    const errorText = `요청 실패: HTTP ${response.status}`;
-    console.error(errorText);
+    console.error(`요청 실패: HTTP ${response.status}`);
     return actions.handleError();
   } catch (error) {
     console.error("백엔드 오류:", error);

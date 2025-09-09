@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
-
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+import baseAxiosInstance from "../api/baseAxiosApi";
 
 const AddWidget = ({ state }) => {
-  const { accessToken } = useAuth();
   const [refactorAddData, setRefactorAddData] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false); // 버튼 클릭 후 상태를 관리하기 위한 state
   const actions = state.actions;
@@ -24,29 +21,14 @@ const AddWidget = ({ state }) => {
     console.log("refactorAddData", refactorAddData);
     const TagArr = await SplitTag(refactorAddData.tag);
     try {
-      const response = await fetch(`${baseURL}/schedules/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          title: refactorAddData.details,
-          content: refactorAddData.details,
-          scheduled_date: refactorAddData.date,
-          tag: TagArr, // 생성된 태그 ID 사용
-        }),
+      const response = await baseAxiosInstance.post("/schedules/", {
+        title: refactorAddData.details,
+        content: refactorAddData.details,
+        scheduled_date: refactorAddData.date,
+        tag: TagArr,
       });
 
-      if (!response.ok) {
-        const errorText = await response.text(); // 서버 응답 메시지 확인
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorText}`
-        );
-      }
-
-      const createdData = await response.json();
-      console.log("일정 생성 성공:", createdData);
+      console.log("일정 생성 성공:", response.data);
     } catch (error) {
       console.error("일정 생성 실패:", error);
     }
