@@ -1,6 +1,6 @@
 import baseAxiosInstance from "./baseAxiosApi";
 
-const getTags = async () => {
+const getStudyRoutine = async () => {
   try {
     const response = await baseAxiosInstance.get(
       `/users/studyroutine/`
@@ -12,4 +12,4 @@ const getTags = async () => {
   }
 };
 
-export default getTags;
+export default getStudyRoutine;

@@ -19,23 +19,32 @@ const StudyPlanStep = () => {
       try {
         const data = await getStudyRoutine();
         console.log("기존 공부 습관 불러오기 성공:", data);
-        if (data.weeks_before_exam && data.review_type) {
-          if (data.review_type.split(" ")[0].length === 3) {
-            // "FRI WED" → ["FRI", "WED"]
-            setFormData({
-              weeksBeforeExam: data.weeks_before_exam ?? "",
-              reviewType: "특정 요일에 복습",
-              selectedWeekdays: data.review_type
-                ? data.review_type.split(" ")
-                : [],
-            });
-          } else {
-            setFormData({
-              weeksBeforeExam: data.weeks_before_exam ?? "",
-              reviewType: "특정 루틴으로 복습",
-              selectedRoutine: data.review_type,
-            });
-          }
+        if (data?.weeks_before_exam && data?.review_type) {
+          const WEEKDAYS = [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI",
+            "SAT",
+            "SUN",
+          ];
+          const tokens = String(data.review_type)
+            .trim()
+            .split(/\s+/);
+          const isWeekdays = tokens.every((t) =>
+            WEEKDAYS.includes(t)
+          );
+
+          setFormData((prev) => ({
+            ...prev,
+            weeksBeforeExam: data.weeks_before_exam ?? "",
+            reviewType: isWeekdays
+              ? "특정 요일에 복습"
+              : "특정 루틴으로 복습",
+            selectedWeekdays: isWeekdays ? tokens : [],
+            selectedRoutine: !isWeekdays ? data.review_type : "",
+          }));
         }
       } catch (error) {
         console.error("기존 공부 습관 불러오기 실패:", error);
