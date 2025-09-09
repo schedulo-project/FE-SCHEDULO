@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StudyPlanStep1 from "./StudyPlanStep1";
 import StudyPlanStep2 from "./StudyPlanStep2";
 import StudyPlanDoneModal from "./StudyPlanDoneModal";
 import studyRoutineApi from "../../api/studyRoutineApi";
+import { getStudyRoutine } from "../../api/studyRoutineApi";
 
 const StudyPlanStep = () => {
   const [step, setStep] = useState(1);
@@ -12,6 +13,45 @@ const StudyPlanStep = () => {
     useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchExistingData = async () => {
+      try {
+        const data = await getStudyRoutine();
+        console.log("기존 공부 습관 불러오기 성공:", data);
+        if (data?.weeks_before_exam && data?.review_type) {
+          const WEEKDAYS = [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI",
+            "SAT",
+            "SUN",
+          ];
+          const tokens = String(data.review_type)
+            .trim()
+            .split(/\s+/);
+          const isWeekdays = tokens.every((t) =>
+            WEEKDAYS.includes(t)
+          );
+
+          setFormData((prev) => ({
+            ...prev,
+            weeksBeforeExam: data.weeks_before_exam ?? "",
+            reviewType: isWeekdays
+              ? "특정 요일에 복습"
+              : "특정 루틴으로 복습",
+            selectedWeekdays: isWeekdays ? tokens : [],
+            selectedRoutine: !isWeekdays ? data.review_type : "",
+          }));
+        }
+      } catch (error) {
+        console.error("기존 공부 습관 불러오기 실패:", error);
+      }
+    };
+    fetchExistingData();
+  }, []);
 
   const nextStep = () => {
     if (step < 2) {

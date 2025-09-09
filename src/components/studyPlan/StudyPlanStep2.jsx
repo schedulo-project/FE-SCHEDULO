@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import bookLogo from "../../assets/logo/book_square.svg";
 
@@ -37,6 +37,15 @@ const StudyPlanStep2 = ({
   const [selectedRoutine, setSelectedRoutine] = useState(
     formData.selectedRoutine || ""
   );
+  useEffect(() => {
+    setSelectedType(formData.reviewType || "");
+    setSelectedWeekdays(formData.selectedWeekdays || []);
+    setSelectedRoutine(formData.selectedRoutine || "");
+  }, [
+    formData.reviewType,
+    formData.selectedWeekdays,
+    formData.selectedRoutine,
+  ]);
 
   // 복습 방식(요일 or 루틴) 선택
   const handleTypeSelect = (type) => {

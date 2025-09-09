@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import bookLogo from "../../assets/logo/book_square.svg";
 
@@ -11,6 +11,9 @@ const StudyPlanStep1 = ({
   const [week, setWeek] = useState(
     formData.weeksBeforeExam || ""
   );
+  useEffect(() => {
+    setWeek(formData.weeksBeforeExam || "");
+  }, [formData.weeksBeforeExam]);
 
   const handleNext = () => {
     if (!week || Number(week) < 1) {
@@ -25,7 +28,7 @@ const StudyPlanStep1 = ({
       reference: "exam",
     };
 
-   const updatedData = {
+    const updatedData = {
       weeksBeforeExam: Number(week),
       weeksBeforeExamStructured: structuredValue,
     };
