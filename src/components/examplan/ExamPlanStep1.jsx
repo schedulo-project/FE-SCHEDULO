@@ -102,7 +102,7 @@ const ExamPlanStep1 = ({
   return (
     <div className="w-full min-h-screen bg-white flex flex-col lg:pl-[11.75rem]">
       {/* 제목 */}
-      <div className="text-black text-2xl font-medium font-['Inter'] leading-snug pt-32 pb-2 px-4 lg:px-32">
+      <div className="text-black text-2xl font-medium font-['Inter'] leading-snug pt-16 pb-2 px-4 lg:px-32">
         1. 기본 입력
       </div>
 
@@ -111,7 +111,7 @@ const ExamPlanStep1 = ({
         style={{ marginTop: "-16rem" }}
       >
         {/* 입력 폼 */}
-        <div className="w-full max-w-[700px] mt-4 flex flex-col justify-center pr-20 lg:pr-24">
+        <div className="w-full max-w-[700px] flex flex-col justify-center pr-20 lg:pr-24">
           {/* 시험명 */}
           <div className="flex items-center justify-center mb-8">
             <label className="w-32 text-xl font-semibold">
@@ -132,7 +132,7 @@ const ExamPlanStep1 = ({
           </div>
 
           {/* 시험기간 */}
-          <div className="flex items-center justify-center mb-12 relative">
+          <div className="flex items-center justify-center relative">
             <label className="w-32 text-xl font-semibold">
               시험기간
             </label>
@@ -166,7 +166,7 @@ const ExamPlanStep1 = ({
                 />
               </div>
               {showCalendar && !isReadonly && (
-                <div className="absolute z-10 top-full mt-8 left-1/2 transform -translate-x-1/2">
+                <div className="absolute z-10 top-full left-1/2 transform -translate-x-1/2" >
                   <DateRange
                     editableDateInputs={true}
                     onChange={handleDateChange}

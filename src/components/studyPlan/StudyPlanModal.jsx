@@ -14,11 +14,11 @@ const StudyPlanModal = () => {
       <div className="bg-white rounded-3xl p-6 shadow-lg w-[500px] text-center">
         <img
           src={planImage}
-          alt="공부 계획 이미지"
+          alt="공부 습관 이미지"
           className="h-[150px] w-full object-cover rounded-2xl mb-6"
         />
         <h2 className="text-3xl font-bold mb-4 text-[#27374D]">
-          공부 계획 등록
+          공부 습관 등록
         </h2>
         <p className="text-gray-700 text-base leading-relaxed mb-6">
           Schedulo에서 효율적으로 시간 관리를 해드리기 위해

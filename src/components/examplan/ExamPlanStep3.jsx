@@ -74,7 +74,7 @@ const ExamPlanStep3 = ({
   return (
     <div className="relative w-full min-h-screen flex flex-col lg:pl-[11.75rem]">
       {/* 제목 */}
-      <div className="text-black text-2xl font-medium font-['Inter'] leading-snug pt-32 pb-2 px-4 lg:px-32">
+      <div className="text-black text-2xl font-medium font-['Inter'] leading-snug pt-16 pb-2 px-4 lg:px-32">
         4. 비율 설정
       </div>
       <div
@@ -120,7 +120,7 @@ const ExamPlanStep3 = ({
                     type="range"
                     min="0"
                     max="100"
-                    step="1"
+                    step="5"
                     disabled={isSaved}
                     value={ratios[subject] || 0}
                     onChange={(e) =>
