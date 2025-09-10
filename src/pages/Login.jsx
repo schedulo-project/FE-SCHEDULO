@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import logoimage from "../assets/logo/logoimage.svg";
-import loginIcon from "../assets/login/loginIcon.svg";
+import loginIcon from "../assets/login/loginicon.svg";
 import loginApi from "../api/Auth/loginApi";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -40,12 +40,22 @@ const Login = () => {
     <div className="w-full h-full flex flex-col justify-center items-center gap-8 p-8 max-w-md mx-auto">
       {/* 로고 및 서비스명 */}
       <div className="flex items-center gap-2">
-        <img src={logoimage} alt="로고 이미지" className="w-10 h-10" />
-        <p className="text-[#2D3748] text-2xl font-semibold">Schedulo</p>
+        <img
+          src={logoimage}
+          alt="로고 이미지"
+          className="w-10 h-10"
+        />
+        <p className="text-[#2D3748] text-2xl font-semibold">
+          Schedulo
+        </p>
       </div>
 
       <div className="flex items-center gap-2">
-        <img src={loginIcon} alt="로그인 아이콘" className="w-6 h-6" />
+        <img
+          src={loginIcon}
+          alt="로그인 아이콘"
+          className="w-6 h-6"
+        />
         <span className="text-xl">로그인</span>
       </div>
 
@@ -70,13 +80,16 @@ const Login = () => {
             {...register("email", {
               required: "이메일을 입력해주세요",
               pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                value:
+                  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                 message: "올바른 이메일 형식이 아닙니다",
               },
             })}
           />
           {errors.email && (
-            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+            <p className="text-red-500 text-xs mt-1">
+              {errors.email.message}
+            </p>
           )}
         </div>
 
@@ -114,10 +127,16 @@ const Login = () => {
 
       {/* pw 찾기 및 회원가입 */}
       <div className="mt-6 flex flex-col items-center gap-3">
-        <a href="#" className="text-sm text-gray-500 hover:underline">
+        <a
+          href="#"
+          className="text-sm text-gray-500 hover:underline"
+        >
           비밀번호를 잊으셨나요?
         </a>
-        <a href="/signup" className="text-sm text-gray-500 hover:underline">
+        <a
+          href="/signup"
+          className="text-sm text-gray-500 hover:underline"
+        >
           회원가입
         </a>
       </div>
