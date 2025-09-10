@@ -7,7 +7,7 @@ import Loginpage from "../pages/Login";
 import MainLayout from "../components/layout/MainLayout";
 import Tag from "../pages/Tag";
 import ExamPlanStep from "../components/examplan/ExamPlanStep";
-import StudyPlanStep from "../components/studyplan/StudyPlanStep";
+import StudyPlanStep from "../components/studyPlan/StudyPlanStep";
 
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
