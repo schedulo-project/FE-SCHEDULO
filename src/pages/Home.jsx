@@ -1,15 +1,10 @@
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useNavigate,
-} from "react";
+import { useEffect, useState } from "react";
 import Calendar from "../components/Calendar";
 import CheckSchedule from "../components/CheckSchedule";
 import ScheduleModal from "../components/ScheduleModal";
 import fetchSchedules from "../api/checkScheduleApi";
 import fetchECampusSchedule from "../api/ECampusScheduleFetcher";
-import StudyPlanModal from "../components/studyplan/StudyPlanModal";
+import StudyPlanModal from "../components/studyPlan/StudyPlanModal";
 
 //jotai
 import { useAtom } from "jotai";
