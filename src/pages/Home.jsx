@@ -18,6 +18,8 @@ import {
 } from "../atoms/HomeAtoms";
 import getTags from "../api/getTagsApi";
 
+import { initializeNotifications } from "../../public/firebase-config";
+
 const Home = () => {
   // 임시 데이터
   const [events, setEvents] = useAtom(eventsAtoms); // 일정조회 api로 불러온 일정 데이터들
@@ -201,6 +203,14 @@ const Home = () => {
       alert("샘물 일정을 불러오는 중 오류가 발생했습니다.");
     }
   };
+
+  // 알림 초기화
+  useEffect(() => {
+    initializeNotifications().catch((err) => {
+      console.error("알림 초기화 실패:", err);
+    });
+  }, []);
+
 
   return (
     <>
