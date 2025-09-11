@@ -63,6 +63,12 @@ function getPlatformSpecificSettings() {
 // FCM 토큰 발급 및 서버 전송
 async function initializeFCM() {
   try {
+    // 로그인 상태 확인
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      throw new Error("로그인 상태가 아닙니다");
+    }
+    
     const app = initializeApp(firebaseConfig);
     const messaging = getMessaging(app);
 
@@ -84,12 +90,6 @@ async function initializeFCM() {
     }
 
     console.log("FCM 토큰 발급 완료:", fcmToken);
-
-    // 서버에 토큰 전송
-    const accessToken = localStorage.getItem("access_token");
-    if (!accessToken) {
-      throw new Error("액세스 토큰이 없습니다");
-    }
 
     console.log(
       "🔑 액세스 토큰 확인:",
@@ -177,6 +177,15 @@ function setupForegroundMessageHandler(messaging) {
 // 메인 초기화 함수
 export async function initializeNotifications() {
   try {
+    // 로그인 확인 - accessToken이 있어야 알림 초기화 진행
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      console.log("⚠️ 로그인 상태가 아닙니다. 알림 초기화를 건너뜁니다.");
+      return;
+    }
+    
+    console.log("✅ 로그인 확인됨: 알림 초기화 진행합니다");
+    
     // 플랫폼 지원 확인
     const isSupported = await checkPlatformSupport();
     if (!isSupported) {

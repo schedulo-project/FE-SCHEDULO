@@ -5,6 +5,7 @@ import ScheduleModal from "../components/ScheduleModal";
 import fetchSchedules from "../api/checkScheduleApi";
 import fetchECampusSchedule from "../api/ECampusScheduleFetcher";
 import StudyPlanModal from "../components/studyPlan/StudyPlanModal";
+import { useAuth } from "../contexts/AuthContext";
 
 //jotai
 import { useAtom } from "jotai";
@@ -204,12 +205,19 @@ const Home = () => {
     }
   };
 
-  // 알림 초기화
+  // 알림 초기화 - 로그인된 상태일 때만 실행
+  const { isAuthenticated } = useAuth();
   useEffect(() => {
-    initializeNotifications().catch((err) => {
-      console.error("알림 초기화 실패:", err);
-    });
-  }, []);
+    // 로그인된 상태일 때만 알림 초기화 진행
+    if (isAuthenticated) {
+      console.log("로그인 확인됨: 알림 초기화 시작");
+      initializeNotifications().catch((err) => {
+        console.error("알림 초기화 실패:", err);
+      });
+    } else {
+      console.log("로그인 상태가 아님: 알림 초기화 건너뜀");
+    }
+  }, [isAuthenticated]); // isAuthenticated가 변경될 때마다 다시 실행
 
 
   return (
