@@ -3,6 +3,7 @@ import bookImg from "../assets/logo/book_square.svg";
 import SideBtn from "./SideBtn";
 import ExamPlanBtn from "./examplan/ExamPlanBtn";
 import ChatbotBtn from "./chatbot/ChatbotBtn";
+import LogOutBtn from "./LogOutBtn";
 
 const SideBox = ({ closeSidebar }) => {
   const nav = useNavigate();
@@ -82,10 +83,11 @@ const SideBox = ({ closeSidebar }) => {
         ))}
       </section>
 
-      <section className="flex flex-col items-center gap-[1rem] mt-[2.5rem]">
+      <section className="flex flex-col items-center gap-[1rem] mt-[2.5rem] mb-10">
         <ExamPlanBtn />
         <ChatbotBtn />
       </section>
+      <LogOutBtn />
     </div>
   );
 };
