@@ -21,8 +21,14 @@ export default function SettingsModal({
       alert("작업 시간은 1분에서 120분 사이여야 합니다.");
       return;
     }
-    if (newBreakTime < 1 || newBreakTime > 60) {
-      alert("휴식 시간은 1분에서 60분 사이여야 합니다.");
+    if (
+      newBreakTime < 5 ||
+      newBreakTime > 60 ||
+      newBreakTime % 5 !== 0
+    ) {
+      alert(
+        "휴식 시간은 5분에서 60분 사이여야 하며, 5분 단위로만 설정 가능합니다."
+      );
       return;
     }
     if (newTotalCycles < 1 || newTotalCycles > 20) {
@@ -54,7 +60,7 @@ export default function SettingsModal({
           {/* 작업 시간 설정 */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">
-              작업 시간 (분)
+              작업 시간: {newWorkTime}분
             </label>
             <div className="flex items-center gap-3">
               <Button
@@ -64,20 +70,11 @@ export default function SettingsModal({
                   setNewWorkTime(Math.max(1, newWorkTime - 5))
                 }
               >
-                -5
+                -
               </Button>
-              <input
-                type="number"
-                value={newWorkTime}
-                onChange={(e) =>
-                  setNewWorkTime(
-                    Number.parseInt(e.target.value) || 1
-                  )
-                }
-                className="w-20 text-center border rounded px-2 py-1"
-                min="1"
-                max="120"
-              />
+              <div className="w-20 text-center font-semibold">
+                {newWorkTime}분
+              </div>
               <Button
                 variant="outline"
                 size="sm"
@@ -85,7 +82,7 @@ export default function SettingsModal({
                   setNewWorkTime(Math.min(120, newWorkTime + 5))
                 }
               >
-                +5
+                +
               </Button>
             </div>
           </div>
@@ -93,38 +90,29 @@ export default function SettingsModal({
           {/* 휴식 시간 설정 */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">
-              휴식 시간 (분)
+              휴식 시간: {newBreakTime}분
             </label>
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() =>
-                  setNewBreakTime(Math.max(1, newBreakTime - 1))
+                  setNewBreakTime(Math.max(5, newBreakTime - 5))
                 }
               >
-                -1
+                -
               </Button>
-              <input
-                type="number"
-                value={newBreakTime}
-                onChange={(e) =>
-                  setNewBreakTime(
-                    Number.parseInt(e.target.value) || 1
-                  )
-                }
-                className="w-20 text-center border rounded px-2 py-1"
-                min="1"
-                max="60"
-              />
+              <div className="w-20 text-center font-semibold">
+                {newBreakTime}분
+              </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() =>
-                  setNewBreakTime(Math.min(60, newBreakTime + 1))
+                  setNewBreakTime(Math.min(60, newBreakTime + 5))
                 }
               >
-                +1
+                +
               </Button>
             </div>
           </div>
@@ -132,7 +120,7 @@ export default function SettingsModal({
           {/* 반복 횟수 설정 */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">
-              반복 횟수
+              반복 횟수: {newTotalCycles}회
             </label>
             <div className="flex items-center gap-3">
               <Button
@@ -144,20 +132,11 @@ export default function SettingsModal({
                   )
                 }
               >
-                -1
+                -
               </Button>
-              <input
-                type="number"
-                value={newTotalCycles}
-                onChange={(e) =>
-                  setNewTotalCycles(
-                    Number.parseInt(e.target.value) || 1
-                  )
-                }
-                className="w-20 text-center border rounded px-2 py-1"
-                min="1"
-                max="20"
-              />
+              <div className="w-20 text-center font-semibold">
+                {newTotalCycles}회
+              </div>
               <Button
                 variant="outline"
                 size="sm"
@@ -167,7 +146,7 @@ export default function SettingsModal({
                   )
                 }
               >
-                +1
+                +
               </Button>
             </div>
           </div>
@@ -193,8 +172,23 @@ export default function SettingsModal({
           </div>
 
           {/* 버튼들 */}
-          <div className="flex gap-3">
-            <Button onClick={handleApply} className="flex-1">
+          <div className="w-1/2 flex gap-3">
+            <Button
+              onClick={handleApply}
+              className="w-full flex-1 text-white font-semibold px-8 py-2 rounded-md shadow-sm transition-colors"
+              size="lg"
+              style={{
+                backgroundColor: "#26374D",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "#1e2c3d")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "#26374D")
+              }
+            >
               적용
             </Button>
           </div>

@@ -8,8 +8,8 @@ export default function Timer() {
   const [appState, setAppState] = useState("setup"); // 'setup' 또는 'timer'
 
   // 설정 상태
-  const [workTime, setWorkTime] = useState(25); // 분 단위
-  const [breakTime, setBreakTime] = useState(5); // 분 단위
+  const [workTime, setWorkTime] = useState(25); // 분 단위 (5분 단위로 조절)
+  const [breakTime, setBreakTime] = useState(5); // 분 단위 (5분 단위로 조절)
   const [totalCycles, setTotalCycles] = useState(4); // 총 반복 횟수
 
   const [timeLeft, setTimeLeft] = useState(25 * 60); // 초 단위
@@ -144,7 +144,18 @@ export default function Timer() {
               <Button
                 onClick={() => setAppState("setup")}
                 size="lg"
-                className="px-8 bg-purple-600 hover:bg-purple-700"
+                className="px-8 text-white"
+                style={{
+                  backgroundColor: "#26374D",
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor =
+                    "#1e2c3d")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor =
+                    "#26374D")
+                }
               >
                 새로운 세션 시작하기
               </Button>
@@ -160,15 +171,27 @@ export default function Timer() {
               <div className="flex items-center justify-center gap-2">
                 {isWork ? (
                   <>
-                    <Briefcase className="h-6 w-6 text-blue-600" />
-                    <span className="text-lg font-semibold text-blue-600">
+                    <Briefcase
+                      className="h-6 w-6"
+                      style={{ color: "#26374D" }}
+                    />
+                    <span
+                      className="text-lg font-semibold"
+                      style={{ color: "#26374D" }}
+                    >
                       작업 시간
                     </span>
                   </>
                 ) : (
                   <>
-                    <Coffee className="h-6 w-6 text-green-600" />
-                    <span className="text-lg font-semibold text-green-600">
+                    <Coffee
+                      className="h-6 w-6"
+                      style={{ color: "#9DB2BF" }}
+                    />
+                    <span
+                      className="text-lg font-semibold"
+                      style={{ color: "#9DB2BF" }}
+                    >
                       휴식 시간
                     </span>
                   </>
@@ -197,15 +220,11 @@ export default function Timer() {
                       cx="50"
                       cy="50"
                       r="45"
-                      stroke="currentColor"
+                      stroke={isWork ? "#26374D" : "#9DB2BF"}
                       strokeWidth="8"
                       fill="none"
                       strokeLinecap="round"
-                      className={`transition-all duration-1000 ${
-                        isWork
-                          ? "text-blue-500"
-                          : "text-green-500"
-                      }`}
+                      className="transition-all duration-1000"
                       style={{
                         strokeDasharray: `${2 * Math.PI * 45}`,
                         strokeDashoffset: `${
@@ -245,11 +264,23 @@ export default function Timer() {
                   onClick={toggleTimer}
                   size="lg"
                   disabled={isCompleted}
-                  className={`px-8 ${
-                    isWork
-                      ? "bg-blue-600 hover:bg-blue-700"
-                      : "bg-green-600 hover:bg-green-700"
-                  } ${isCompleted ? "opacity-50" : ""}`}
+                  className={`px-8 text-white ${
+                    isCompleted ? "opacity-50" : ""
+                  }`}
+                  style={{
+                    backgroundColor: isWork
+                      ? "#26374D"
+                      : "#9DB2BF",
+                    color: isWork ? "white" : "#27374D",
+                  }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.backgroundColor =
+                      isWork ? "#1e2c3d" : "#8aa0ad")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.backgroundColor =
+                      isWork ? "#26374D" : "#9DB2BF")
+                  }
                 >
                   {isActive ? (
                     <>
@@ -269,6 +300,24 @@ export default function Timer() {
                   variant="outline"
                   size="lg"
                   className="px-6 bg-transparent"
+                  style={{
+                    color: isWork ? "#26374D" : "#9DB2BF",
+                    borderColor: isWork ? "#26374D" : "#9DB2BF",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      isWork ? "#f0f2f5" : "#f3f6f8";
+                    e.currentTarget.style.borderColor = isWork
+                      ? "#1e2c3d"
+                      : "#8aa0ad";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "transparent";
+                    e.currentTarget.style.borderColor = isWork
+                      ? "#26374D"
+                      : "#9DB2BF";
+                  }}
                 >
                   취소
                 </Button>

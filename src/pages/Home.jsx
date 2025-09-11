@@ -219,7 +219,6 @@ const Home = () => {
     }
   }, [isAuthenticated]); // isAuthenticated가 변경될 때마다 다시 실행
 
-
   return (
     <>
       {!isPlanCompleted && <StudyPlanModal />}
