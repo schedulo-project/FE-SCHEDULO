@@ -1,15 +1,35 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "./Button";
+import { useAtom } from "jotai";
+import {
+  workTimeAtom,
+  breakTimeAtom,
+  totalCyclesAtom,
+  timeLeftAtom,
+  isWorkAtom,
+  cyclesAtom,
+  isCompletedAtom,
+  appStateAtom,
+  lastUpdatedAtom,
+} from "../../atoms/TimerAtoms";
 
 export default function SettingsModal({
-  workTime,
-  breakTime,
-  totalCycles,
-  onApply,
   onClose,
   isInitial = false,
 }) {
+  // Jotai atoms
+  const [workTime, setWorkTime] = useAtom(workTimeAtom);
+  const [breakTime, setBreakTime] = useAtom(breakTimeAtom);
+  const [totalCycles, setTotalCycles] = useAtom(totalCyclesAtom);
+  const [, setTimeLeft] = useAtom(timeLeftAtom);
+  const [, setIsWork] = useAtom(isWorkAtom);
+  const [, setCycles] = useAtom(cyclesAtom);
+  const [, setIsCompleted] = useAtom(isCompletedAtom);
+  const [, setAppState] = useAtom(appStateAtom);
+  const [, setLastUpdated] = useAtom(lastUpdatedAtom);
+
+  // 로컬 상태 - 설정 중인 값
   const [newWorkTime, setNewWorkTime] = useState(workTime);
   const [newBreakTime, setNewBreakTime] = useState(breakTime);
   const [newTotalCycles, setNewTotalCycles] =
@@ -36,7 +56,16 @@ export default function SettingsModal({
       return;
     }
 
-    onApply(newWorkTime, newBreakTime, newTotalCycles);
+    // 전역 상태 업데이트
+    setWorkTime(newWorkTime);
+    setBreakTime(newBreakTime);
+    setTotalCycles(newTotalCycles);
+    setTimeLeft(newWorkTime * 60);
+    setIsWork(true);
+    setCycles(0);
+    setIsCompleted(false);
+    setLastUpdated(Date.now());
+    setAppState("timer");
   };
 
   return (

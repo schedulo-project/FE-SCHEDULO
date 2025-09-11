@@ -1,86 +1,161 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Play, Pause, Coffee, Briefcase } from "lucide-react";
 import { Button } from "../components/PomodoroTimer/Button";
 import SettingsModal from "../components/PomodoroTimer/SettingsModal";
+import { useAtom } from "jotai";
+import {
+  workTimeAtom,
+  breakTimeAtom,
+  totalCyclesAtom,
+  timeLeftAtom,
+  isActiveAtom,
+  isWorkAtom,
+  cyclesAtom,
+  isCompletedAtom,
+  appStateAtom,
+  lastUpdatedAtom,
+} from "../atoms/TimerAtoms";
 
 export default function Timer() {
-  // 앱 상태 관리
-  const [appState, setAppState] = useState("setup"); // 'setup' 또는 'timer'
+  // Jotai atoms으로 상태 관리
+  const [appState, setAppState] = useAtom(appStateAtom);
 
   // 설정 상태
-  const [workTime, setWorkTime] = useState(25); // 분 단위 (5분 단위로 조절)
-  const [breakTime, setBreakTime] = useState(5); // 분 단위 (5분 단위로 조절)
-  const [totalCycles, setTotalCycles] = useState(4); // 총 반복 횟수
+  const [workTime, setWorkTime] = useAtom(workTimeAtom);
+  const [breakTime, setBreakTime] = useAtom(breakTimeAtom);
+  const [totalCycles, setTotalCycles] = useAtom(totalCyclesAtom);
 
-  const [timeLeft, setTimeLeft] = useState(25 * 60); // 초 단위
-  const [isActive, setIsActive] = useState(false);
-  const [isWork, setIsWork] = useState(true);
-  const [cycles, setCycles] = useState(0);
-  const [isCompleted, setIsCompleted] = useState(false); // 전체 세션 완료 상태
+  const [timeLeft, setTimeLeft] = useAtom(timeLeftAtom);
+  const [isActive, setIsActive] = useAtom(isActiveAtom);
+  const [isWork, setIsWork] = useAtom(isWorkAtom);
+  const [cycles, setCycles] = useAtom(cyclesAtom);
+  const [isCompleted, setIsCompleted] = useAtom(isCompletedAtom);
+  const [lastUpdated, setLastUpdated] = useAtom(lastUpdatedAtom);
+
   const intervalRef = useRef(null);
 
+  // 타이머 재개 시 시간 보정을 위한 효과
   useEffect(() => {
-    if (isActive && timeLeft > 0 && !isCompleted) {
-      intervalRef.current = setInterval(() => {
-        setTimeLeft((time) => time - 1);
-      }, 1000);
-    } else if (timeLeft === 0 && !isCompleted) {
-      // 타이머 완료
-      if (isWork) {
-        const newCycles = cycles + 1;
-        setCycles(newCycles);
+    // 페이지 방문시 마지막 업데이트 이후의 시간 차이 계산
+    if (isActive && !intervalRef.current) {
+      const now = Date.now();
+      const elapsed = Math.floor((now - lastUpdated) / 1000);
 
-        if (newCycles >= totalCycles) {
-          // 모든 사이클 완료
-          setIsCompleted(true);
-          setIsActive(false);
-        } else {
-          // 휴식시간으로 전환 후 바로 시작
-          setIsWork(false);
-          setTimeLeft(breakTime * 60);
+      // 경과 시간이 있고 타이머가 아직 완료되지 않았다면 시간 조정
+      if (elapsed > 0 && timeLeft > 0) {
+        const newTimeLeft = Math.max(0, timeLeft - elapsed);
+        setTimeLeft(newTimeLeft);
+
+        // 타이머가 완료된 경우
+        if (newTimeLeft === 0) {
+          handleTimerComplete();
         }
-      } else {
-        // 작업시간으로 전환 후 바로 시작
-        setIsWork(true);
-        setTimeLeft(workTime * 60);
       }
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+
+      // 타이머 다시 시작
+      startTimer();
     }
 
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
-  }, [
-    isActive,
-    timeLeft,
-    isWork,
-    workTime,
-    breakTime,
-    cycles,
-    totalCycles,
-    isCompleted,
-  ]);
+  }, []);
 
-  const toggleTimer = () => {
-    setIsActive(!isActive);
+  // 타이머 완료 처리 함수
+  const handleTimerComplete = () => {
+    if (isWork) {
+      const newCycles = cycles + 1;
+      setCycles(newCycles);
+
+      if (newCycles >= totalCycles) {
+        // 모든 사이클 완료
+        setIsCompleted(true);
+        setIsActive(false);
+      } else {
+        // 휴식시간으로 전환
+        setIsWork(false);
+        setTimeLeft(breakTime * 60);
+      }
+    } else {
+      // 작업시간으로 전환
+      setIsWork(true);
+      setTimeLeft(workTime * 60);
+    }
   };
 
+  // 타이머 실행
+  const startTimer = () => {
+    if (intervalRef.current) return;
+
+    intervalRef.current = setInterval(() => {
+      setTimeLeft((time) => {
+        const newTime = time - 1;
+        setLastUpdated(Date.now());
+
+        if (newTime <= 0) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+          handleTimerComplete();
+          return 0;
+        }
+
+        return newTime;
+      });
+    }, 1000);
+  };
+
+  // isActive 상태 감시
+  useEffect(() => {
+    if (isActive) {
+      startTimer();
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isActive]);
+
+  // 타이머 토글(시작/정지)
+  const toggleTimer = () => {
+    const newIsActive = !isActive;
+    setIsActive(newIsActive);
+
+    // 타이머 상태 업데이트
+    setLastUpdated(Date.now());
+
+    if (newIsActive) {
+      startTimer();
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
+  // 타이머 취소
   const cancelTimer = () => {
     setIsActive(false);
     setIsWork(true);
     setCycles(0);
     setIsCompleted(false);
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
+
     setAppState("setup"); // 설정 화면으로 돌아가기
   };
 
+  // 시간 포맷팅 (mm:ss)
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -89,34 +164,21 @@ export default function Timer() {
       .padStart(2, "0")}`;
   };
 
+  // 진행률 계산
   const getProgress = () => {
     const totalTime = isWork ? workTime * 60 : breakTime * 60;
     return ((totalTime - timeLeft) / totalTime) * 100;
   };
 
-  const applySettings = (
-    newWorkTime,
-    newBreakTime,
-    newTotalCycles
-  ) => {
-    setWorkTime(newWorkTime);
-    setBreakTime(newBreakTime);
-    setTotalCycles(newTotalCycles);
-    setTimeLeft(newWorkTime * 60);
-    setIsWork(true);
-    setCycles(0);
-    setIsCompleted(false);
-    setAppState("timer"); // 타이머 화면으로 전환
+  // 설정 모달로 전환
+  const openSettings = () => {
+    setAppState("setup"); // 설정 모달로 전환
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       {appState === "setup" ? (
         <SettingsModal
-          workTime={workTime}
-          breakTime={breakTime}
-          totalCycles={totalCycles}
-          onApply={applySettings}
           onClose={() => {}} // 초기 화면에서는 닫기 불가
           isInitial={true}
         />
