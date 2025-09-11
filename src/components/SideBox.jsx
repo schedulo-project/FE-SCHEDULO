@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import bookImg from "../assets/logo/book_square.svg";
+import logoimage from "../assets/logo/logoimage.svg";
 import SideBtn from "./SideBtn";
 import ExamPlanBtn from "./examplan/ExamPlanBtn";
 import ChatbotBtn from "./chatbot/ChatbotBtn";
@@ -52,18 +52,13 @@ const SideBox = ({ closeSidebar }) => {
         </button>
       </div>
 
-      <section className="flex justify-center items-center gap-[0.25rem]">
+      <section className="flex justify-center items-center gap-[0.25rem] mb-6 mt-2">
         <img
-          className="w-[1.86506rem] h-[1.86506rem] hidden lg:block"
-          src={bookImg}
-        />
-
-        <button
-          className="text-[#27374D] text-[1.49206rem] font-[Josefin Sans] font-semibold hidden lg:block"
+          className="w-48 h-auto hidden lg:block cursor-pointer"
           onClick={() => nav("/")}
-        >
-          Schedulo
-        </button>
+          src={logoimage}
+          alt="로고"
+        />
       </section>
 
       <section className="flex flex-col items-center gap-[1.11906rem] mt-[2.41rem]">

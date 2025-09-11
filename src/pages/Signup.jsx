@@ -47,12 +47,16 @@ const Signup = () => {
       );
 
       if (response.success) {
-        alert("회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.");
+        alert(
+          "회원가입이 완료되었습니다! 로그인 페이지로 이동합니다."
+        );
         navigate("/login");
       }
     } catch (error) {
       console.error("회원가입 실패:", error);
-      setSignupError("회원가입에 실패했습니다. 다시 시도해주세요.");
+      setSignupError(
+        "회원가입에 실패했습니다. 다시 시도해주세요."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -66,8 +70,16 @@ const Signup = () => {
 
   // 진행률 표시
   const progressSteps = [
-    { step: 1, title: "서비스 회원가입", description: "기본 정보 입력" },
-    { step: 2, title: "샘물 연동", description: "학사정보 연동" },
+    {
+      step: 1,
+      title: "서비스 회원가입",
+      description: "기본 정보 입력",
+    },
+    {
+      step: 2,
+      title: "샘물 연동",
+      description: "학사정보 연동",
+    },
   ];
 
   return (
@@ -75,14 +87,20 @@ const Signup = () => {
       <div className="flex flex-col items-center max-w-md w-full">
         {/* 로고 + 서비스명 */}
         <div className="flex items-center gap-2 mb-8">
-          <img src={logoimage} alt="로고 이미지" className="w-10 h-10" />
-          <p className="text-[#2D3748] text-2xl font-semibold">Schedulo</p>
+          <img
+            src={logoimage}
+            alt="로고 이미지"
+            className="w-48 h-auto"
+          />
         </div>
         {/* 진행률 표시 */}
         <div className="w-full mb-8">
           <div className="flex items-center justify-between mb-4">
             {progressSteps.map((step, index) => (
-              <div key={step.step} className="flex flex-col items-center">
+              <div
+                key={step.step}
+                className="flex flex-col items-center"
+              >
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                     currentStep >= step.step
@@ -139,7 +157,8 @@ const Signup = () => {
                 {...register("email", {
                   required: "이메일을 입력해주세요",
                   pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    value:
+                      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                     message: "올바른 이메일 형식이 아닙니다",
                   },
                 })}
@@ -162,7 +181,8 @@ const Signup = () => {
                   required: "비밀번호를 입력해주세요",
                   minLength: {
                     value: 4,
-                    message: "비밀번호는 최소 4자 이상이어야 합니다",
+                    message:
+                      "비밀번호는 최소 4자 이상이어야 합니다",
                   },
                 })}
               />
@@ -176,14 +196,17 @@ const Signup = () => {
             <div className="w-full">
               <input
                 className={`w-full p-3 rounded-md bg-gray-100 text-sm ${
-                  errors.confirmPassword ? "border border-red-500" : ""
+                  errors.confirmPassword
+                    ? "border border-red-500"
+                    : ""
                 }`}
                 type="password"
                 placeholder="비밀번호 확인"
                 {...register("confirmPassword", {
                   required: "비밀번호 확인을 입력해주세요",
                   validate: (value) =>
-                    value === password || "비밀번호가 일치하지 않습니다",
+                    value === password ||
+                    "비밀번호가 일치하지 않습니다",
                 })}
               />
               {errors.confirmPassword && (
@@ -204,7 +227,10 @@ const Signup = () => {
                     required: "서비스 이용약관에 동의해주세요",
                   })}
                 />
-                <label htmlFor="serviceAgree" className="text-sm text-gray-700">
+                <label
+                  htmlFor="serviceAgree"
+                  className="text-sm text-gray-700"
+                >
                   [필수] 서비스 이용약관 동의
                 </label>
               </div>
@@ -237,6 +263,19 @@ const Signup = () => {
             >
               다음 단계
             </button>
+
+            {/* 로그인 화면으로 돌아가기 */}
+            <div className="mt-4 text-center">
+              <span className="text-sm text-gray-500">
+                이미 계정이 있으신가요?
+              </span>
+              <a
+                href="/login"
+                className="text-sm text-[#2D3748] hover:underline ml-2 font-medium"
+              >
+                로그인
+              </a>
+            </div>
           </form>
         )}
 
@@ -265,11 +304,12 @@ const Signup = () => {
             {/* 샘물 연동 안내 */}
             <div className="bg-blue-50 p-3 rounded-md mb-4">
               <p className="text-sm text-blue-800">
-                샘물 연동을 통해 수강신청 정보와 학사일정을 자동으로 가져올 수
-                있습니다.
+                샘물 연동을 통해 수강신청 정보와 학사일정을
+                자동으로 가져올 수 있습니다.
                 <br />
                 <span className="text-xs text-blue-600 mt-1 block">
-                  * 선택사항이며, 나중에 설정에서도 연동할 수 있습니다.
+                  * 선택사항이며, 나중에 설정에서도 연동할 수
+                  있습니다.
                 </span>
               </p>
             </div>
@@ -280,7 +320,9 @@ const Signup = () => {
                 <div className="w-full">
                   <input
                     className={`w-full p-3 rounded-md bg-gray-100 text-sm ${
-                      errors.studentId ? "border border-red-500" : ""
+                      errors.studentId
+                        ? "border border-red-500"
+                        : ""
                     }`}
                     placeholder="학번"
                     {...register("studentId", {
@@ -303,7 +345,9 @@ const Signup = () => {
                 <div className="w-full">
                   <input
                     className={`w-full p-3 rounded-md bg-gray-100 text-sm ${
-                      errors.studentPassword ? "border border-red-500" : ""
+                      errors.studentPassword
+                        ? "border border-red-500"
+                        : ""
                     }`}
                     type="password"
                     placeholder="샘물 비밀번호"
@@ -338,6 +382,19 @@ const Signup = () => {
               >
                 {isLoading ? "회원가입 중..." : "회원가입 완료"}
               </button>
+            </div>
+
+            {/* 로그인 화면으로 돌아가기 */}
+            <div className="mt-4 text-center">
+              <span className="text-sm text-gray-500">
+                이미 계정이 있으신가요?
+              </span>
+              <a
+                href="/login"
+                className="text-sm text-[#2D3748] hover:underline ml-2 font-medium"
+              >
+                로그인
+              </a>
             </div>
           </form>
         )}

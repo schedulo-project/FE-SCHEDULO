@@ -39,15 +39,12 @@ const Login = () => {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center gap-8 p-8 max-w-md mx-auto">
       {/* 로고 및 서비스명 */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-center gap-2 mb-4">
         <img
           src={logoimage}
           alt="로고 이미지"
-          className="w-10 h-10"
+          className="w-48 h-auto"
         />
-        <p className="text-[#2D3748] text-2xl font-semibold">
-          Schedulo
-        </p>
       </div>
 
       <div className="flex items-center gap-2">
@@ -65,7 +62,6 @@ const Login = () => {
           {loginError}
         </div>
       )}
-
       {/* 로그인 입력창 */}
       <form
         className="w-full flex flex-col gap-4"
@@ -124,18 +120,14 @@ const Login = () => {
           {isLoading ? "로그인 중..." : "로그인"}
         </button>
       </form>
-
-      {/* pw 찾기 및 회원가입 */}
-      <div className="mt-6 flex flex-col items-center gap-3">
-        <a
-          href="#"
-          className="text-sm text-gray-500 hover:underline"
-        >
-          비밀번호를 잊으셨나요?
-        </a>
+      {/* 회원가입 안내 */}
+      <div className="mt-6 text-center">
+        <span className="text-sm text-gray-500">
+          아직 계정이 없으신가요?
+        </span>
         <a
           href="/signup"
-          className="text-sm text-gray-500 hover:underline"
+          className="text-sm text-[#2D3748] hover:underline ml-2 font-medium"
         >
           회원가입
         </a>
