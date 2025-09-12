@@ -56,6 +56,10 @@ function CheckSchedule({ selectedDateEvents }) {
         </span>
         <span className="text-[#010669] text-[10px] font-semibold font-[Inter] flex items-center gap-2">
           {selectedDateEvents[0].date}
+          {selectedDateEvents[0].deadline &&
+            selectedDateEvents[0].deadline !==
+              selectedDateEvents[0].date &&
+            ` ~ ${selectedDateEvents[0].deadline}`}
           <DropDown />
           {/* 드롭다운 컴포넌트 */}
 

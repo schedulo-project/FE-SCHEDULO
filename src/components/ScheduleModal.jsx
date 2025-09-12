@@ -528,6 +528,9 @@ const ScheduleModal = () => {
           <section className="flex gap-2 items-center">
             <span className="text-[1.25rem] font-semibold">
               {date}
+              {data.deadline &&
+                data.deadline !== date &&
+                ` ~ ${data.deadline}`}
             </span>
             {isEditMode && (
               <button className="relative w-[1.3125rem] h-[1.3125rem]">
