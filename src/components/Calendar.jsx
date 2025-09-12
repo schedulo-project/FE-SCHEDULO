@@ -372,8 +372,32 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
         dayPropGetter={dayPropGetter}
         length={7} // 이벤트 표시 길이 제한
         popup={true} // 팝업 활성화
+        // 주간 보기에서 시간을 완전히 숨기고 일정만 표시하기 위한 설정
+        step={1440} // 하루 단위로 표시 (24시간 = 1440분)
+        timeslots={1} // 시간 슬롯 수를 1개로 설정
+        showMultiDayTimes={false} // 여러 날에 걸친 시간 이벤트를 표시하지 않음
+        min={new Date(0, 0, 0, 0, 0, 0)} // 최소 시간 (0시)
+        max={new Date(0, 0, 0, 0, 0, 0)} // 최대 시간도 0시로 설정하여 시간 슬롯 영역 최소화
+        defaultAllDay={true} // 모든 이벤트를 종일 이벤트로 처리
         components={{
           toolbar: CustomToolbar,
+          // 주간 뷰에서도 종일 이벤트처럼 표시하기 위한 커스텀 컴포넌트
+          timeGutterHeader: () => null, // 시간 헤더 숨기기
+          timeGutterWrapper: () => null, // 시간 열 숨기기
+          timeSlotWrapper: ({ children }) => children, // 시간 슬롯 간소화
+          week: {
+            // 주간 뷰 커스터마이징
+            header: ({ date }) => (
+              <span style={{ fontWeight: "600" }}>
+                {moment(date).format("ddd")}
+              </span>
+            ),
+          },
+        }}
+        // 주간 보기에서 시간 숨기기 위한 설정
+        formats={{
+          timeGutterFormat: () => "", // 시간 포맷을 빈 문자열로 설정
+          dayFormat: "ddd", // 요일만 표시
         }}
         messages={{
           today: "오늘",

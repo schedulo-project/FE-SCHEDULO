@@ -1,0 +1,215 @@
+/* 주간 뷰를 위한 추가 스타일 */
+
+/* 주간 뷰 컨테이너 스타일링 - 전체를 일정 영역으로 */
+.rbc-time-view {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(39, 55, 77, 0.08);
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  height: 100% !important;
+}
+
+/* 주간 뷰에서 일정 영역만 표시하기 위한 추가 스타일 */
+.rbc-week-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 시간 구분선 제거 */
+.rbc-time-view .rbc-time-content {
+  border-top: none;
+}
+
+.rbc-time-view .rbc-time-header {
+  border-bottom: none;
+}
+
+/* 시간 열 완전히 숨기기 */
+.rbc-time-view .rbc-time-gutter,
+.rbc-time-view .rbc-time-header-gutter {
+  width: 0;
+  display: none;
+}
+
+/* 주간 뷰의 이벤트 컨테이너 스타일링 - 전체를 일정 영역으로 */
+.rbc-time-view .rbc-day-slot {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  flex: 1;
+  position: relative;
+  overflow: visible;
+}
+
+/* 시간 슬롯 제거 및 전체 영역을 일정 표시 공간으로 */
+.rbc-time-view .rbc-timeslot-group {
+  min-height: 400px !important;
+  max-height: 400px !important;
+  height: 400px !important;
+  border-bottom: none !important;
+  border-top: none !important;
+  background-color: white;
+  position: relative;
+}
+
+/* 시간 슬롯 내부에 표시되는 시간 라벨 숨기기 */
+.rbc-time-view .rbc-label {
+  display: none !important;
+}
+
+/* 일정 이벤트 스타일링 - 주간 보기에서 최적화 */
+.rbc-time-view .rbc-event {
+  padding: 8px 10px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 8px 4px !important;
+  border-radius: 8px !important;
+  min-height: 40px !important;
+  height: auto !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+/* 주간 보기에서 이벤트 래퍼 설정 */
+.rbc-time-view .rbc-event-label {
+  display: none !important; /* 시간 표시 제거 */
+}
+
+/* 주간 보기에서 이벤트 내용 설정 */
+.rbc-time-view .rbc-event-content {
+  width: 100% !important;
+  white-space: normal !important; /* 내용이 길어도 줄바꿈 */
+  overflow: visible !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+}
+
+/* 날짜 헤더 스타일링 */
+.rbc-time-header-content {
+  background-color: white;
+  border-left: none !important;
+}
+
+/* 날짜 셀 테두리 */
+.rbc-time-view .rbc-header {
+  border-bottom: 1px solid #dde6ed;
+  padding: 12px 4px;
+}
+
+/* 이벤트 영역에 스크롤바 제거 및 레이아웃 조정 */
+.rbc-time-content {
+  overflow: hidden !important;
+  margin-top: 0;
+  display: flex;
+  flex-direction: row;
+  min-height: 300px; /* 주간 뷰의 높이 설정 - 일정을 표시하기에 적절한 높이 */
+}
+
+/* 타임슬롯 그룹 사이의 경계선 제거 */
+.rbc-time-content > .rbc-day-slot {
+  border-left: 1px solid #dde6ed !important;
+}
+
+/* 첫 번째 날짜 열의 왼쪽 경계선 제거 */
+.rbc-time-content > .rbc-day-slot:first-child {
+  border-left: none !important;
+}
+
+/* 시간 구분선 제거 */
+.rbc-time-slot {
+  border: none !important;
+}
+
+/* 시간 표시를 완전히 숨기기 */
+.rbc-time-view .rbc-time-content .rbc-time-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 시간 슬롯 간격 제거 */
+.rbc-time-view
+  .rbc-time-content
+  .rbc-time-column
+  .rbc-timeslot-group {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+/* 시간 슬롯 내의 실제 시간 표시 요소 완전히 제거 */
+.rbc-time-view
+  .rbc-time-content
+  .rbc-time-column
+  .rbc-timeslot-group
+  .rbc-time-slot {
+  display: none !important;
+  visibility: hidden;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex: 0;
+  border: none !important;
+}
+
+/* 시간 슬롯 자체를 없애고 일정 영역만 표시 */
+.rbc-time-slot {
+  display: none !important;
+}
+
+/* 이벤트만 표시되도록 설정 - 전체 영역을 이벤트 표시 공간으로 */
+.rbc-time-view .rbc-day-slot .rbc-events-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin-right: 0;
+  margin-bottom: 0; /* 하단 마진 제거 */
+  height: 100% !important; /* 높이를 100%로 설정하여 전체 영역 채우기 */
+  width: 100% !important; /* 너비도 100%로 설정 */
+}
+
+/* 주간 뷰에서 이벤트 레이아웃 개선 - 전체를 일정 영역으로 */
+.rbc-time-view .rbc-day-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100% !important;
+}
+
+/* 주간 뷰에서 시간 내용 영역 조정 - 전체를 일정 컨테이너로 */
+.rbc-time-view .rbc-time-content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 0; /* 패딩 제거 */
+  border-top: none !important; /* 상단 테두리 제거 */
+  min-height: 400px !important; /* 높이 설정 */
+  height: 100% !important;
+  overflow: visible !important;
+}
+
+/* 요일 헤더 개선 */
+.rbc-time-view .rbc-time-header {
+  border-bottom: 1px solid #dde6ed; /* 헤더 아래 구분선 */
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 타임슬롯 그룹을 일정 컨테이너로 사용 */
+.rbc-timeslot-group {
+  min-height: 400px !important; /* 높이 고정 - 이벤트를 충분히 표시할 수 있는 높이 */
+  max-height: 400px !important;
+  height: 400px !important;
+  flex: 1;
+  display: block !important; /* flex 대신 block으로 변경 */
+  position: relative;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
