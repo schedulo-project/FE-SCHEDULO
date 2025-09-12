@@ -75,6 +75,7 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
             tagColor: event.tagColor,
             is_completed: event.is_completed,
             deadline: event.deadline,
+            content: event.content || "", // 내용 추가
           },
           startStr: moment(event.start).format("YYYY-MM-DD"),
         },
@@ -117,41 +118,139 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
     view,
   }) => {
     return (
-      <div className="rbc-toolbar">
-        <div className="rbc-btn-group">
+      <div className="flex justify-between items-center my-4 px-4">
+        <div className="flex items-center">
+          <button
+            type="button"
+            onClick={() => onNavigate("TODAY")}
+            style={{
+              marginRight: "10px",
+              border: "none",
+              backgroundColor: "white",
+              color: "#27374D",
+              padding: "5px 10px",
+              borderRadius: "4px",
+              fontSize: "0.9rem",
+              fontWeight: "500",
+              transition: "all 0.2s ease",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#F0F4F8";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "white";
+            }}
+          >
+            Today
+          </button>
+        </div>
+        <div className="flex items-center">
           <button
             type="button"
             onClick={() => onNavigate("PREV")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "none",
+              marginRight: "15px",
+            }}
           >
-            이전
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 18L9 12L15 6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
+          <div className="rbc-toolbar-label">{label}</div>
           <button
             type="button"
             onClick={() => onNavigate("NEXT")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "none",
+              marginLeft: "15px",
+            }}
           >
-            다음
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 6L15 12L9 18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
         </div>
-        <div className="rbc-toolbar-label">{label}</div>
-        <div className="rbc-btn-group">
+        <div className="flex">
           <button
             type="button"
             onClick={handleAddEventClick}
             style={{
-              backgroundColor: "#007bff",
-              color: "white",
+              backgroundColor: "white",
+              color: "#27374D",
               border: "none",
-              borderRadius: "4px",
-              padding: "6px 12px",
-              marginRight: "8px",
+              borderRadius: "50%",
+              width: "24px",
+              height: "24px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: "10px",
+              fontWeight: "bold",
+              fontSize: "24px",
+              boxShadow: "none",
+              transition: "all 0.2s ease",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#F0F4F8";
+              e.currentTarget.style.color = "#526D82";
+              e.currentTarget.style.transform =
+                "translateY(-2px)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "white";
+              e.currentTarget.style.color = "#27374D";
+              e.currentTarget.style.transform = "translateY(0)";
             }}
           >
             +
           </button>
-          <button
+          {/* <button
             type="button"
             className={view === Views.MONTH ? "rbc-active" : ""}
             onClick={() => onView(Views.MONTH)}
+            style={{
+              marginRight: "5px",
+              padding: "6px 12px",
+              borderRadius: "4px",
+              border: "1px solid #9DB2BF",
+              background:
+                view === Views.MONTH ? "#27374D" : "white",
+              color: view === Views.MONTH ? "white" : "#27374D",
+              fontWeight: view === Views.MONTH ? "600" : "500",
+              fontSize: "0.9rem",
+              transition: "all 0.2s ease",
+            }}
           >
             월간
           </button>
@@ -159,16 +258,77 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
             type="button"
             className={view === Views.WEEK ? "rbc-active" : ""}
             onClick={() => onView(Views.WEEK)}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "4px",
+              border: "1px solid #9DB2BF",
+              background:
+                view === Views.WEEK ? "#27374D" : "white",
+              color: view === Views.WEEK ? "white" : "#27374D",
+              fontWeight: view === Views.WEEK ? "600" : "500",
+              fontSize: "0.9rem",
+              transition: "all 0.2s ease",
+            }}
           >
             주간
-          </button>
+          </button> */}
         </div>
       </div>
     );
   };
 
+  // 커스텀 이벤트 스타일링 함수
+  const eventStyleGetter = (event) => {
+    let style = {
+      backgroundColor: event.tagColor || "#526D82",
+      borderRadius: "4px",
+      opacity: 0.9,
+      color: "#fff",
+      border: "none",
+      display: "block",
+      fontSize: "0.85em",
+      boxShadow: "0 2px 3px rgba(39, 55, 77, 0.2)",
+    };
+
+    // 완료된 이벤트는 다르게 스타일링
+    if (event.is_completed) {
+      style.backgroundColor = "#9DB2BF";
+      style.textDecoration = "line-through";
+      style.opacity = 0.7;
+    }
+
+    return { style };
+  };
+
+  // 날짜 셀 스타일링 함수
+  const dayPropGetter = (date) => {
+    const today = new Date();
+    if (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    ) {
+      return {
+        className: "rbc-today",
+        style: {
+          backgroundColor: "rgba(82, 109, 130, 0.15)",
+        },
+      };
+    }
+    return {};
+  };
+
   return (
-    <div style={{ height: "600px" }}>
+    <div
+      style={{
+        height: "600px",
+        borderRadius: "16px",
+        overflow: "hidden",
+        boxShadow: "0 10px 25px rgba(39, 55, 77, 0.08)",
+        border: "1px solid #DDE6ED",
+        padding: "0",
+      }}
+    >
       <BigCalendar
         localizer={localizer}
         events={formattedEvents}
@@ -181,6 +341,8 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
         onSelectSlot={handleSlotSelect}
         onSelectEvent={handleEventSelect}
         onShowMore={handleShowMore}
+        eventPropGetter={eventStyleGetter}
+        dayPropGetter={dayPropGetter}
         components={{
           toolbar: CustomToolbar,
         }}
@@ -195,10 +357,14 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
           date: "날짜",
           time: "시간",
           event: "이벤트",
-          noEventsInRange: "이 기간에는 이벤트가 없습니다.",
+          noEventsInRange: "이 기간에는 일정이 없습니다.",
           showMore: (total) => `+ ${total}개 더 보기`,
         }}
-        style={{ height: "100%", width: "100%" }}
+        style={{
+          height: "100%",
+          width: "100%",
+          backgroundColor: "white",
+        }}
       />
     </div>
   );

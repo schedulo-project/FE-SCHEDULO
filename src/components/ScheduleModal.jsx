@@ -83,46 +83,49 @@ const ScheduleModal = () => {
   // 일정 추가 시 초기화
   useEffect(() => {
     if (isModalOpen) {
-      setTitle(""); // 제목 초기화
-      setContent(""); // 내용 초기화
-      setDate(today); // 모달 창 꺼질 때 오늘 일정으로 초기화
-      setSelectedTags([]); // 태그 초기화
-      setCompleted(false);
-      setShowDateRange(false); // Date Range Picker 숨기기
+      // 일정 추가 모드 (id가 null일 때)
+      if (data.id === null) {
+        setTitle(""); // 제목 초기화
+        setContent(""); // 내용 초기화
+        setDate(today); // 모달 창 꺼질 때 오늘 일정으로 초기화
+        setSelectedTags([]); // 태그 초기화
+        setCompleted(false);
+        setShowDateRange(false); // Date Range Picker 숨기기
 
-      // Date Range 초기화
-      setDateRange([
-        {
-          startDate: new Date(),
-          endDate: new Date(),
-          key: "selection",
-        },
-      ]);
+        // Date Range 초기화
+        setDateRange([
+          {
+            startDate: new Date(),
+            endDate: new Date(),
+            key: "selection",
+          },
+        ]);
+      }
+      // 일정 수정 모드 (id가 있을 때)
+      else {
+        console.log("모달 데이터:", data); // 디버깅용
+        setTitle(data.title || "");
+        setContent(data.content || "");
+        setDate(data.date || today);
+        setSelectedTags(data.tagName || []);
+        setCompleted(data.is_completed || false);
+        setIsEditMode(false);
+
+        // 기존 일정의 날짜 범위 설정
+        const startDate = new Date(data.date || today);
+        const endDate = data.deadline
+          ? new Date(data.deadline)
+          : startDate;
+        setDateRange([
+          {
+            startDate,
+            endDate,
+            key: "selection",
+          },
+        ]);
+      }
     }
-
-    // 일정 수정 모드 진입 시 값 세팅
-    if (isModalOpen && data.id !== null) {
-      setTitle(data.title || "");
-      setContent(data.content || "");
-      setDate(data.date || today);
-      setSelectedTags(data.tagName || []);
-      setCompleted(data.is_completed || false);
-      setIsEditMode(false);
-
-      // 기존 일정의 날짜 범위 설정
-      const startDate = new Date(data.date || today);
-      const endDate = data.deadline
-        ? new Date(data.deadline)
-        : startDate;
-      setDateRange([
-        {
-          startDate,
-          endDate,
-          key: "selection",
-        },
-      ]);
-    }
-  }, [isModalOpen]);
+  }, [isModalOpen, data]);
 
   if (!isModalOpen) return null;
 

@@ -126,11 +126,12 @@ const Home = () => {
   // 캘린더 일정 클릭 시 모달 켜기
   const handleEventClick = (clickInfo) => {
     const clickedEvent = clickInfo.event; // clickedEvent : 클릭된 일정의 정보
+    console.log("clickedEvent", clickedEvent);
+    console.log("clickInfo", clickInfo);
 
     // clickedEventData : 클린된 일정의 정보 가공한 데이터
     const clickedEventData = {
       id: Number(clickedEvent.id), // 고친 부분 기존에는 string으로 들어옴 event.id는 number여서 문제가 생겼음
-
       title: clickedEvent.title,
       date: clickedEvent.startStr,
       content: clickedEvent.extendedProps.content || "",
@@ -139,8 +140,6 @@ const Home = () => {
       is_completed: clickedEvent.extendedProps.is_completed,
       deadline: clickedEvent.extendedProps.deadline || null,
     };
-    console.log("clickedEvent", clickedEvent);
-    console.log("clickInfo", clickInfo);
 
     setModalData(clickedEventData);
     setIsModalOpen(true);
