@@ -184,9 +184,18 @@ const ScheduleModal = () => {
 
   // 태그 추가
   const handleCreate = (inputValue) => {
-    const newTags = { value: inputValue, label: inputValue };
+    // 태그를 생성할 때 기본 색상도 함께 지정
+    const defaultColor = "#526D82"; // 기본 색상
+    const newTags = {
+      value: inputValue,
+      label: inputValue,
+      color: defaultColor,
+    };
     setTagList((prev) => [...prev, newTags]);
     addTags(inputValue);
+
+    // 새 태그를 선택된 태그에 즉시 추가
+    setSelectedTags((prev) => [...prev, newTags]);
   };
 
   // 일정 추가
@@ -214,8 +223,36 @@ const ScheduleModal = () => {
       completed,
       deadline,
     };
-    await addSchedules(newData);
-    setEvents((prev) => [...prev, newData]);
+
+    // API 호출
+    const response = await addSchedules(newData);
+
+    // 태그 색상 정보를 추가한 이벤트 객체 생성
+    const newEvent = {
+      id: response.data.id,
+      title,
+      tagName: selectedTags.map((tag) => tag.label).join(", "),
+      // 각 태그의 색상 정보 추출 (selectedTags 객체에서 color 속성)
+      tagColor: selectedTags
+        .map((tag) => tag.color || "#526D82")
+        .join(", "),
+      content,
+      date: startDate,
+      is_completed: completed,
+      deadline,
+    };
+
+    console.log("추가된 새 일정:", newEvent);
+    console.log(
+      "태그 색상 정보:",
+      selectedTags.map((tag) => ({
+        label: tag.label,
+        color: tag.color,
+      }))
+    );
+
+    // 이벤트 목록에 추가
+    setEvents((prev) => [...prev, newEvent]);
     setIsModalOpen(false);
   };
 
@@ -244,9 +281,34 @@ const ScheduleModal = () => {
       completed,
       deadline,
     };
+
     await updateSchedules(updateData);
+
+    // 태그 색상 정보를 포함한 업데이트된 이벤트 객체
+    const updatedEventData = {
+      id: data.id,
+      title,
+      content,
+      date: startDate,
+      tagName: selectedTags.map((tag) => tag.label).join(", "),
+      tagColor: selectedTags
+        .map((tag) => tag.color || "#526D82")
+        .join(", "),
+      is_completed: completed,
+      deadline,
+    };
+
+    console.log("수정된 일정:", updatedEventData);
+    console.log(
+      "태그 색상 정보:",
+      selectedTags.map((tag) => ({
+        label: tag.label,
+        color: tag.color,
+      }))
+    );
+
     alert("일정 수정 완료되었습니다.");
-    sethandleChange({ data: updateData, id: data.id });
+    sethandleChange({ data: updatedEventData, id: data.id });
     setIsModalOpen(false);
     setIsEditMode(false);
   };
@@ -305,6 +367,21 @@ const ScheduleModal = () => {
                 onChange={handleTagChange}
                 onCreateOption={handleCreate}
                 placeholder="태그 선택"
+                formatOptionLabel={(option) => (
+                  <div className="flex items-center">
+                    <div
+                      style={{
+                        backgroundColor:
+                          option.color || "#526D82",
+                        width: "12px",
+                        height: "12px",
+                        borderRadius: "50%",
+                        marginRight: "8px",
+                      }}
+                    />
+                    {option.label}
+                  </div>
+                )}
               />
             </section>
           </section>

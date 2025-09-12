@@ -148,16 +148,29 @@ const Home = () => {
   // react-big-calendar에 맞게 이벤트 형식 변환
   const calendarEvents = events
     .filter((event) => !event.is_completed) // 완료되지 않은 일정만 포함
-    .map((event) => ({
-      id: event.id,
-      title: event.title,
-      date: event.date,
-      tagName: event.tagName,
-      tagColor: event.tagColor || "", // 태그 색상 추가
-      is_completed: event.is_completed,
-      content: event.content,
-      deadline: event.deadline,
-    }));
+    .map((event) => {
+      // 첫 번째 태그의 색상 추출
+      const firstTagColor = event.tagColor
+        ? event.tagColor.split(",")[0].trim()
+        : "#526D82"; // 태그 색상이 없을 경우 기본 색상
+
+      console.log(
+        `일정 [${event.title}]의 태그 색상: `,
+        event.tagColor,
+        ` => 선택된 색상: ${firstTagColor}`
+      );
+
+      return {
+        id: event.id,
+        title: event.title,
+        date: event.date,
+        tagName: event.tagName,
+        tagColor: firstTagColor, // 첫 번째 태그 색상 사용
+        is_completed: event.is_completed,
+        content: event.content,
+        deadline: event.deadline,
+      };
+    });
 
   // 이캠퍼스 크롤링 데이터 가져오기
   const handleFetchECampus = async () => {

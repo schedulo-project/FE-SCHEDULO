@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Calendar as BigCalendar,
   momentLocalizer,
@@ -19,7 +18,6 @@ import {
   modalDataAtom,
 } from "../atoms/HomeAtoms";
 
-// moment localizer 설정
 moment.locale("ko");
 const localizer = momentLocalizer(moment);
 
@@ -27,42 +25,61 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
   const [, setIsModalOpen] = useAtom(isModalOpenAtom);
   const [modalData, setModalData] = useAtom(modalDataAtom); // 모달에 보여줄 데이터
 
-  // react-big-calendar용 이벤트 형식으로 변환
   const formattedEvents =
     events?.map((event) => {
-      // date가 있으면 사용하고, 없으면 start 사용
       const eventDate = event.date || event.start;
-      const startDate = new Date(eventDate);
+      const dateParts = eventDate.split("T")[0].split("-");
+      const year = parseInt(dateParts[0], 10);
+      const month = parseInt(dateParts[1], 10) - 1; // 월은 0부터 시작
+      const day = parseInt(dateParts[2], 10);
 
-      // deadline이 있으면 deadline까지, 없으면 하루짜리 이벤트
+      const startDate = new Date(year, month, day);
       let endDate;
+      let allDay = true; // 모든 이벤트를 종일 이벤트로 처리
+
       if (event.deadline) {
-        endDate = new Date(event.deadline);
-        // deadline이 있는 경우, deadline 다음날을 end로 설정 (react-big-calendar는 end를 exclusive로 처리)
-        endDate.setDate(endDate.getDate());
+        const deadlineParts = event.deadline
+          .split("T")[0]
+          .split("-");
+        const dlYear = parseInt(deadlineParts[0], 10);
+        const dlMonth = parseInt(deadlineParts[1], 10) - 1; // 월은 0부터 시작
+        const dlDay = parseInt(deadlineParts[2], 10);
+
+        endDate = new Date(dlYear, dlMonth, dlDay);
+        const nextDay = new Date(endDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        endDate = nextDay;
       } else {
-        // deadline이 없으면 하루 종일 이벤트로 설정
-        endDate = new Date(eventDate);
+        endDate = new Date(startDate);
         endDate.setDate(endDate.getDate() + 1);
+        endDate.setHours(0, 0, 0, 0);
       }
+
+      // 디버깅을 위한 로그
+      console.log(`이벤트 [${event.title}] 날짜 설정:`, {
+        원본날짜: eventDate,
+        시작일: startDate.toISOString().split("T")[0],
+        종료일: endDate.toISOString().split("T")[0],
+        데드라인: event.deadline,
+        종일여부: allDay,
+      });
 
       return {
         ...event,
         start: startDate,
         end: endDate,
         title: event.title,
+        allDay: allDay, // 종일 이벤트로 설정
         resource: event, // 원본 이벤트 데이터를 resource에 저장
       };
     }) || [];
 
-  // 날짜 클릭 이벤트 핸들러 (슬롯 선택)
   const handleSlotSelect = ({ start, end }) => {
     if (onDateClick) {
       onDateClick(moment(start).format("YYYY-MM-DD"));
     }
   };
 
-  // 이벤트 클릭 핸들러
   const handleEventSelect = (event) => {
     if (onEventClick) {
       // FullCalendar 형식에 맞게 변환
@@ -84,11 +101,8 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
     }
   };
 
-  // 더보기 클릭 핸들러
   const handleShowMore = (events, date) => {
     console.log("더보기 클릭:", date, events);
-    // 해당 날짜의 모든 이벤트를 보여주는 모달이나 팝업을 열 수 있습니다
-    // 예시: 날짜 클릭과 같은 동작으로 처리
     if (onDateClick) {
       onDateClick(moment(date).format("YYYY-MM-DD"));
     }
@@ -110,7 +124,6 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
     setIsModalOpen(true);
   };
 
-  // 커스텀 툴바 컴포넌트
   const CustomToolbar = ({
     label,
     onNavigate,
@@ -235,7 +248,7 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
           >
             +
           </button>
-          {/* <button
+          <button
             type="button"
             className={view === Views.MONTH ? "rbc-active" : ""}
             onClick={() => onView(Views.MONTH)}
@@ -271,7 +284,7 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
             }}
           >
             주간
-          </button> */}
+          </button>
         </div>
       </div>
     );
@@ -279,6 +292,7 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
 
   // 커스텀 이벤트 스타일링 함수
   const eventStyleGetter = (event) => {
+    // 기본 스타일 설정
     let style = {
       backgroundColor: event.tagColor || "#526D82",
       borderRadius: "4px",
@@ -289,6 +303,19 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
       fontSize: "0.85em",
       boxShadow: "0 2px 3px rgba(39, 55, 77, 0.2)",
     };
+
+    // 하루짜리 이벤트인지 확인 (deadline이 없거나 시작일과 같을 때)
+    const isSingleDayEvent =
+      !event.deadline || event.date === event.deadline;
+
+    if (isSingleDayEvent) {
+      // 하루짜리 이벤트는 좀 더 명확한 스타일링
+      style.borderRadius = "8px";
+      style.margin = "0 2px";
+      style.fontWeight = "500";
+      // 하루짜리 이벤트를 명확히 구분하기 위한 추가 스타일
+      style.width = "calc(100% - 4px)";
+    }
 
     // 완료된 이벤트는 다르게 스타일링
     if (event.is_completed) {
@@ -343,6 +370,8 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
         onShowMore={handleShowMore}
         eventPropGetter={eventStyleGetter}
         dayPropGetter={dayPropGetter}
+        length={7} // 이벤트 표시 길이 제한
+        popup={true} // 팝업 활성화
         components={{
           toolbar: CustomToolbar,
         }}
