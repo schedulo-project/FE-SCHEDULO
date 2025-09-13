@@ -105,10 +105,21 @@ const Home = () => {
   // 선택된 날짜의 일정 업데이트
   useEffect(() => {
     const dateFilter = selectedDate || today; // 클릭된 날짜가 없으면 오늘 날짜 사용
-    const eventsOnDate = events.filter(
-      // 오늘(today) or 클릭된 날짜에 해당하는 이벤트 필터링 후 반환
-      (event) => event.date === dateFilter
-    );
+    
+    const eventsOnDate = events.filter((event) => {
+      // 일정의 시작일
+      const startDate = event.date;
+      
+      // 일정의 종료일 (deadline이 있으면 사용, 없으면 시작일과 같음)
+      const endDate = event.deadline || startDate;
+      
+      // 선택한 날짜가 시작일과 종료일 사이에 있으면 표시
+      return (
+        dateFilter >= startDate && // 선택한 날짜가 시작일보다 같거나 이후
+        dateFilter <= endDate     // 선택한 날짜가 종료일보다 같거나 이전
+      );
+    });
+    
     setSelectedDateEvents(eventsOnDate);
   }, [events, selectedDate, today]);
 

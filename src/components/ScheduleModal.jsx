@@ -534,6 +534,23 @@ const ScheduleModal = () => {
 
                       setSelectedTags(formattedTags);
                     }
+
+                    // 날짜 범위도 초기화
+                    const startDate = new Date(
+                      data.date || today
+                    );
+                    const endDate = data.deadline
+                      ? new Date(data.deadline)
+                      : startDate;
+
+                    setDateRange([
+                      {
+                        startDate,
+                        endDate,
+                        key: "selection",
+                      },
+                    ]);
+
                     setIsEditMode(true);
                   }}
                 >
@@ -583,24 +600,67 @@ const ScheduleModal = () => {
         </section>
 
         <section className="w-[98%] h-[21.125rem] bg-[#F0F0F0] rounded-[1rem] p-[2rem] flex flex-col">
-          <section className="flex gap-2 items-center">
-            <span className="text-[1.25rem] font-semibold">
-              {date}
-              {data.deadline &&
-                data.deadline !== date &&
-                ` ~ ${data.deadline}`}
-            </span>
-            {isEditMode && (
-              <button className="relative w-[1.3125rem] h-[1.3125rem]">
-                <img src={calendarImg} />
-                <input
-                  type="date"
-                  id="date"
-                  value={date}
-                  onChange={handleInputChange}
-                  className="absolute inset-0 opacity-0 w-full h-full"
+          <section className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-[1.25rem] font-semibold">
+                {isEditMode
+                  ? `${format(
+                      dateRange[0].startDate,
+                      "yyyy-MM-dd"
+                    )}${
+                      format(
+                        dateRange[0].endDate,
+                        "yyyy-MM-dd"
+                      ) !==
+                      format(
+                        dateRange[0].startDate,
+                        "yyyy-MM-dd"
+                      )
+                        ? ` ~ ${format(
+                            dateRange[0].endDate,
+                            "yyyy-MM-dd"
+                          )}`
+                        : ""
+                    }`
+                  : `${date}${
+                      data.deadline && data.deadline !== date
+                        ? ` ~ ${data.deadline}`
+                        : ""
+                    }`}
+              </span>
+              {isEditMode && (
+                <button
+                  type="button"
+                  onClick={toggleDateRange}
+                  className="w-[1.3125rem] h-[1.3125rem] relative"
+                >
+                  <img src={calendarImg} alt="날짜 선택" />
+                </button>
+              )}
+            </div>
+
+            {/* Date Range Picker */}
+            {isEditMode && showDateRange && (
+              <div className="absolute z-50 mt-8 bg-white border rounded-lg shadow-lg">
+                <DateRange
+                  ranges={dateRange}
+                  onChange={handleDateRangeChange}
                 />
-              </button>
+                <div className="p-3 border-t flex justify-end gap-2">
+                  <button
+                    onClick={() => setShowDateRange(false)}
+                    className="px-4 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300"
+                  >
+                    취소
+                  </button>
+                  <button
+                    onClick={() => setShowDateRange(false)}
+                    className="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    확인
+                  </button>
+                </div>
+              </div>
             )}
           </section>
           <section className="border-t mt-2 mb-4">
