@@ -107,11 +107,11 @@ const ScheduleModal = () => {
         setTitle(data.title || "");
         setContent(data.content || "");
         setDate(data.date || today);
-        
+
         // 태그 데이터를 초기화할 때는 객체가 아닌 문자열로 저장 (편집 모드에서는 객체로 변환)
         // 편집 모드로 전환할 때 올바른 형식으로 변환하기 위해 원본 형태로 유지
         setSelectedTags([]);
-        
+
         setCompleted(data.is_completed || false);
         setIsEditMode(false);
 
@@ -502,30 +502,41 @@ const ScheduleModal = () => {
             )}
             {!isEditMode && (
               <div className="flex gap-2">
-                <button onClick={() => {
-                  // 문자열로 된 태그 이름을 객체 배열로 변환
-                  if (data.tagName) {
-                    // 쉼표로 구분된 태그 문자열을 배열로 분할
-                    const tagNames = typeof data.tagName === 'string' 
-                      ? data.tagName.split(',').map(tag => tag.trim())
-                      : Array.isArray(data.tagName) ? data.tagName : [];
-                    
-                    // 태그 색상 정보 가져오기
-                    const tagColors = data.tagColor 
-                      ? data.tagColor.split(',').map(color => color.trim())
-                      : [];
-                    
-                    // 태그 객체 배열 생성
-                    const formattedTags = tagNames.map((name, index) => ({
-                      value: name,
-                      label: name,
-                      color: tagColors[index] || "#526D82"
-                    }));
-                    
-                    setSelectedTags(formattedTags);
-                  }
-                  setIsEditMode(true);
-                }}>
+                <button
+                  onClick={() => {
+                    // 문자열로 된 태그 이름을 객체 배열로 변환
+                    if (data.tagName) {
+                      // 쉼표로 구분된 태그 문자열을 배열로 분할
+                      const tagNames =
+                        typeof data.tagName === "string"
+                          ? data.tagName
+                              .split(",")
+                              .map((tag) => tag.trim())
+                          : Array.isArray(data.tagName)
+                          ? data.tagName
+                          : [];
+
+                      // 태그 색상 정보 가져오기
+                      const tagColors = data.tagColor
+                        ? data.tagColor
+                            .split(",")
+                            .map((color) => color.trim())
+                        : [];
+
+                      // 태그 객체 배열 생성
+                      const formattedTags = tagNames.map(
+                        (name, index) => ({
+                          value: name,
+                          label: name,
+                          color: tagColors[index] || "#526D82",
+                        })
+                      );
+
+                      setSelectedTags(formattedTags);
+                    }
+                    setIsEditMode(true);
+                  }}
+                >
                   ✏️
                 </button>
                 <button
@@ -553,7 +564,8 @@ const ScheduleModal = () => {
                   <div className="flex items-center">
                     <div
                       style={{
-                        backgroundColor: option.color || "#526D82",
+                        backgroundColor:
+                          option.color || "#526D82",
                         width: "12px",
                         height: "12px",
                         borderRadius: "50%",
