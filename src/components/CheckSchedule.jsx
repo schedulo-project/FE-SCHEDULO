@@ -5,7 +5,7 @@ import { homeSidebarAtoms } from "../atoms/HomeAtoms";
 
 import DropDown from "./DropDown";
 
-function CheckSchedule({ selectedDateEvents }) {
+function CheckSchedule({ selectedDateEvents, selectedDate }) {
   const [todoList, setTodoList] = useState([]);
   const [isSidebarOpen, setSidebarOpen] =
     useAtom(homeSidebarAtoms);
@@ -55,11 +55,7 @@ function CheckSchedule({ selectedDateEvents }) {
           일정
         </span>
         <span className="text-[#010669] text-[10px] font-semibold font-[Inter] flex items-center gap-2">
-          {selectedDateEvents[0].date}
-          {selectedDateEvents[0].deadline &&
-            selectedDateEvents[0].deadline !==
-              selectedDateEvents[0].date &&
-            ` ~ ${selectedDateEvents[0].deadline}`}
+          {selectedDate}
           <DropDown />
           {/* 드롭다운 컴포넌트 */}
 
