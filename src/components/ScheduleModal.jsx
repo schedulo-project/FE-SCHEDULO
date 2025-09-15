@@ -39,7 +39,7 @@ import updateSchedules from "../api/updateScheduleApi";
 
 const ScheduleModal = () => {
   //portals 사용
-  const modalRoot = document.getElementById("main-layout");
+  const modalRoot = document.getElementById("modal-root");
   //jotai
   const [, sethandleChange] = useAtom(handleChangeAtom);
   const [isModalOpen, setIsModalOpen] = useAtom(isModalOpenAtom);
