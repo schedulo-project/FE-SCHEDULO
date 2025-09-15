@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import { useNavigate } from "react-router-dom";
 import planImage from "../../assets/studyplan/planimage.jpg";
 
@@ -9,9 +10,12 @@ const StudyPlanModal = () => {
     navigate("/studyplan/setup");
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 lg:pl-[11.75rem]">
-      <div className="bg-white rounded-3xl p-6 shadow-lg w-[500px] text-center">
+  const modalContent = (
+    <div className="fixed inset-0 bg-black bg-opacity-40 z-[9999] flex items-center justify-center">
+      <div
+        className="bg-white rounded-3xl p-6 shadow-lg w-[500px] text-center"
+        onClick={(e) => e.stopPropagation()}
+      >
         <img
           src={planImage}
           alt="공부 습관 이미지"
@@ -36,6 +40,8 @@ const StudyPlanModal = () => {
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(modalContent, document.body);
 };
 
 export default StudyPlanModal;
