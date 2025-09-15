@@ -93,7 +93,6 @@ const Home = () => {
           "2025-02-28",
           "2025-12-30"
         );
-        console.log("가공한 서버데이터", transformedEvents);
         setEvents(transformedEvents);
       } catch (error) {
         console.error("Error loading schedules", error);
@@ -123,7 +122,6 @@ const Home = () => {
     setSelectedDateEvents(eventsOnDate);
   }, [events, selectedDate, today]);
 
-  console.log("events", events);
   // 날짜 클릭 시 선택된 날짜 업데이트
   const handleDateClick = (date) => {
     setOpenGroups({});
@@ -137,9 +135,6 @@ const Home = () => {
   // 캘린더 일정 클릭 시 모달 켜기
   const handleEventClick = (clickInfo) => {
     const clickedEvent = clickInfo.event; // clickedEvent : 클릭된 일정의 정보
-    console.log("clickedEvent", clickedEvent);
-    console.log("clickInfo", clickInfo);
-
     // clickedEventData : 클린된 일정의 정보 가공한 데이터
     const clickedEventData = {
       id: Number(clickedEvent.id), // 고친 부분 기존에는 string으로 들어옴 event.id는 number여서 문제가 생겼음
@@ -164,12 +159,6 @@ const Home = () => {
       const firstTagColor = event.tagColor
         ? event.tagColor.split(",")[0].trim()
         : "#526D82"; // 태그 색상이 없을 경우 기본 색상
-
-      console.log(
-        `일정 [${event.title}]의 태그 색상: `,
-        event.tagColor,
-        ` => 선택된 색상: ${firstTagColor}`
-      );
 
       return {
         id: event.id,

@@ -55,15 +55,6 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
         endDate.setHours(0, 0, 0, 0);
       }
 
-      // 디버깅을 위한 로그
-      console.log(`이벤트 [${event.title}] 날짜 설정:`, {
-        원본날짜: eventDate,
-        시작일: startDate.toISOString().split("T")[0],
-        종료일: endDate.toISOString().split("T")[0],
-        데드라인: event.deadline,
-        종일여부: allDay,
-      });
-
       return {
         ...event,
         start: startDate,

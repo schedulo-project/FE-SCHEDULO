@@ -249,15 +249,6 @@ const ScheduleModal = () => {
       deadline,
     };
 
-    console.log("추가된 새 일정:", newEvent);
-    console.log(
-      "태그 색상 정보:",
-      selectedTags.map((tag) => ({
-        label: tag.label,
-        color: tag.color,
-      }))
-    );
-
     // 이벤트 목록에 추가
     setEvents((prev) => [...prev, newEvent]);
     setIsModalOpen(false);
@@ -271,14 +262,6 @@ const ScheduleModal = () => {
     );
     const endDate = format(dateRange[0].endDate, "yyyy-MM-dd");
     const deadline = endDate !== startDate ? endDate : null;
-
-    console.log("handleUpdate - 날짜 정보:", {
-      startDate,
-      endDate,
-      deadline,
-      dateRange: dateRange[0],
-    });
-
     const updateData = {
       id: data.id,
       title,

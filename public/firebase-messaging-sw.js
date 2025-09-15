@@ -5,15 +5,25 @@ importScripts(
   "https://www.gstatic.com/firebasejs/10.12.4/firebase-messaging-compat.js"
 );
 
+// 서비스 워커는 import.meta.env에 접근할 수 없으므로 하드코딩된 값을 사용합니다.
+// 서비스 워커에서는 환경 변수를 직접 사용할 수 없기 때문입니다.
+const apiURL = "AIzaSyDOzoBP7qcGVls9-4rmv5WyyryBYO-KsWY";
+const authDomain = "schedulo-dde70.firebaseapp.com";
+const projectId = "schedulo-dde70";
+const storageBucket = "schedulo-dde70.firebasestorage.app";
+const messagingSenderId = "815568684185";
+const appId = "1:815568684185:web:7a3d409b5b124010072408";
+const measurementId = "G-V91N35KCFS";
+
 // Firebase 초기화
 firebase.initializeApp({
-  apiKey: "AIzaSyDOzoBP7qcGVls9-4rmv5WyyryBYO-KsWY",
-  authDomain: "schedulo-dde70.firebaseapp.com",
-  projectId: "schedulo-dde70",
-  storageBucket: "schedulo-dde70.firebasestorage.app",
-  messagingSenderId: "815568684185",
-  appId: "1:815568684185:web:7a3d409b5b124010072408",
-  measurementId: "G-V91N35KCFS",
+  apiKey: apiURL,
+  authDomain: authDomain,
+  projectId: projectId,
+  storageBucket: storageBucket,
+  messagingSenderId: messagingSenderId,
+  appId: appId,
+  measurementId: measurementId,
 });
 
 const messaging = firebase.messaging();

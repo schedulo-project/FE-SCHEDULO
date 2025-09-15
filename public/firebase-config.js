@@ -5,15 +5,25 @@ import {
   onMessage,
   isSupported,
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-messaging.js";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const apiURL = import.meta.env.VITE_API_KEY;
+const authDomain = import.meta.env.VITE_AUTH_DOMAIN;
+const projectId = import.meta.env.VITE_PROJECT_ID;
+const storageBucket = import.meta.env.VITE_STORAGE_BUCKET;
+const messagingSenderId = import.meta.env
+  .VITE_MESSAGING_SENDER_ID;
+const appId = import.meta.env.VITE_APP_ID;
+const measurementId = import.meta.env.VITE_MEASUREMENT_ID;
+const vapidKey = import.meta.env.VITE_VAPID_KEY;
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDOzoBP7qcGVls9-4rmv5WyyryBYO-KsWY",
-  authDomain: "schedulo-dde70.firebaseapp.com",
-  projectId: "schedulo-dde70",
-  storageBucket: "schedulo-dde70.firebasestorage.app",
-  messagingSenderId: "815568684185",
-  appId: "1:815568684185:web:7a3d409b5b124010072408",
-  measurementId: "G-V91N35KCFS",
+  apiKey: apiURL,
+  authDomain: authDomain,
+  projectId: projectId,
+  storageBucket: storageBucket,
+  messagingSenderId: messagingSenderId,
+  appId: appId,
+  measurementId: measurementId,
 };
 
 // 크로스 플랫폼 지원 확인
@@ -72,16 +82,52 @@ async function initializeFCM() {
     const app = initializeApp(firebaseConfig);
     const messaging = getMessaging(app);
 
-    // 서비스 워커 등록
+    // 서비스 워커 등록 및 준비 완료 확인
     const registration = await navigator.serviceWorker.register(
       "/firebase-messaging-sw.js"
     );
     console.log("서비스 워커 등록 완료");
 
-    // FCM 토큰 발급
+    // 서비스 워커가 활성화될 때까지 대기
+    if (registration.installing || registration.waiting) {
+      console.log(
+        "서비스 워커 설치 또는 대기 중... 활성화 대기"
+      );
+      await new Promise((resolve) => {
+        function onStateChange() {
+          if (registration.active) {
+            console.log("✅ 서비스 워커가 활성화되었습니다.");
+            registration.removeEventListener(
+              "statechange",
+              onStateChange
+            );
+            resolve();
+          }
+        }
+        registration.addEventListener(
+          "statechange",
+          onStateChange
+        );
+
+        // 10초 후에도 활성화되지 않으면 진행
+        setTimeout(() => {
+          registration.removeEventListener(
+            "statechange",
+            onStateChange
+          );
+          console.warn(
+            "⚠️ 서비스 워커 활성화 타임아웃. 계속 진행합니다."
+          );
+          resolve();
+        }, 10000);
+      });
+    } else if (registration.active) {
+      console.log("✅ 서비스 워커가 이미 활성화되어 있습니다.");
+    }
+
+    // FCM 토큰 발급 시도
     const fcmToken = await getToken(messaging, {
-      vapidKey:
-        "BMU5BcnV9tGciycCXXPQdwB1Xq2hEp1yjU8jIaGcAogmhGWLvGBFaZOia3NEGtjcxzPqGz7vB1gu_QjcH8Br7CM",
+      vapidKey: vapidKey,
       serviceWorkerRegistration: registration,
     });
 
@@ -97,17 +143,20 @@ async function initializeFCM() {
     );
     console.log("📤 서버에 FCM 토큰 전송 시작...");
 
-    const response = await fetch("/notifications/fcm-token/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
-        fcm_token: fcmToken,
-        platform: getPlatformSpecificSettings(),
-      }),
-    });
+    const response = await fetch(
+      `${baseURL}/notifications/fcm-token/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          fcm_token: fcmToken,
+          platform: getPlatformSpecificSettings(),
+        }),
+      }
+    );
 
     console.log("📥 서버 응답 상태:", response.status);
 
@@ -192,7 +241,7 @@ export async function initializeNotifications() {
     const isSupported = await checkPlatformSupport();
     if (!isSupported) {
       console.warn(
-        "이 브라우저에서는 알림 기능을 사용할 수 없습니다"
+        "⚠️ 이 브라우저에서는 알림 기능을 사용할 수 없습니다"
       );
       return;
     }
@@ -201,6 +250,23 @@ export async function initializeNotifications() {
     const platformInfo = getPlatformSpecificSettings();
     console.log("🌐 플랫폼 정보:", platformInfo);
 
+    // 서비스 워커 등록 상태 확인
+    if ("serviceWorker" in navigator) {
+      const registrations =
+        await navigator.serviceWorker.getRegistrations();
+      console.log(
+        `📋 현재 등록된 서비스 워커: ${registrations.length}개`
+      );
+
+      for (const reg of registrations) {
+        console.log(
+          `서비스 워커 범위: ${reg.scope}, 상태: ${
+            reg.active ? "활성화" : "비활성화"
+          }`
+        );
+      }
+    }
+
     // 알림 권한 요청
     const permission = await Notification.requestPermission();
     if (permission !== "granted") {
@@ -208,15 +274,67 @@ export async function initializeNotifications() {
       return;
     }
 
-    // FCM 초기화
-    const { messaging } = await initializeFCM();
+    try {
+      // FCM 초기화 시도
+      const { messaging } = await initializeFCM();
 
-    // 포그라운드 메시지 핸들러 설정
-    setupForegroundMessageHandler(messaging);
+      // 포그라운드 메시지 핸들러 설정
+      setupForegroundMessageHandler(messaging);
 
-    console.log("🎉 알림 시스템 초기화 완료!");
+      console.log("🎉 알림 시스템 초기화 완료!");
+    } catch (fcmError) {
+      console.error("❌ FCM 초기화 실패:", fcmError.message);
+
+      // FCM 초기화 실패 시 웹 푸시 대체 방법 시도
+      console.log("💡 웹 푸시 방식으로 재시도 중...");
+      try {
+        await enableWebPush(vapidKey);
+        console.log("✅ 웹 푸시 구독 성공!");
+      } catch (pushError) {
+        console.error(
+          "❌ 웹 푸시 구독 실패:",
+          pushError.message
+        );
+        throw new Error(
+          `알림 시스템 초기화 실패: ${pushError.message}`
+        );
+      }
+    }
   } catch (error) {
     console.error("❌ 알림 시스템 초기화 실패:", error.message);
+
+    // 디버깅을 위한 추가 정보
+    if ("serviceWorker" in navigator) {
+      try {
+        const registrations =
+          await navigator.serviceWorker.getRegistrations();
+        console.log(
+          `🔍 디버그 정보 - 등록된 서비스 워커: ${registrations.length}개`
+        );
+
+        // 각 서비스 워커 상세 정보 출력
+        registrations.forEach((reg, idx) => {
+          console.log(
+            `${idx + 1}. 서비스 워커 범위: ${reg.scope}`
+          );
+          console.log(
+            `   상태: ${
+              reg.installing
+                ? "설치 중"
+                : reg.waiting
+                ? "대기 중"
+                : reg.active
+                ? "활성화"
+                : "알 수 없음"
+            }`
+          );
+        });
+      } catch (swError) {
+        console.error("서비스 워커 정보 확인 실패:", swError);
+      }
+    }
+
+    throw error;
   }
 }
 
@@ -259,10 +377,44 @@ export async function enableWebPush(
     throw new Error("알림 권한이 거부되었습니다.");
   }
 
-  // Register service worker
-  const registration = await navigator.serviceWorker.register(
-    "/sw.js"
-  );
+  // 서비스 워커 등록 - firebase-messaging-sw.js로 경로 통일
+  let registration;
+  try {
+    // 이미 등록된 서비스 워커 확인
+    registration = await navigator.serviceWorker.getRegistration(
+      "/firebase-messaging-sw.js"
+    );
+
+    if (!registration) {
+      console.log("새로운 서비스 워커 등록 시도");
+      registration = await navigator.serviceWorker.register(
+        "/firebase-messaging-sw.js"
+      );
+    }
+
+    // 서비스 워커 활성화 대기
+    if (registration.installing || registration.waiting) {
+      console.log("서비스 워커 활성화 대기 중...");
+      await new Promise((resolve) => {
+        const worker =
+          registration.installing || registration.waiting;
+        worker.addEventListener("statechange", () => {
+          if (worker.state === "activated") {
+            console.log("서비스 워커 활성화됨");
+            resolve();
+          }
+        });
+      });
+    }
+  } catch (error) {
+    console.error("서비스 워커 등록 실패:", error);
+    throw new Error(`서비스 워커 등록 실패: ${error.message}`);
+  }
+
+  // 서비스 워커 활성화 확인
+  if (!registration.active) {
+    throw new Error("서비스 워커가 활성화되지 않았습니다.");
+  }
 
   // Subscribe
   const subscription = await registration.pushManager.subscribe({
@@ -273,11 +425,26 @@ export async function enableWebPush(
   });
 
   // Send subscription JSON to your server
-  const res = await fetch("/api/push/subscribe/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(subscription),
-  });
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) {
+    throw new Error("로그인 상태가 아닙니다");
+  }
+
+  // 기존 API 경로가 아닌 baseURL을 활용하여 정확한 백엔드 API에 연결
+  const res = await fetch(
+    `${baseURL}/notifications/web-push-subscribe/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        subscription: subscription,
+        platform: getPlatformSpecificSettings(),
+      }),
+    }
+  );
 
   if (!res.ok) {
     const txt = await res.text();
