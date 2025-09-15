@@ -17,6 +17,7 @@ import { useAuth } from "../../contexts/AuthContext";
 // 일정 생성 함수
 const generateStudySchedule = (formData) => {
   const {
+    examName,
     startDate,
     endDate,
     subjects,
@@ -149,8 +150,9 @@ const generateStudySchedule = (formData) => {
         dateToSubjects[currentDay].push(subjectToPlace);
         events.push({
           id: `study-${eventId++}`,
-          title: subjectToPlace,
+          title: `${subjectToPlace} 공부`,
           date: currentDay,
+          content: `${examName} 대비 ${subjectToPlace} 공부`
         });
 
         remainingSessions[subjectToPlace]--;
@@ -278,7 +280,7 @@ const ExamPlanStep4 = ({
   const handleSave = async () => {
     const payload = events.map((event) => ({
       title: event.title,
-      content: `${event.title} 공부`,
+      content: event.content,
       scheduled_date: event.date,
       deadline: event.date,
     }));

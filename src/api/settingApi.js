@@ -50,7 +50,7 @@ export async function changeSamwater({
   samwaterId,
   samwaterPassword,
 }) {
-  const res = await baseAxiosInstance.post(
+  const res = await baseAxiosInstance.put(
     `/users/smul-update/`,
     {
       student_id: samwaterId,
