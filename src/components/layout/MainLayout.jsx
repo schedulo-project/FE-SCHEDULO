@@ -28,7 +28,10 @@ const MainLayout = () => {
   const shouldHideSidebar = location.pathname === "/study-plan";
 
   return (
-    <div className="flex w-full h-screen relative">
+    <div
+      id="main-layout"
+      className="flex w-full h-screen relative"
+    >
       {!shouldHideSidebar && (
         <>
           {/* 사이드바: showSidebar 상태로 제어 작아지면 사라지고 햄버거 버튼을 눌러야지 나온다. */}

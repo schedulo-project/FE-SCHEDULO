@@ -3,7 +3,8 @@
 // setIsModalOpen : 모달을 열고 닫는 함수 useState로 관리
 // onChange : 모달에서 일정 수정 시 사용될 함수 - home에 있는 handleChange와 연결
 // onChange는 추후에 수정기능이 만들어지면 사용할 예정
-import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { useEffect, useRef, useState } from "react";
 import { DateRange } from "react-date-range";
 import { format } from "date-fns";
 import "react-date-range/dist/styles.css";
@@ -37,6 +38,8 @@ import addTags from "../api/addTagsApi";
 import updateSchedules from "../api/updateScheduleApi";
 
 const ScheduleModal = () => {
+  //portals 사용
+  const modalRoot = document.getElementById("modal-root");
   //jotai
   const [, sethandleChange] = useAtom(handleChangeAtom);
   const [isModalOpen, setIsModalOpen] = useAtom(isModalOpenAtom);
@@ -321,7 +324,7 @@ const ScheduleModal = () => {
     "min-w-[4.8125rem] text-[0.90238rem] pr-[1.80469rem] pl-[1.80469rem] pt-[0.15038rem] pb-[0.15038rem]";
 
   if (data.id === null) {
-    return (
+    return createPortal(
       <div
         className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
         onClick={handleClose}
@@ -465,10 +468,11 @@ const ScheduleModal = () => {
             </section>
           </section>
         </div>
-      </div>
+      </div>,
+      modalRoot
     );
   }
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
       onClick={handleClose}
@@ -690,7 +694,8 @@ const ScheduleModal = () => {
           )}
         </section>
       </div>
-    </div>
+    </div>,
+    modalRoot
   );
 };
 
