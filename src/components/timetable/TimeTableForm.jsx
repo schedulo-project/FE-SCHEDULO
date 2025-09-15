@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import {
   useQuery,
   useMutation,
@@ -29,7 +29,6 @@ const timeToFloat = (timeStr) => {
 // 크롤링된 시간표 데이터 병합 함수
 const normalizeCrawledSchedule = (coursesData) => {
   if (!coursesData) return [];
-
   const converted = [];
 
   coursesData.forEach(([courseName, timeSlots]) => {
@@ -73,7 +72,7 @@ const normalizeCrawledSchedule = (coursesData) => {
         } else {
           converted.push({
             name: courseName,
-            day: day,
+            day,
             startHour: timeToFloat(currentGroup.startTime),
             endHour: timeToFloat(currentGroup.endTime),
             location: currentGroup.location,
@@ -105,8 +104,8 @@ const normalizeCrawledSchedule = (coursesData) => {
 // 직접 등록한 시간표 데이터 병합 함수
 const normalizeManualSchedule = (data) => {
   if (!data || !Array.isArray(data)) return [];
-
   const groupedBySubjectAndDay = {};
+
   data.forEach((item) => {
     const koreanDay =
       dayMap[item.day_of_week] || item.day_of_week;
@@ -144,7 +143,7 @@ const normalizeManualSchedule = (data) => {
         } else {
           merged.push({
             name: subject,
-            day: day,
+            day,
             startHour: timeToFloat(currentStart),
             endHour: timeToFloat(currentEnd),
             location: currentLocation,
@@ -158,7 +157,7 @@ const normalizeManualSchedule = (data) => {
 
       merged.push({
         name: subject,
-        day: day,
+        day,
         startHour: timeToFloat(currentStart),
         endHour: timeToFloat(currentEnd),
         location: currentLocation,
@@ -175,7 +174,7 @@ const TimeTableForm = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  // 회원정보 조회 - TanStack Query 사용
+  // 회원정보 조회
   const {
     data: userInfo = { email: "", student_id: "" },
     isLoading: userInfoLoading,
@@ -188,33 +187,10 @@ const TimeTableForm = () => {
       });
       return response.data;
     },
-    enabled: !!accessToken, 
-    staleTime: 5 * 60 * 1000, // 5분간 캐시 유지
-    cacheTime: 10 * 60 * 1000, // 10분간 메모리에 보관
-  });
-
-  // 크롤링된 시간표 조회
-  const {
-    data: crawledData,
-    isLoading: crawledLoading,
-    error: crawledError,
-  } = useQuery({
-    queryKey: ["crawledTimetable"],
-    queryFn: async () => {
-      const response = await baseAxiosInstance.get(
-        "/users/getTimeTable/",
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      return response.data;
-    },
     enabled: !!accessToken,
-    staleTime: 2 * 60 * 1000, // 2분간 캐시 유지
-    cacheTime: 5 * 60 * 1000,
   });
 
-  // 직접 등록한 시간표 조회 
+  // DB 시간표 조회
   const {
     data: manualData = [],
     isLoading: manualLoading,
@@ -231,8 +207,25 @@ const TimeTableForm = () => {
       return response.data;
     },
     enabled: !!accessToken,
-    staleTime: 2 * 60 * 1000,
-    cacheTime: 5 * 60 * 1000,
+  });
+
+  // DB에 데이터 없을 때만 크롤링 시간표 요청
+  const {
+    data: crawledData,
+    isLoading: crawledLoading,
+    error: crawledError,
+  } = useQuery({
+    queryKey: ["crawledTimetable"],
+    queryFn: async () => {
+      const response = await baseAxiosInstance.get(
+        "/users/getTimeTable/",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    },
+    enabled: !!accessToken && manualData.length === 0,
   });
 
   // 시간표 저장 mutation
@@ -270,9 +263,7 @@ const TimeTableForm = () => {
       );
     },
     onSuccess: () => {
-      // 저장 성공 후 관련 쿼리들을 무효화하여 다시 불러오기
       queryClient.invalidateQueries(["manualTimetable"]);
-      queryClient.invalidateQueries(["crawledTimetable"]);
       setIsModalOpen(false);
     },
     onError: (error) => {
@@ -280,16 +271,23 @@ const TimeTableForm = () => {
     },
   });
 
-  // 전체 시간표 데이터 메모이제이션
-  const schedule = useMemo(() => {
-    const crawled = crawledData?.courses_data
-      ? normalizeCrawledSchedule(crawledData.courses_data)
-      : [];
-    const manual = normalizeManualSchedule(manualData);
-    return [...crawled, ...manual];
-  }, [crawledData, manualData]);
+  // DB 없을 때 크롤링 데이터 자동 저장
+  useEffect(() => {
+    if (manualData.length === 0 && crawledData?.courses_data) {
+      const normalized = normalizeCrawledSchedule(
+        crawledData.courses_data
+      );
+      if (normalized.length > 0) {
+        saveTimeTableMutation.mutate(normalized);
+      }
+    }
+  }, [manualData, crawledData, saveTimeTableMutation]);
 
-  // 시간표 저장 핸들러
+  // 최종 시간표 (DB 기준)
+  const schedule = useMemo(() => {
+    return normalizeManualSchedule(manualData);
+  }, [manualData]);
+
   const handleDataSubmit = useCallback(
     (data) => {
       saveTimeTableMutation.mutate(data);
@@ -301,7 +299,6 @@ const TimeTableForm = () => {
   const handleModalOpen = useCallback(() => {
     setIsModalOpen(true);
   }, []);
-
   const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
   }, []);
