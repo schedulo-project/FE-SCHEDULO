@@ -68,59 +68,6 @@ const Tag = () => {
     loadSchedules();
   }, [allEvents, setEvents]);
 
-  // 이벤트를 태그별로 그룹화하는 함수
-  // 단순히 태그 이름을 기준으로 그룹화하고, 태그가 없는 작업은 별도로 모아둠, 완료된 작업과 되지 않은 작업은 구분하지 않음
-
-  //이건 태그 일정 하나만 들어가게 하는 코드
-  // const groupBy = (list, tagList) => {
-  //   // 태그맵 (태그명 -> 태그 객체)
-  //   const tagMap = new Map(
-  //     tagList.map((tag) => [tag.name, tag])
-  //   );
-
-  //   // 모든 태그를 빈 배열 task와 함께 초기화
-  //   const tagGroups = new Map();
-  //   tagList.forEach((tag) => {
-  //     tagGroups.set(tag.id, {
-  //       tagId: tag.id,
-  //       tag: tag.name,
-  //       task: [],
-  //     });
-  //   });
-
-  //   const noTagGroup = [];
-
-  //   list.forEach((task) => {
-  //     // 태그가 없는 작업은 별도로 모음
-  //     if (!task.tagName) {
-  //       noTagGroup.push(task);
-  //       return;
-  //     }
-
-  //     // 첫 번째 태그만 사용
-  //     const firstTagName = task.tagName.split(",")[0].trim();
-  //     const tag = tagMap.get(firstTagName);
-
-  //     if (tag) {
-  //       tagGroups.get(tag.id).task.push(task);
-  //     } else {
-  //       noTagGroup.push(task);
-  //     }
-  //   });
-
-  //   const result = [...tagGroups.values()];
-
-  //   if (noTagGroup.length > 0) {
-  //     result.push({
-  //       tagId: null,
-  //       tag: "태그 없음",
-  //       task: noTagGroup,
-  //     });
-  //   }
-
-  //   return result;
-  // };
-
   const groupBy = (list, tagList) => {
     const tagMap = new Map(
       tagList.map((tag) => [tag.name, tag])
@@ -179,18 +126,6 @@ const Tag = () => {
 
     return result;
   };
-
-  // 데이터 없으면 로딩 표시
-  // if (
-  //   !allTags ||
-  //   allTags.length === 0 ||
-  //   !allEvents ||
-  //   allEvents.length === 0
-  // ) {
-  //   return (
-  //     <div className="text-center mt-10">데이터 로딩 중...</div>
-  //   );
-  // }
 
   return (
     <div className="flex justify-center">

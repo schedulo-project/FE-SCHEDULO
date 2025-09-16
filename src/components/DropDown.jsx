@@ -10,7 +10,7 @@ const DropDown = () => {
 
   // jotai를 사용하여 witchGroup 상태를 관리
   // 기본 정렬과 태그 정렬 중 무엇을 선택했는지 확인하기 위해 사용
-  const [, setWitchGroup] = useAtom(WitchGroupAtom);
+  const [witchGroup, setWitchGroup] = useAtom(WitchGroupAtom);
 
   const optionArr = ["태그 정렬", "기본 정렬"];
 
@@ -41,11 +41,13 @@ const DropDown = () => {
         <img src={groupbtn} alt="드롭다운 열기" />
       </button>
       {isDropDownOpen && (
-        <div className="absolute right-0 w-16 bg-white rounded-[0.09769rem] ">
+        <div className="absolute right-0 w-20 bg-white rounded-lg overflow-hidden border border-gray-300 shadow-sm">
           {optionArr.map((option, index) => (
             <div
               key={index}
-              className="pl-[0.1465rem] py-2 hover:bg-[#DDE6ED] cursor-pointer"
+              className={`pl-3 py-2 hover:bg-[#DDE6ED] cursor-pointer ${
+                witchGroup === option ? " bg-blue-50 " : ""
+              }`}
               onClick={() => {
                 setWitchGroup(option);
                 // 선택된 옵션에 따라 witchGroup 상태 업데이트

@@ -51,7 +51,7 @@ baseAxiosInstance.interceptors.response.use(
         }
         //여기에 나중에 실제 주소를 넣어줘야 한다.
         const response = await axios.post(
-          "/api/v1/auth/refresh",
+          "/users/refresh/",
           null,
           {
             baseURL,

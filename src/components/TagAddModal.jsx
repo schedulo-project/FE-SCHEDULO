@@ -49,7 +49,7 @@ const TagAddModal = () => {
           type="text"
           value={inputValue}
           onChange={(e) => setinputValue(e.target.value)}
-          className="w-[13.7006rem] h-[2.2659rem] rounded-[0.5354rem] bg-[#27374D] text-[#9DB2BF] px-3"
+          className="w-56 h-9 rounded-[0.5354rem] bg-slate-200 border border-slate-400 text-slate-400 px-3 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="ex) 운동, 공부"
         />
         <span className="text-[#ABABAB] text-[0.8rem]">
