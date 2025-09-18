@@ -57,7 +57,7 @@ const deduplicateSchedule = (schedule) => {
   return merged;
 };
 
-const TimeTableGrid = ({ schedule }) => {
+const TimeTableGrid = ({ schedule, onSubjectClick }) => {
   const subjectColorMap = {};
   let colorIndex = 0;
 
@@ -97,6 +97,12 @@ const TimeTableGrid = ({ schedule }) => {
   );
 
   const gridRowCount = hours.length - 1; // 그리드 행 개수
+
+  const handleSubjectClick = (subject) => {
+    if (onSubjectClick) {
+      onSubjectClick(subject);
+    }
+  };
 
   return (
     <div className="w-full overflow-x-auto font-[Montserrat]">
@@ -163,7 +169,7 @@ const TimeTableGrid = ({ schedule }) => {
               return (
                 <div
                   key={`${item.name}-${item.day}-${item.startHour}`}
-                  className={`rounded-xl px-2 text-xs font-medium border ${color} flex flex-col justify-center items-center text-center`}
+                  className={`rounded-xl px-2 text-xs font-medium border ${color} flex flex-col justify-center items-center text-center cursor-pointer`}
                   style={{
                     gridColumn: col,
                     gridRow: `${rowStart} / ${rowEnd}`,
@@ -171,6 +177,7 @@ const TimeTableGrid = ({ schedule }) => {
                     boxSizing: "border-box",
                     position: "relative",
                   }}
+                  onClick={() => handleSubjectClick(item)}
                 >
                   <div>{item.name}</div>
                   {item.professor && <div>{item.professor}</div>}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import baseAxiosInstance from "../../api/baseAxiosApi";
 import { ChevronDown } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -19,51 +19,56 @@ const LabeledField = ({ label, children }) => (
 );
 
 const SubjectInput = ({ subject, index, handleChange }) => {
-  const [isDayDropdownOpen, setIsDayDropdownOpen] = useState(false);
-  const [isStartHourDropdownOpen, setIsStartHourDropdownOpen] = useState(false);
-  const [isEndHourDropdownOpen, setIsEndHourDropdownOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
 
   const CustomDropdown = ({
     value,
     options,
     onSelect,
-    isOpen,
-    onToggle,
+    dropdownKey,
     formatOption = (option) => option,
-  }) => (
-    <div className="relative">
-      {/* 선택 영역 */}
-      <div
-        onClick={onToggle}
-        className={`${baseInputClass} bg-white shadow-sm cursor-pointer flex justify-between items-center`}
-      >
-        <span className="flex-1 text-center">{formatOption(value)}</span>
-        <ChevronDown
-          className={`w-4 h-4 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
-      </div>
+  }) => {
+    const isOpen = openDropdown === dropdownKey;
 
-      {/* 옵션 목록 */}
-      {isOpen && (
-        <div className="absolute top-full left-0 w-[180px] mt-1 bg-white border border-gray-200 rounded-lg shadow-md z-10 max-h-32 overflow-y-auto">
-          {options.map((option) => (
-            <div
-              key={option}
-              onClick={() => {
-                onSelect(option);
-                onToggle();
-              }}
-              className="px-2 py-1 hover:bg-gray-100 cursor-pointer text-center"
-            >
-              {formatOption(option)}
-            </div>
-          ))}
+    return (
+      <div className="relative">
+        {/* 선택 영역 */}
+        <div
+          onClick={() =>
+            setOpenDropdown(isOpen ? null : dropdownKey)
+          }
+          className={`${baseInputClass} bg-white shadow-sm cursor-pointer flex justify-between items-center`}
+        >
+          <span className="flex-1 text-center">
+            {formatOption(value)}
+          </span>
+          <ChevronDown
+            className={`w-4 h-4 transition-transform ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          />
         </div>
-      )}
-    </div>
-  );
+
+        {/* 옵션 목록 */}
+        {isOpen && (
+          <div className="absolute top-full left-0 w-[180px] mt-1 bg-white border border-gray-200 rounded-lg shadow-md z-10 max-h-32 overflow-y-auto">
+            {options.map((option) => (
+              <div
+                key={option}
+                onClick={() => {
+                  onSelect(option);
+                  setOpenDropdown(null);
+                }}
+                className="px-2 py-1 hover:bg-gray-100 cursor-pointer text-center"
+              >
+                {formatOption(option)}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col gap-3 mb-6">
@@ -71,7 +76,9 @@ const SubjectInput = ({ subject, index, handleChange }) => {
         <input
           type="text"
           value={subject.name}
-          onChange={(e) => handleChange(index, "name", e.target.value)}
+          onChange={(e) =>
+            handleChange(index, "name", e.target.value)
+          }
           className={baseInputClass}
         />
       </LabeledField>
@@ -80,7 +87,9 @@ const SubjectInput = ({ subject, index, handleChange }) => {
         <input
           type="text"
           value={subject.professor}
-          onChange={(e) => handleChange(index, "professor", e.target.value)}
+          onChange={(e) =>
+            handleChange(index, "professor", e.target.value)
+          }
           className={baseInputClass}
         />
       </LabeledField>
@@ -90,8 +99,7 @@ const SubjectInput = ({ subject, index, handleChange }) => {
           value={subject.day}
           options={days}
           onSelect={(value) => handleChange(index, "day", value)}
-          isOpen={isDayDropdownOpen}
-          onToggle={() => setIsDayDropdownOpen(!isDayDropdownOpen)}
+          dropdownKey="day"
         />
       </LabeledField>
 
@@ -100,20 +108,20 @@ const SubjectInput = ({ subject, index, handleChange }) => {
           <CustomDropdown
             value={subject.startHour}
             options={hours}
-            onSelect={(value) => handleChange(index, "startHour", value)}
-            isOpen={isStartHourDropdownOpen}
-            onToggle={() =>
-              setIsStartHourDropdownOpen(!isStartHourDropdownOpen)
+            onSelect={(value) =>
+              handleChange(index, "startHour", value)
             }
+            dropdownKey="startHour"
             formatOption={(hour) => `${hour}:00`}
           />
           <span>~</span>
           <CustomDropdown
             value={subject.endHour}
             options={hours}
-            onSelect={(value) => handleChange(index, "endHour", value)}
-            isOpen={isEndHourDropdownOpen}
-            onToggle={() => setIsEndHourDropdownOpen(!isEndHourDropdownOpen)}
+            onSelect={(value) =>
+              handleChange(index, "endHour", value)
+            }
+            dropdownKey="endHour"
             formatOption={(hour) => `${hour}:00`}
           />
         </div>
@@ -123,7 +131,9 @@ const SubjectInput = ({ subject, index, handleChange }) => {
         <input
           type="text"
           value={subject.location}
-          onChange={(e) => handleChange(index, "location", e.target.value)}
+          onChange={(e) =>
+            handleChange(index, "location", e.target.value)
+          }
           className={baseInputClass}
         />
       </LabeledField>
@@ -131,8 +141,14 @@ const SubjectInput = ({ subject, index, handleChange }) => {
   );
 };
 
-const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
-  const { accessToken } = useAuth();
+const TimeTableModal = ({
+  onSubmit,
+  onClose,
+  onDelete,
+  schedule,
+  editingSubject,
+  isLoading = false,
+}) => {
   const [subjects, setSubjects] = useState([
     {
       name: "",
@@ -144,6 +160,33 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
     },
   ]);
 
+  // 편집 모드일 때 데이터 설정
+  useEffect(() => {
+    if (editingSubject) {
+      setSubjects([
+        {
+          name: editingSubject.name || "",
+          professor: editingSubject.professor || "",
+          day: editingSubject.day || "월",
+          startHour: Math.floor(editingSubject.startHour) || 9,
+          endHour: Math.floor(editingSubject.endHour) || 10,
+          location: editingSubject.location || "",
+        },
+      ]);
+    } else {
+      setSubjects([
+        {
+          name: "",
+          professor: "",
+          day: "월",
+          startHour: 9,
+          endHour: 10,
+          location: "",
+        },
+      ]);
+    }
+  }, [editingSubject]);
+
   const handleChange = (index, field, value) => {
     setSubjects((prev) => {
       const updated = [...prev];
@@ -152,18 +195,7 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
     });
   };
 
-  // 한글 요일 → 영문 요일 매핑
-  const koreanToEnglishDay = {
-    월: "mon",
-    화: "tue",
-    수: "wed",
-    목: "thu",
-    금: "fri",
-    토: "sat",
-    일: "sun",
-  };
-
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     try {
       // 입력 검증: 과목명, 시간 유효성 체크
       for (const subject of subjects) {
@@ -183,18 +215,6 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
         const newEnd = subject.endHour;
         const newDay = subject.day;
 
-        // 모달 안에서 새로 추가하는 강의끼리 비교
-        const overlapInModal = subjects.some((s) => {
-          if (s === subject) return false;
-          if (s.day !== newDay) return false;
-          return newStart < s.endHour && newEnd > s.startHour;
-        });
-
-        if (overlapInModal) {
-          alert(`${subject.name}의 시간이 모달 내 다른 강의와 겹칩니다.`);
-          return;
-        }
-
         // 기존 시간표(schedule)와 비교
         const overlapInExisting = (schedule || []).some((s) => {
           if (
@@ -206,10 +226,15 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
             return false;
           }
 
+          if (editingSubject && s.id === editingSubject.id) {
+            return false;
+          }
+
           if (s.day !== newDay) return false;
 
           // 겹침 여부 계산
-          const isOverlap = newStart < s.endHour && newEnd > s.startHour;
+          const isOverlap =
+            newStart < s.endHour && newEnd > s.startHour;
           return isOverlap;
         });
 
@@ -221,64 +246,45 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
         }
       }
 
-      // 서버로 데이터 전송
-      for (const subject of subjects) {
-        const requestData = {
-          subject: subject.name.trim(),
-          day_of_week: koreanToEnglishDay[subject.day],
-          start_time: `${subject.startHour.toString().padStart(2, "0")}:00:00`,
-          end_time: `${subject.endHour.toString().padStart(2, "0")}:00:00`,
-        };
-
-        // 선택적 필드들은 값이 있을 때만 추가
-        if (subject.professor?.trim()) {
-          requestData.professor = subject.professor.trim();
-        }
-        if (subject.location?.trim()) {
-          requestData.location = subject.location.trim();
-        }
-
-        console.log("전송할 데이터:", requestData);
-
-        const response = await baseAxiosInstance.post(
-          "/schedules/timetables/",
-          requestData
-        );
-        console.log("응답:", response.data);
-      }
-
       onSubmit(subjects);
-      setSubjects([
-        {
-          name: "",
-          professor: "",
-          day: "월",
-          startHour: 9,
-          endHour: 10,
-          location: "",
-        },
-      ]);
-    } catch (error) {
-      console.error("시간표 생성 오류:", error);
-      if (error.response) {
-        console.error("응답 데이터:", error.response.data);
-        console.error("응답 상태:", error.response.status);
-        alert(
-          `서버 오류: ${error.response.status} - ${JSON.stringify(
-            error.response.data
-          )}`
-        );
-      } else {
-        alert("네트워크 오류가 발생했습니다.");
+
+      if (!editingSubject) {
+        setSubjects([
+          {
+            name: "",
+            professor: "",
+            day: "월",
+            startHour: 9,
+            endHour: 10,
+            location: "",
+          },
+        ]);
       }
+    } catch (error) {
+      console.error("시간표 처리 오류:", error);
+      alert("시간표 처리 중 오류가 발생했습니다.");
     }
   };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete();
+    }
+  };
+
+  const modalTitle = editingSubject ? "강의 수정" : "강의 추가";
+  const submitButtonText = editingSubject
+    ? "수정하기"
+    : "추가하기";
 
   return (
     <div className="w-[480px] rounded-[20px] overflow-hidden shadow-lg">
       <div className="h-[75px] bg-[#526D82] text-white flex justify-between items-center px-8">
-        <h3 className="text-lg font-semibold">강의 추가</h3>
-        <button onClick={onClose} className="text-white hover:opacity-80">
+        <h3 className="text-lg font-semibold">{modalTitle}</h3>
+        <button
+          onClick={onClose}
+          className="text-white hover:opacity-80"
+        >
           ✕
         </button>
       </div>
@@ -293,11 +299,22 @@ const TimeTableModal = ({ onSubmit, onClose, schedule }) => {
           />
         ))}
         <div className="flex gap-4 justify-end">
+          {/* 삭제 버튼 (편집 모드일 때만 표시) */}
+          {editingSubject && onDelete && (
+            <button
+              onClick={handleDelete}
+              disabled={isLoading}
+              className="bg-[#6C757D] text-white rounded-3xl px-4 py-2 text-sm hover:bg-[#495057] disabled:opacity-50"
+            >
+              {isLoading ? "처리중..." : "삭제"}
+            </button>
+          )}
           <button
             onClick={handleSubmit}
-            className="w-[70px] bg-[#526D82] text-white rounded-[20px] px-4 py-2 text-sm hover:opacity-90"
+            disabled={isLoading}
+            className="bg-[#526D82] text-white rounded-3xl px-4 py-2 text-sm hover:opacity-90"
           >
-            추가
+            {isLoading ? "처리중..." : submitButtonText}
           </button>
         </div>
       </div>
