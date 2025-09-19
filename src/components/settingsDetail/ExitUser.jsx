@@ -6,20 +6,20 @@ const ExitUser = () => {
   const navigate = useNavigate();
 
   const handleExit = async () => {
-    //혹시 몰라 일단 막아둠
-    // try {
-    //   const res = await deleteUser();
-    //   if (res.status === 204) {
-    //     alert("회원 탈퇴에 성공하였습니다.");
-    //     navigate("/login");
-    //   } else {
-    //     alert("회원 탈퇴에 실패하였습니다.");
-    //     navigate("/settings/profile");
-    //   }
-    // } catch (error) {
-    //   alert("회원 탈퇴 중 오류가 발생하였습니다.");
-    //   navigate("/settings/profile");
-    // }
+    //일정 삭제
+    try {
+      const res = await deleteUser();
+      if (res.status === 204) {
+        alert("회원 탈퇴에 성공하였습니다.");
+        navigate("/login");
+      } else {
+        alert("회원 탈퇴에 실패하였습니다.");
+        navigate("/settings/profile");
+      }
+    } catch (error) {
+      alert("회원 탈퇴 중 오류가 발생하였습니다.");
+      navigate("/settings/profile");
+    }
   };
 
   return (
