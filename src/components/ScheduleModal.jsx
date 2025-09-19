@@ -190,19 +190,24 @@ const ScheduleModal = () => {
   };
 
   // 태그 추가
-  const handleCreate = (inputValue) => {
-    // 태그를 생성할 때 기본 색상도 함께 지정
-    const defaultColor = "#526D82"; // 기본 색상
-    const newTags = {
+  const handleCreate = async (inputValue) => {
+    const defaultColor = "#526D82";
+    const newTag = {
       value: inputValue,
       label: inputValue,
       color: defaultColor,
     };
-    setTagList((prev) => [...prev, newTags]);
-    addTags(inputValue);
+    // 1. 서버에 태그 추가
+    await addTags(inputValue);
+    // 2. 서버에서 최신 태그 목록 받아오기
+    const updatedTags = await getTags();
+    setTagList(updatedTags);
 
-    // 새 태그를 선택된 태그에 즉시 추가
-    setSelectedTags((prev) => [...prev, newTags]);
+    // 3. 새 태그를 선택된 태그에 추가 (최신 tagList에서 찾아서 추가)
+    const addedTag = updatedTags.find(
+      (tag) => tag.label === inputValue
+    );
+    setSelectedTags((prev) => [...prev, addedTag || newTag]);
   };
 
   // 일정 추가
