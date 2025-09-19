@@ -246,7 +246,7 @@ const Home = () => {
         {!modalData.is_completed && <ScheduleModal />}
 
         {/* 사이드바 */}
-        <div className="lg:flex lg:flex-col items-center gap-2 grow-[1] hidden mt-5">
+        <div className="lg:flex lg:flex-col items-center gap-2 grow-[1] hidden">
           <button
             onClick={handleFetchECampus}
             className="w-full px-14 py-2 text-[12px] bg-[#DDE6ED] text-[#27374D] rounded-[3.18px] transition-colors hover:bg-[#526D82] hover:text-[#DDE6ED]"

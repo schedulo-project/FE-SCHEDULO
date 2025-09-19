@@ -33,9 +33,9 @@ function CheckSchedule({ selectedDateEvents, selectedDate }) {
       <div
         className="flex justify-between pt-[0.75rem] pb-[0.75rem] pr-[0.8125rem] pl-[0.8125rem] 
                 bg-[#F0F0F0] rounded-[0.294rem] border-[#E0E0E0] 
-                border-4 w-full h-[500px] min-h-[26.1875rem]"
+                border-4 w-full h-full overflow-auto"
       >
-        <span className="text-[#1A1A1A] text-[0.73925rem] font-semibold font-[Inter]">
+        <span className="text-[#1A1A1A] text-sm font-semibold font-[Inter]">
           일정이 없습니다.
         </span>
 
@@ -48,7 +48,7 @@ function CheckSchedule({ selectedDateEvents, selectedDate }) {
     <div
       className="pt-[0.75rem] pb-[0.75rem] pr-[0.8125rem] pl-[0.8125rem] 
                 bg-[#F0F0F0] rounded-[0.294rem] border-[#E0E0E0] 
-                border-4 w-full h-[500px] min-h-[26.1875rem] overflow-auto"
+                border-4 w-full h-full overflow-auto"
     >
       <section className="flex justify-between items-center">
         <span className="text-[#1A1A1A] text-[0.73925rem] font-semibold font-[Inter]">
