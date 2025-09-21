@@ -274,7 +274,7 @@ export default function Timer() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       {appState === "setup" ? (
         <SettingsModal
           onClose={() => {}} // 초기 화면에서는 닫기 불가
