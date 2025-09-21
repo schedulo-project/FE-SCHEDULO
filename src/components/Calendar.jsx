@@ -412,7 +412,6 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
         style={{
           height: "100%",
           width: "100%",
-          backgroundColor: "white",
         }}
       />
     </div>

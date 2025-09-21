@@ -1,7 +1,7 @@
 /* 챗봇 전체 컨테이너 */
 .react-chatbot-kit-chat-container {
   width: 500px;
-  height: 800px;
+  height: 700px;
   margin: 0 auto;
   margin: 0 auto;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
@@ -29,7 +29,7 @@
 
 /* 채팅창 크기 */
 .react-chatbot-kit-chat-message-container {
-  height: 700px;
+  height: 600px;
 }
 
 /* 챗봇 메세지 */
@@ -54,7 +54,7 @@
   background-color: white !important;
   border: 1px solid black;
   line-height: 35px;
-  padding: 10px 10px 0 10px;
+  padding: 10px 10px 10px 10px;
 }
 
 .react-chatbot-kit-user-chat-message {
@@ -67,7 +67,7 @@
   position: none;
   border-color: transparent black !important;
   border-style: solid;
-  margin-top: 20px;
+  margin-top: 10px;
   border-width: 7px 7px 7px 0px;
 }
 
