@@ -1,5 +1,3 @@
-import React from "react";
-
 // tagNames : 태그 이름들을 문자열로 받아와서 콤마 슬라이스 후 배열로 변환하여 사용
 // tags : tagNames에서 변환된 데이터. 태그 이름들을 받아와서 컴포넌트로 보여주는 역할
 // size : 태그의 크기를 조절하기 위한 prop
@@ -31,7 +29,7 @@ const TagBox = ({ task, size }) => {
       tagColors[index] === "" ||
       tagColors[index] === "null"
     ) {
-      return "#9CA3AF"; // 회색 기본값
+      return "#EDEDED"; // 회색 기본값
     }
     return tagColors[index];
   };
@@ -40,7 +38,7 @@ const TagBox = ({ task, size }) => {
     <div className="flex gap-[0.44rem] ">
       {tags.map((tag, index) => (
         <div
-          className={`rounded-[0.625rem] text-[#656565] ${size}`}
+          className={`rounded-[0.625rem] text-[#333333] font-semibold ${size}`}
           key={index}
           style={{ backgroundColor: getTagColor(index) }}
         >

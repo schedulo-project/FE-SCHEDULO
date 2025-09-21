@@ -10,7 +10,7 @@ const getTags = async () => {
     const tagNames = response.data.map((tag) => ({
       value: tag.name,
       label: tag.name,
-      color: tag.color || "#526D82", // 색상 정보도 함께 저장, 없으면 기본 색상 사용
+      color: tag.color || "#EDEDED", // 색상 정보도 함께 저장, 없으면 기본 색상 사용
     }));
 
     console.log("가져온 태그 목록:", tagNames);
