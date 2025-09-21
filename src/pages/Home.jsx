@@ -156,16 +156,16 @@ const Home = () => {
     .filter((event) => !event.is_completed) // 완료되지 않은 일정만 포함
     .map((event) => {
       // 첫 번째 태그의 색상 추출
-      const firstTagColor = event.tagColor
-        ? event.tagColor.split(",")[0].trim()
-        : "#526D82"; // 태그 색상이 없을 경우 기본 색상
+      // const firstTagColor = event.tagColor
+      //   ? event.tagColor.split(",")[0].trim()
+      //   : "#EDEDED"; // 태그 색상이 없을 경우 기본 색상
 
       return {
         id: event.id,
         title: event.title,
         date: event.date,
         tagName: event.tagName,
-        tagColor: firstTagColor, // 첫 번째 태그 색상 사용
+        tagColor: event.tagColor, // 첫 번째 태그 색상 사용
         is_completed: event.is_completed,
         content: event.content,
         deadline: event.deadline,

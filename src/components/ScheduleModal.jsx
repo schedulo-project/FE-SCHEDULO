@@ -191,7 +191,7 @@ const ScheduleModal = () => {
 
   // 태그 추가
   const handleCreate = async (inputValue) => {
-    const defaultColor = "#526D82";
+    const defaultColor = "#EDEDED";
     const newTag = {
       value: inputValue,
       label: inputValue,

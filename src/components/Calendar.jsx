@@ -283,16 +283,21 @@ const Calendar = ({ events, onDateClick, onEventClick }) => {
 
   // 커스텀 이벤트 스타일링 함수
   const eventStyleGetter = (event) => {
+    // 첫 번째 태그의 색상 추출
+    const firstTagColor = event.tagColor
+      ? event.tagColor.split(",")[0].trim()
+      : "#EDEDED"; // 태그 색상이 없을 경우 기본 색상
     // 기본 스타일 설정
     let style = {
-      backgroundColor: event.tagColor || "#526D82",
+      backgroundColor: firstTagColor,
       borderRadius: "4px",
       opacity: 0.9,
-      color: "#fff",
+      color: "#333333",
       border: "none",
       display: "block",
-      fontSize: "0.85em",
+      fontSize: "0.9em",
       boxShadow: "0 2px 3px rgba(39, 55, 77, 0.2)",
+      font: "semibold",
     };
 
     // 하루짜리 이벤트인지 확인 (deadline이 없거나 시작일과 같을 때)
