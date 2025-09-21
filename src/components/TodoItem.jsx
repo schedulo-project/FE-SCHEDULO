@@ -40,16 +40,16 @@ function TodoItem({ task, checked }) {
     ? "bg-[#DDE6ED] border-[1px] border-[#9DB2BF]"
     : "bg-[#FFFFFF]";
   const size =
-    "min-w-[2rem] pr-[0.75rem] pl-[0.75rem] text-[0.375rem]";
+    "min-w-[2rem] pr-[0.75rem] pl-[0.75rem] text-[0.54rem]";
 
   return (
     <>
       <div
-        className={`flex items-center min-h-[2.8125rem] justify-between ${bgColor} rounded-[0.294rem] p-2 mb-2`}
+        className={`flex items-center min-h-[3.125rem] justify-between ${bgColor} rounded-[0.294rem] p-2 mb-2`}
         onClick={() => handleClick()}
       >
         <section>
-          <span className="text-[0.625rem] text-[#1A1A1A] font-semibold font-[Inter]">
+          <span className="text-[0.7rem] text-[#333333] font-semibold font-[Inter]">
             {task.title}
           </span>
           <TagBox task={task} size={size} />
