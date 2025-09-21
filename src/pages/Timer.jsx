@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Play, Pause, Coffee, Briefcase } from "lucide-react";
 import { Button } from "../components/PomodoroTimer/Button";
 import SettingsModal from "../components/PomodoroTimer/SettingsModal";
@@ -11,6 +11,7 @@ import {
   isActiveAtom,
   isWorkAtom,
   cyclesAtom,
+  completedWorkSessionsAtom,
   isCompletedAtom,
   appStateAtom,
   lastUpdatedAtom,
@@ -21,20 +22,173 @@ export default function Timer() {
   const [appState, setAppState] = useAtom(appStateAtom);
 
   // 설정 상태
-  const [workTime, setWorkTime] = useAtom(workTimeAtom);
-  const [breakTime, setBreakTime] = useAtom(breakTimeAtom);
-  const [totalCycles, setTotalCycles] = useAtom(totalCyclesAtom);
+  const [workTime] = useAtom(workTimeAtom);
+  const [breakTime] = useAtom(breakTimeAtom);
+  const [totalCycles] = useAtom(totalCyclesAtom);
 
+  // 타이머 상태
   const [timeLeft, setTimeLeft] = useAtom(timeLeftAtom);
   const [isActive, setIsActive] = useAtom(isActiveAtom);
   const [isWork, setIsWork] = useAtom(isWorkAtom);
   const [cycles, setCycles] = useAtom(cyclesAtom);
+  const [completedWorkSessions, setCompletedWorkSessions] =
+    useAtom(completedWorkSessionsAtom);
   const [isCompleted, setIsCompleted] = useAtom(isCompletedAtom);
   const [lastUpdated, setLastUpdated] = useAtom(lastUpdatedAtom);
 
   const intervalRef = useRef(null);
+  const fnRef = useRef({
+    handleTimerComplete: null,
+    startTimer: null,
+  });
 
-  // 타이머 재개 시 시간 보정을 위한 효과
+  // 타이머 실행 함수
+  const startTimer = () => {
+    // 이미 인터벌이 실행 중이면 중복 실행하지 않음
+    if (intervalRef.current) {
+      console.log("인터벌이 이미 실행 중입니다");
+      return;
+    }
+
+    // 타이머 시작 시 시간 확인 및 초기화
+    if (timeLeft <= 0) {
+      const initialTime = isWork
+        ? workTime * 60
+        : breakTime * 60;
+      console.log(
+        "타이머 초기화:",
+        initialTime,
+        "초",
+        isWork ? "작업 모드" : "휴식 모드"
+      );
+      setTimeLeft(initialTime);
+      setLastUpdated(Date.now());
+    } else {
+      console.log(
+        "타이머 시작:",
+        timeLeft,
+        "초 남음",
+        isWork ? "작업 모드" : "휴식 모드"
+      );
+    }
+
+    // 1초마다 실행되는 타이머 설정
+    intervalRef.current = setInterval(() => {
+      setTimeLeft((time) => {
+        const newTime = time - 1;
+        setLastUpdated(Date.now());
+
+        // 타이머 완료 시
+        if (newTime <= 0) {
+          console.log(
+            "타이머 완료",
+            isWork ? "작업 모드" : "휴식 모드"
+          );
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+
+          // 약간의 지연 후 완료 처리 함수 호출 (상태 업데이트 동기화 위해)
+          setTimeout(() => {
+            if (fnRef.current.handleTimerComplete) {
+              fnRef.current.handleTimerComplete();
+            }
+          }, 50);
+
+          return 0;
+        }
+
+        return newTime;
+      });
+    }, 1000);
+  };
+
+  // 타이머 완료 처리 함수
+  const handleTimerComplete = () => {
+    // 인터벌 먼저 정리
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    if (isWork) {
+      // 작업 시간 완료
+      const newCompletedWorkSessions = completedWorkSessions + 1;
+      setCompletedWorkSessions(newCompletedWorkSessions);
+
+      // 모든 작업 세션이 완료되었는지 확인
+      if (newCompletedWorkSessions >= totalCycles) {
+        // 모든 세션 완료
+        setIsCompleted(true);
+        setIsActive(false);
+        return;
+      }
+
+      // 작업 세션이 끝나면 휴식 시간으로 전환
+      setIsWork(false);
+
+      // 휴식 시간 초기화 (반드시 이 순서로 해야 함)
+      const newBreakTime = breakTime * 60;
+      setTimeLeft(newBreakTime);
+      setLastUpdated(Date.now());
+
+      console.log(
+        "휴식 시간 시작:",
+        breakTime,
+        "분",
+        newBreakTime,
+        "초"
+      );
+
+      // 타이머가 활성화된 상태라면 계속 실행 (더 긴 지연 시간)
+      if (isActive) {
+        setTimeout(() => {
+          if (intervalRef.current === null) {
+            startTimer();
+          }
+        }, 100);
+      }
+    } else {
+      // 휴식 시간 완료, 작업 시간으로 전환
+      setIsWork(true);
+
+      // 작업 시간 초기화 (반드시 이 순서로 해야 함)
+      const newWorkTime = workTime * 60;
+      setTimeLeft(newWorkTime);
+      setLastUpdated(Date.now());
+
+      console.log(
+        "작업 시간 시작:",
+        workTime,
+        "분",
+        newWorkTime,
+        "초"
+      );
+
+      // 타이머가 활성화된 상태라면 계속 실행 (더 긴 지연 시간)
+      if (isActive) {
+        setTimeout(() => {
+          if (intervalRef.current === null) {
+            startTimer();
+          }
+        }, 100);
+      }
+    }
+  };
+
+  // 함수 참조 업데이트
+  useEffect(() => {
+    fnRef.current.handleTimerComplete = handleTimerComplete;
+    fnRef.current.startTimer = startTimer;
+  }, [
+    isWork,
+    workTime,
+    breakTime,
+    totalCycles,
+    isActive,
+    completedWorkSessions,
+  ]);
+
+  // 페이지 로드 시 타이머 상태 복원
   useEffect(() => {
     // 페이지 방문시 마지막 업데이트 이후의 시간 차이 계산
     if (isActive && !intervalRef.current) {
@@ -64,49 +218,6 @@ export default function Timer() {
     };
   }, []);
 
-  // 타이머 완료 처리 함수
-  const handleTimerComplete = () => {
-    if (isWork) {
-      const newCycles = cycles + 1;
-      setCycles(newCycles);
-
-      if (newCycles >= totalCycles) {
-        // 모든 사이클 완료
-        setIsCompleted(true);
-        setIsActive(false);
-      } else {
-        // 휴식시간으로 전환
-        setIsWork(false);
-        setTimeLeft(breakTime * 60);
-      }
-    } else {
-      // 작업시간으로 전환
-      setIsWork(true);
-      setTimeLeft(workTime * 60);
-    }
-  };
-
-  // 타이머 실행
-  const startTimer = () => {
-    if (intervalRef.current) return;
-
-    intervalRef.current = setInterval(() => {
-      setTimeLeft((time) => {
-        const newTime = time - 1;
-        setLastUpdated(Date.now());
-
-        if (newTime <= 0) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-          handleTimerComplete();
-          return 0;
-        }
-
-        return newTime;
-      });
-    }, 1000);
-  };
-
   // isActive 상태 감시
   useEffect(() => {
     if (isActive) {
@@ -128,16 +239,7 @@ export default function Timer() {
   const toggleTimer = () => {
     const newIsActive = !isActive;
     setIsActive(newIsActive);
-
-    // 타이머 상태 업데이트
     setLastUpdated(Date.now());
-
-    if (newIsActive) {
-      startTimer();
-    } else if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
   };
 
   // 타이머 취소
@@ -145,6 +247,7 @@ export default function Timer() {
     setIsActive(false);
     setIsWork(true);
     setCycles(0);
+    setCompletedWorkSessions(0);
     setIsCompleted(false);
 
     if (intervalRef.current) {
@@ -168,11 +271,6 @@ export default function Timer() {
   const getProgress = () => {
     const totalTime = isWork ? workTime * 60 : breakTime * 60;
     return ((totalTime - timeLeft) / totalTime) * 100;
-  };
-
-  // 설정 모달로 전환
-  const openSettings = () => {
-    setAppState("setup"); // 설정 모달로 전환
   };
 
   return (
@@ -199,7 +297,7 @@ export default function Timer() {
               <div className="text-sm text-gray-500 mb-4">
                 총 작업 시간:{" "}
                 <span className="font-semibold text-gray-800">
-                  {workTime * cycles}분
+                  {workTime * completedWorkSessions}분
                 </span>
               </div>
 
@@ -313,11 +411,10 @@ export default function Timer() {
 
               {/* 사이클 카운터 */}
               <div className="text-sm text-gray-600">
-                진행 상황:{" "}
+                작업 세션 진행:{" "}
                 <span className="font-semibold text-gray-800">
-                  {cycles}/{totalCycles}
-                </span>{" "}
-                사이클
+                  {completedWorkSessions}/{totalCycles}
+                </span>
               </div>
 
               {/* 컨트롤 버튼들 */}
