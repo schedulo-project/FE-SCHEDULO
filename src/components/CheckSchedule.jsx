@@ -32,8 +32,8 @@ function CheckSchedule({ selectedDateEvents, selectedDate }) {
     return (
       <div
         className="flex justify-between pt-[0.75rem] pb-[0.75rem] pr-[0.8125rem] pl-[0.8125rem] 
-                bg-[#F0F0F0] rounded-[0.294rem] border-[#E0E0E0] 
-                border-4 w-full h-full overflow-auto"
+                bg-[#EDEDED] rounded-[0.294rem] border-[#E0E0E0] 
+                border-1 w-full h-full overflow-auto"
       >
         <span className="text-[#1A1A1A] text-sm font-semibold font-[Inter]">
           일정이 없습니다.
@@ -47,15 +47,15 @@ function CheckSchedule({ selectedDateEvents, selectedDate }) {
   return (
     <div
       className="pt-[0.75rem] pb-[0.75rem] pr-[0.8125rem] pl-[0.8125rem] 
-                bg-[#F0F0F0] rounded-[0.294rem] border-[#E0E0E0] 
-                border-4 w-full h-full overflow-auto"
+                bg-[#EDEDED] rounded-[0.294rem] border-[#E0E0E0] 
+                border-1 w-full h-full overflow-auto"
     >
       <section className="flex justify-between items-center">
-        <span className="text-[#1A1A1A] text-[0.73925rem] font-semibold font-[Inter]">
+        <span className="text-[#1A1A1A] text-[0.8rem] font-semibold font-[Inter]">
           일정
         </span>
         <span className="text-[#010669] text-[10px] font-semibold font-[Inter] flex items-center gap-2">
-          {selectedDate}
+          <span className="text-[0.8rem]">{selectedDate}</span>
           <DropDown />
           {/* 드롭다운 컴포넌트 */}
 

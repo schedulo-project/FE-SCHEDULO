@@ -110,16 +110,16 @@ function TodoCategory({ todoList }) {
               >
                 <img
                   src={arrowBtn}
-                  className={`h-[1rem] w-[1rem] transition-transform duration-300 ${
+                  className={`h-[1.2rem] w-[1.2rem] transition-transform duration-300 ${
                     isToggleOpen ? "rotate-0" : "rotate-180"
                   }`}
                   alt="toggle"
                 />
               </button>
-              <span className="text-[0.55444rem] text-[#656565] font-[Inter] font-normal">
+              <span className="text-[0.7rem] text-[#656565] font-[Inter] font-normal">
                 {group.tag}
               </span>
-              <div className="flex-grow h-[0.04619rem] bg-[#ABABAB] max-w-[14.33019rem] mx-[0.44rem]" />
+              <div className="flex-grow h-[0.04619rem] bg-[#ABABAB] w-3/5 mx-[0.44rem]" />
             </section>
             {/* 토글 상태에 따라 열고 닫는걸 관리한다. */}
             {isToggleOpen &&

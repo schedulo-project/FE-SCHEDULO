@@ -38,10 +38,14 @@ const DropDown = () => {
   return (
     <div ref={ref} className="relative mt-[0.2rem]">
       <button onClick={openDropdown}>
-        <img src={groupbtn} alt="드롭다운 열기" />
+        <img
+          src={groupbtn}
+          className="w-7 h-7"
+          alt="드롭다운 열기"
+        />
       </button>
       {isDropDownOpen && (
-        <div className="absolute right-0 w-20 bg-white rounded-lg overflow-hidden border border-gray-300 shadow-sm">
+        <div className="absolute text-[0.7rem] right-0 w-20 bg-white rounded-lg overflow-hidden border border-gray-300 shadow-sm">
           {optionArr.map((option, index) => (
             <div
               key={index}
