@@ -1,14 +1,14 @@
-// in config.js
 import { createChatBotMessage } from "react-chatbot-kit";
-import AddWidget from "../../widgets/AddWidget";
-import CheckWidget from "../../widgets/CheckWidget";
-import EditWidget from "../../widgets/EditWidget";
-import DeleteWidget from "../../widgets/DeleteWidget";
+import HtmlWidget from "../../widgets/HtmlWidget";
+import LoadingWidget from "../../widgets/LoadingWidget";
+import chatbotlogo from "../../assets/logo/onesung1.png";
 
-const botName = "ExcitementBot";
+const botName = "Dulo";
 
 const config = {
-  initialMessages: [createChatBotMessage(`Hi! I'm ${botName}`)],
+  initialMessages: [
+    createChatBotMessage("안녕하세요 Dulo입니다! 😊"),
+  ],
   botName: botName,
   customStyles: {
     botMessageBox: {
@@ -20,25 +20,32 @@ const config = {
     },
     // 채팅 버튼에 대한 스타일링
   },
+  customComponents: {
+    botAvatar: (props) => (
+      <div {...props} style={{ marginRight: "12px" }}>
+        <img
+          src={chatbotlogo}
+          alt="bot avatar"
+          style={{
+            objectFit: "cover",
+            width: "105px",
+            height: "50px",
+            borderRadius: "50%",
+            border: "1px solid #27374d",
+          }}
+        />
+      </div>
+    ),
+    // 봇 아바타 커스텀 컴포넌트
+  },
   widgets: [
     {
-      widgetName: "checkWidget",
-      widgetFunc: (props) => <CheckWidget {...props} />,
-      // CheckWidget 불러온다.
+      widgetName: "htmlWidget",
+      widgetFunc: (props) => <HtmlWidget {...props} />,
     },
     {
-      widgetName: "editWidget",
-      widgetFunc: (props) => <EditWidget {...props} />,
-    },
-    {
-      widgetName: "deleteWidget",
-      widgetFunc: (props) => <DeleteWidget {...props} />,
-      // TestWidget을 불러온다.
-    },
-    {
-      widgetName: "addWidget",
-      widgetFunc: (props) => <AddWidget {...props} />,
-      // TestWidget을 불러온다.
+      widgetName: "loadingWidget",
+      widgetFunc: (props) => <LoadingWidget {...props} />,
     },
   ],
 };
