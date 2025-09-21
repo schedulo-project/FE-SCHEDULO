@@ -1,23 +1,39 @@
 import baseAxiosInstance from "./baseAxiosApi";
 
-const fetchECampusSchedule = async (token) => {
+// 1. 크롤링 시작
+export const startECampusCrawling = async (token) => {
   try {
     const response = await baseAxiosInstance.get(
       "/users/crawling/",
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
-
-    const { courses } = response.data;
-    console.log("크롤링 데이터", courses);
-    return { courses };
+    console.log("크롤링 시작:", response.data);
+    return response.data; 
   } catch (error) {
-    console.error("ECampus 일정 불러오기 실패:", error);
-    return { courses: null, error: error.message };
+    console.error("ECampus 크롤링 시작 실패:", error);
+    return { error: error.message };
   }
 };
 
-export default fetchECampusSchedule;
+// 2. 상태 확인
+export const checkECampusCrawlingStatus = async (
+  token,
+  taskId
+) => {
+  try {
+    const response = await baseAxiosInstance.get(
+      `/users/events/status/`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { task_id: taskId },
+      }
+    );
+    console.log("크롤링 상태:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("ECampus 상태 확인 실패:", error);
+    return { error: error.message };
+  }
+};

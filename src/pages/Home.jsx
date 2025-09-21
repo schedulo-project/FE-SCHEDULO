@@ -3,7 +3,10 @@ import Calendar from "../components/Calendar";
 import CheckSchedule from "../components/CheckSchedule";
 import ScheduleModal from "../components/ScheduleModal";
 import fetchSchedules from "../api/checkScheduleApi";
-import fetchECampusSchedule from "../api/ECampusScheduleFetcher";
+import {
+  startECampusCrawling,
+  checkECampusCrawlingStatus,
+} from "../api/ECampusScheduleFetcher";
 import StudyPlanModal from "../components/studyPlan/StudyPlanModal";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -173,42 +176,83 @@ const Home = () => {
     });
 
   // 이캠퍼스 크롤링 데이터 가져오기
+  const { token } = useAuth();
+
   const handleFetchECampus = async () => {
     try {
-      const response = await fetchECampusSchedule();
+      // 1. 크롤링 시작
+      const startRes = await startECampusCrawling(token);
+      if (!startRes || !startRes.task_id) {
+        alert("샘물 데이터 요청에 실패했습니다.");
+        return;
+      }
 
-      if (!response || !response.courses) {
+      const taskId = startRes.task_id;
+
+      // 2. 상태 확인
+      let statusRes;
+      let attempts = 0;
+      while (attempts < 30) {
+        statusRes = await checkECampusCrawlingStatus(
+          token,
+          taskId
+        );
+
+        if (
+          statusRes.state === "SUCCESS" ||
+          (statusRes.state === "PROGRESS" && statusRes.courses)
+        ) {
+          break;
+        }
+        if (statusRes.state === "FAILURE") {
+          alert("샘물 데이터 가져오기에 실패했습니다.");
+          return;
+        }
+
+        await new Promise((resolve) =>
+          setTimeout(resolve, 2000)
+        );
+        attempts++;
+      }
+
+      if (!statusRes || statusRes.state !== "SUCCESS") {
+        alert(
+          "샘물 데이터가 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요."
+        );
+        return;
+      }
+
+      // 3. 완료되면 일정 데이터 처리
+      const { result } = statusRes;
+
+      if (!result || !result.events_data) {
         alert("샘물 데이터를 불러오지 못했습니다.");
         return;
       }
 
-      const { courses } = response;
+      const courses = result.events_data;
 
-      // 모든 과목의 일정이 비어 있는지 확인
       const isAllEmpty = Object.values(courses).every(
         (arr) => Array.isArray(arr) && arr.length === 0
       );
-
       if (isAllEmpty) {
         alert("샘물에서 가져올 일정이 없습니다.");
         return;
       }
 
-      // 일정 데이터 가공
       const newEvents = Object.entries(courses).flatMap(
         ([courseName, items]) =>
           items.map((item, index) => ({
             id: Date.now() + Math.random() + index,
-            title: `${courseName} - ${item.title}`,
+            title: `${item.title}`,
             date: item.scheduled_date,
             content: item.content || "",
-            tagName: item.tagName || "",
+            tagName: courseName,
             is_completed: item.is_completed ?? false,
             deadline: item.deadline ?? null,
           }))
       );
 
-      // 기존 이벤트와 병합
       setEvents((prev) => [...prev, ...newEvents]);
       alert("샘물 일정을 성공적으로 불러왔습니다.");
     } catch (error) {
