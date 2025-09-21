@@ -116,7 +116,7 @@ function TodoCategory({ todoList }) {
                   alt="toggle"
                 />
               </button>
-              <span className="text-[0.7rem] text-[#656565] font-[Inter] font-normal">
+              <span className="text-[0.7rem] text-[#656565] font-[Inter] font-normal flex-shrink-0">
                 {group.tag}
               </span>
               <div className="flex-grow h-[0.04619rem] bg-[#ABABAB] w-3/5 mx-[0.44rem]" />
