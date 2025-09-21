@@ -9,6 +9,7 @@ import {
   timeLeftAtom,
   isWorkAtom,
   cyclesAtom,
+  completedWorkSessionsAtom,
   isCompletedAtom,
   appStateAtom,
   lastUpdatedAtom,
@@ -25,6 +26,9 @@ export default function SettingsModal({
   const [, setTimeLeft] = useAtom(timeLeftAtom);
   const [, setIsWork] = useAtom(isWorkAtom);
   const [, setCycles] = useAtom(cyclesAtom);
+  const [, setCompletedWorkSessions] = useAtom(
+    completedWorkSessionsAtom
+  );
   const [, setIsCompleted] = useAtom(isCompletedAtom);
   const [, setAppState] = useAtom(appStateAtom);
   const [, setLastUpdated] = useAtom(lastUpdatedAtom);
@@ -41,14 +45,8 @@ export default function SettingsModal({
       alert("작업 시간은 1분에서 120분 사이여야 합니다.");
       return;
     }
-    if (
-      newBreakTime < 5 ||
-      newBreakTime > 60 ||
-      newBreakTime % 5 !== 0
-    ) {
-      alert(
-        "휴식 시간은 5분에서 60분 사이여야 하며, 5분 단위로만 설정 가능합니다."
-      );
+    if (newBreakTime < 1 || newBreakTime > 60) {
+      alert("휴식 시간은 1분에서 60분 사이여야 합니다.");
       return;
     }
     if (newTotalCycles < 1 || newTotalCycles > 20) {
@@ -56,15 +54,36 @@ export default function SettingsModal({
       return;
     }
 
-    // 전역 상태 업데이트
+    // 전역 상태 업데이트 (순서 중요)
     setWorkTime(newWorkTime);
     setBreakTime(newBreakTime);
     setTotalCycles(newTotalCycles);
-    setTimeLeft(newWorkTime * 60);
+
+    // 타이머 초기화
+    const initialTime = newWorkTime * 60;
+    setTimeLeft(initialTime);
+
+    // 작업 모드로 시작
     setIsWork(true);
+
+    // 카운터 초기화
     setCycles(0);
+    setCompletedWorkSessions(0);
     setIsCompleted(false);
+
+    // 마지막 업데이트 시간 기록
     setLastUpdated(Date.now());
+
+    // 타이머 화면으로 전환
+    console.log(
+      "타이머 설정 완료:",
+      newWorkTime,
+      "분 작업,",
+      newBreakTime,
+      "분 휴식,",
+      newTotalCycles,
+      "회 반복"
+    );
     setAppState("timer");
   };
 
@@ -126,7 +145,7 @@ export default function SettingsModal({
                 variant="outline"
                 size="sm"
                 onClick={() =>
-                  setNewBreakTime(Math.max(5, newBreakTime - 5))
+                  setNewBreakTime(Math.max(1, newBreakTime - 5))
                 }
               >
                 -
