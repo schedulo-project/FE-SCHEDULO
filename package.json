@@ -28,6 +28,8 @@
     "react-calendar": "^5.1.0",
     "react-chatbot-kit": "^2.2.2",
     "react-date-range": "^2.0.1",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.62.0",
     "react-router-dom": "^7.2.0",
