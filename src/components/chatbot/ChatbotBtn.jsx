@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/logo/onesung1.png";
+import logo from "../../assets/logo/sasum.png";
 
 const ChatbotBtn = () => {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { createChatBotMessage } from "react-chatbot-kit";
 import HtmlWidget from "../../widgets/HtmlWidget";
 import LoadingWidget from "../../widgets/LoadingWidget";
-import chatbotlogo from "../../assets/logo/onesung1.png";
+import chatbotlogo from "../../assets/logo/sasum.png";
 
 const botName = "Dulo";
 
