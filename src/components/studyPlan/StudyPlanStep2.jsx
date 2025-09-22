@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
-import bookLogo from "../../assets/logo/book_square.svg";
+import logoImage from "../../assets/logo/logoimage.svg";
 
 const StudyPlanStep2 = ({
   nextStep,
@@ -139,15 +139,15 @@ const StudyPlanStep2 = ({
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#DDE6ED] flex flex-col items-center">
+    <div className="w-full h-full bg-[#DDE6ED] flex flex-col items-center">
       {/* 로고 */}
-      <div className="w-full my-16 ml-64 flex items-center space-x-3">
+      <div className="w-full my-16 pl-64 flex justify-start items-center">
         <img
-          src={bookLogo}
+          src={logoImage}
           alt="logo"
-          className="w-[47px] h-[47px]"
+          className="w-[250px]"
         />
-        <span className="text-[#27374D] text-3xl">Schedulo</span>
+      
       </div>
 
       {/* 모달 박스 */}
