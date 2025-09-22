@@ -309,6 +309,35 @@
   cursor: se-resize;
 }
 
+/* 더보기 팝업이 Z축 기준 맨 위에 표시되도록 설정 */
+:global(.rbc-overlay) {
+  position: absolute !important;
+  z-index: 9999 !important; /* 매우 높은 z-index 값 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  background-color: white !important;
+  border-radius: 8px !important;
+  padding: 8px !important; /* 팝업 내부 여백 축소 */
+  max-width: 250px !important; /* 최대 너비 제한 */
+}
+
+/* 팝업 내 날짜 헤더 스타일 */
+:global(.rbc-overlay-header) {
+  font-weight: 600 !important;
+  color: #27374d !important;
+  padding: 5px 8px !important; /* 패딩 축소 */
+  margin-bottom: 6px !important; /* 여백 축소 */
+  border-bottom: 1px solid #dde6ed !important;
+  font-size: 0.95rem !important; /* 폰트 크기 축소 */
+}
+
+/* 팝업 내 일정 항목 스타일 */
+:global(.rbc-overlay) :global(.rbc-event) {
+  margin-bottom: 5px !important; /* 일정 간 간격 축소 */
+  padding: 5px 8px !important; /* 내부 여백 축소 */
+  border-radius: 5px !important;
+  font-size: 0.85rem !important; /* 폰트 크기 축소 */
+}
+
 @keyframes pulse {
   0% {
     opacity: 0.7;
