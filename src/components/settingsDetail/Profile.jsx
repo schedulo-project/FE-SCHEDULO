@@ -148,7 +148,7 @@ const Profile = () => {
       </section>
       <section className="flex flex-col items-start">
         <h1 className="font-semibold font-['Inter'] text-s ">
-          알람 수정
+          알림 수정
         </h1>
         <hr className="w-[40%] bg-black mt-2 mb-2" />
         <div className="flex flex-col justify-between w-full gap-4">
