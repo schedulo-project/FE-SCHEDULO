@@ -106,7 +106,6 @@ const ScheduleModal = () => {
       }
       // 일정 수정 모드 (id가 있을 때)
       else {
-        console.log("모달 데이터:", data); // 디버깅용
         setTitle(data.title || "");
         setContent(data.content || "");
         setDate(data.date || today);
@@ -219,14 +218,6 @@ const ScheduleModal = () => {
     );
     const endDate = format(dateRange[0].endDate, "yyyy-MM-dd");
     const deadline = endDate !== startDate ? endDate : null;
-
-    console.log("handleAdd - 날짜 정보:", {
-      startDate,
-      endDate,
-      deadline,
-      dateRange: dateRange[0],
-    });
-
     const newData = {
       title,
       selectedTags,
@@ -236,15 +227,12 @@ const ScheduleModal = () => {
       deadline,
     };
 
-    // API 호출
     const response = await addSchedules(newData);
 
-    // 태그 색상 정보를 추가한 이벤트 객체 생성
     const newEvent = {
       id: response.data.id,
       title,
       tagName: selectedTags.map((tag) => tag.label).join(", "),
-      // 각 태그의 색상 정보 추출 (selectedTags 객체에서 color 속성)
       tagColor: selectedTags
         .map((tag) => tag.color || "#526D82")
         .join(", "),
@@ -254,13 +242,11 @@ const ScheduleModal = () => {
       deadline,
     };
 
-    // 이벤트 목록에 추가
     setEvents((prev) => [...prev, newEvent]);
     setIsModalOpen(false);
   };
 
   const handleUpdate = async () => {
-    // 종료일이 시작일과 다르면 deadline으로 설정
     const startDate = format(
       dateRange[0].startDate,
       "yyyy-MM-dd"
@@ -279,7 +265,6 @@ const ScheduleModal = () => {
 
     await updateSchedules(updateData);
 
-    // 태그 색상 정보를 포함한 업데이트된 이벤트 객체
     const updatedEventData = {
       id: data.id,
       title,
@@ -292,15 +277,6 @@ const ScheduleModal = () => {
       is_completed: completed,
       deadline,
     };
-
-    console.log("수정된 일정:", updatedEventData);
-    console.log(
-      "태그 색상 정보:",
-      selectedTags.map((tag) => ({
-        label: tag.label,
-        color: tag.color,
-      }))
-    );
 
     alert("일정 수정 완료되었습니다.");
     sethandleChange({ data: updatedEventData, id: data.id });

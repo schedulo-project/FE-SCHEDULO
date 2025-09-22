@@ -2,11 +2,13 @@ import baseAxiosInstance from "./baseAxiosApi";
 
 const addTags = async (name) => {
   try {
-    const response = await baseAxiosInstance.post(`/schedules/tags/`, {
-      name: name,
-    });
+    const response = await baseAxiosInstance.post(
+      `/schedules/tags/`,
+      {
+        name: name,
+      }
+    );
 
-    console.log("response", response);
     return response;
   } catch (error) {
     if (error.response) {

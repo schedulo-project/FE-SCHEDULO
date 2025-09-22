@@ -13,7 +13,6 @@ const getTags = async () => {
       color: tag.color || "#EDEDED", // 색상 정보도 함께 저장, 없으면 기본 색상 사용
     }));
 
-    console.log("가져온 태그 목록:", tagNames);
     return tagNames;
   } catch (error) {
     console.error("태그 가져오기 오류", error);

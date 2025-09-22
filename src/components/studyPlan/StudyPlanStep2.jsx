@@ -133,7 +133,6 @@ const StudyPlanStep2 = ({
     updateFormData(formDataUpdate);
 
     if (onFinalSubmit) {
-      console.log("전송할 review_type:", reviewTypeForAPI);
       await onFinalSubmit(reviewTypeForAPI);
     }
   };
@@ -142,12 +141,7 @@ const StudyPlanStep2 = ({
     <div className="w-full h-full bg-[#DDE6ED] flex flex-col items-center">
       {/* 로고 */}
       <div className="w-full my-16 pl-64 flex justify-start items-center">
-        <img
-          src={logoImage}
-          alt="logo"
-          className="w-[250px]"
-        />
-      
+        <img src={logoImage} alt="logo" className="w-[250px]" />
       </div>
 
       {/* 모달 박스 */}

@@ -7,21 +7,14 @@ const CheckWidget = ({ state }) => {
       state.messages[state.messages.length - 1];
 
     if (lastMessage?.widgetProps?.scheduleData?.schedules) {
-      // 만약 schedules가 있으면 로컬 상태에 저장
       setScheduleData(
         lastMessage.widgetProps.scheduleData.schedules
       );
     }
-  }, [setScheduleData]); // state.messages가 변경될 때마다 실행
-
+  }, [setScheduleData]);
   if (!scheduleData || Object.keys(scheduleData).length === 0) {
     return <div>일정이 없습니다.</div>;
   }
-
-  // Object.entries(scheduleData).map(([date, items]) =>
-  //   console.log(items[3].tag[0].name)
-  // );
-
   return (
     <div>
       <h3 className="font-bold text-xl mb-4">조회된 일정</h3>

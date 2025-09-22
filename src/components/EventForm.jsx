@@ -22,7 +22,6 @@ const EventForm = ({ addEvent }) => {
         "http://13.124.140.60/schedules/",
         formData
       );
-      console.log("일정 추가 성공:", response.data);
 
       addEvent({
         id: response.data.id,
@@ -58,7 +57,10 @@ const EventForm = ({ addEvent }) => {
         onChange={(e) => setDate(e.target.value)}
         className="border p-2 rounded"
       />
-      <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+      <button
+        type="submit"
+        className="bg-blue-500 text-white p-2 rounded"
+      >
         추가
       </button>
     </form>

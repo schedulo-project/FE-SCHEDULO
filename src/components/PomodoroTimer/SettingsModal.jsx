@@ -74,16 +74,6 @@ export default function SettingsModal({
     // 마지막 업데이트 시간 기록
     setLastUpdated(Date.now());
 
-    // 타이머 화면으로 전환
-    console.log(
-      "타이머 설정 완료:",
-      newWorkTime,
-      "분 작업,",
-      newBreakTime,
-      "분 휴식,",
-      newTotalCycles,
-      "회 반복"
-    );
     setAppState("timer");
   };
 

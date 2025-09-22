@@ -72,7 +72,6 @@ const TimeTableGrid = ({ schedule, onSubjectClick }) => {
 
   // 중복 제거된 스케줄 데이터
   const refinedSchedule = deduplicateSchedule(schedule);
-  console.log(refinedSchedule);
 
   // 시간표의 표시 시간 범위 계산
   const allStart = refinedSchedule.map((s) => s.startHour);

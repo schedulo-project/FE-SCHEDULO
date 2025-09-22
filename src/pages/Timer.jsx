@@ -46,7 +46,6 @@ export default function Timer() {
   const startTimer = () => {
     // 이미 인터벌이 실행 중이면 중복 실행하지 않음
     if (intervalRef.current) {
-      console.log("인터벌이 이미 실행 중입니다");
       return;
     }
 
@@ -55,12 +54,7 @@ export default function Timer() {
       const initialTime = isWork
         ? workTime * 60
         : breakTime * 60;
-      console.log(
-        "타이머 초기화:",
-        initialTime,
-        "초",
-        isWork ? "작업 모드" : "휴식 모드"
-      );
+
       setTimeLeft(initialTime);
       setLastUpdated(Date.now());
     } else {
@@ -80,10 +74,6 @@ export default function Timer() {
 
         // 타이머 완료 시
         if (newTime <= 0) {
-          console.log(
-            "타이머 완료",
-            isWork ? "작업 모드" : "휴식 모드"
-          );
           clearInterval(intervalRef.current);
           intervalRef.current = null;
 
@@ -131,14 +121,6 @@ export default function Timer() {
       setTimeLeft(newBreakTime);
       setLastUpdated(Date.now());
 
-      console.log(
-        "휴식 시간 시작:",
-        breakTime,
-        "분",
-        newBreakTime,
-        "초"
-      );
-
       // 타이머가 활성화된 상태라면 계속 실행 (더 긴 지연 시간)
       if (isActive) {
         setTimeout(() => {
@@ -155,14 +137,6 @@ export default function Timer() {
       const newWorkTime = workTime * 60;
       setTimeLeft(newWorkTime);
       setLastUpdated(Date.now());
-
-      console.log(
-        "작업 시간 시작:",
-        workTime,
-        "분",
-        newWorkTime,
-        "초"
-      );
 
       // 타이머가 활성화된 상태라면 계속 실행 (더 긴 지연 시간)
       if (isActive) {

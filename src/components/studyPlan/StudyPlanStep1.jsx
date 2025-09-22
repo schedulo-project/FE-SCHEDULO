@@ -32,11 +32,6 @@ const StudyPlanStep1 = ({
       weeksBeforeExam: Number(week),
       weeksBeforeExamStructured: structuredValue,
     };
-
-    console.log("선택한 값:", week);
-    console.log("구조화된 값:", structuredValue);
-    console.log("updateFormData에 전달할 데이터:", updatedData);
-
     updateFormData(updatedData);
 
     nextStep();
@@ -46,11 +41,7 @@ const StudyPlanStep1 = ({
     <div className="w-ful h-full bg-[#DDE6ED] flex flex-col items-center">
       {/* 로고 */}
       <div className="w-full my-16 pl-64 flex justify-start items-center">
-        <img
-          src={logoImage}
-          alt="logo"
-          className="w-[250px]"
-        />
+        <img src={logoImage} alt="logo" className="w-[250px]" />
       </div>
 
       {/* 모달 박스 */}

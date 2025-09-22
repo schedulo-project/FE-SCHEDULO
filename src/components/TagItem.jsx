@@ -82,7 +82,6 @@ const TagItem = ({ eventsList }) => {
     setAllTags((prevTags) =>
       prevTags.filter((tag) => tag.id !== tagId)
     );
-    console.log("태그 삭제 로직 실행", allTags);
 
     //태그 일금이 같은 것빼고 넣어준다.
     eventsList.task.forEach((event) => {
@@ -93,7 +92,6 @@ const TagItem = ({ eventsList }) => {
 
       event.tagName = updatedTags.join(",");
       sethandleChange(event);
-      console.log("태그 삭제 로직 실행", eventsList);
     });
     deleteTag(tagId);
   };
@@ -121,7 +119,6 @@ const TagItem = ({ eventsList }) => {
   };
 
   const handleClick = (event) => {
-    console.log("일정 클릭", event);
     const clickedEventData = {
       id: Number(event.id), // 고친 부분 기존에는 string으로 들어옴 event.id는 number여서 문제가 생겼음
 

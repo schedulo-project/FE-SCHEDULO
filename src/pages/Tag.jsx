@@ -41,10 +41,6 @@ const Tag = () => {
       }
     };
     fetchTags();
-    console.log(
-      "태그 목록이 성공적으로 불러와졌습니다:",
-      allTags
-    );
   }, []);
 
   // 페이지가 처음 로드될 때만 데이터를 불러오도록 useEffect 사용 이미 있으면 통신 안 함

@@ -5,11 +5,6 @@ const createStudyRoutine = async (
   weeksBeforeExam,
   reviewType
 ) => {
-  console.log("createStudyRoutine", {
-    weeksBeforeExam,
-    reviewType,
-  });
-
   try {
     const formData = new FormData();
     formData.append("weeks_before_exam", weeksBeforeExam);
@@ -24,11 +19,6 @@ const createStudyRoutine = async (
         },
       }
     );
-
-    console.log(
-      "Study routine created successfully:",
-      response.data
-    );
     return response;
   } catch (error) {
     console.error("createStudyRoutine error:", error);
@@ -41,10 +31,6 @@ const getStudyRoutine = async () => {
   try {
     const response = await baseAxiosInstance.get(
       "/users/studyroutine/"
-    );
-    console.log(
-      "Study routine fetched successfully:",
-      response.data
     );
     return response.data;
   } catch (error) {

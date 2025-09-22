@@ -266,7 +266,6 @@ const Home = () => {
   useEffect(() => {
     // 로그인된 상태일 때만 알림 초기화 진행
     if (isAuthenticated) {
-      console.log("로그인 확인됨: 알림 초기화 시작");
       initializeNotifications().catch((err) => {
         console.error("알림 초기화 실패:", err);
       });

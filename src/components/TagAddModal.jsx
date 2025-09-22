@@ -17,7 +17,6 @@ const TagAddModal = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("태그 추가:", inputValue);
     if (!inputValue.trim()) {
       alert("태그를 입력해주세요.");
       return;

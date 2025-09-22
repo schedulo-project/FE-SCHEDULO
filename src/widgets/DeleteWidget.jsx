@@ -4,11 +4,13 @@ import baseAxiosInstance from "../api/baseAxiosApi";
 const DeleteWidget = ({ state }) => {
   const [scheduleData, setScheduleData] = useState({});
   const [checked, setChecked] = useState([]);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // 버튼 비활성화 상태
+  const [isButtonDisabled, setIsButtonDisabled] =
+    useState(false); // 버튼 비활성화 상태
   const actions = state.actions;
 
   useEffect(() => {
-    const lastMessage = state.messages[state.messages.length - 1];
+    const lastMessage =
+      state.messages[state.messages.length - 1];
 
     if (lastMessage?.widgetProps?.scheduleData) {
       setScheduleData(lastMessage.widgetProps.scheduleData);
@@ -36,9 +38,6 @@ const DeleteWidget = ({ state }) => {
     }
     DeleteSchedules({ data: checked, actions: actions });
     setIsButtonDisabled(true); // 버튼 비활성화
-    console.log("삭제할 항목들:", checked);
-
-    // 실제 삭제 로직 추가 가능
   };
 
   // 취소 버튼 클릭 시 처리할 함수
@@ -126,9 +125,12 @@ const DeleteWidget = ({ state }) => {
 
 const DeleteSchedules = async ({ data, actions }) => {
   try {
-    const response = await baseAxiosInstance.delete("/schedules/", {
-      data: { ids: data },
-    });
+    const response = await baseAxiosInstance.delete(
+      "/schedules/",
+      {
+        data: { ids: data },
+      }
+    );
 
     // 204 또는 200 둘 다 성공 처리
     if (response.status === 204 || response.status === 200) {

@@ -2,11 +2,13 @@ import baseAxiosInstance from "./baseAxiosApi";
 
 const checkCurrentPassword = async (currentPassword) => {
   try {
-    const response = await baseAxiosInstance.post(`/users/pw/check/`, {
-      current_password: currentPassword,
-    });
+    const response = await baseAxiosInstance.post(
+      `/users/pw/check/`,
+      {
+        current_password: currentPassword,
+      }
+    );
 
-    console.log("response", response);
     return response;
   } catch (error) {
     if (error.response) {

@@ -18,7 +18,6 @@ const StudyPlanStep = () => {
     const fetchExistingData = async () => {
       try {
         const data = await getStudyRoutine();
-        console.log("기존 공부 습관 불러오기 성공:", data);
         if (data?.weeks_before_exam && data?.review_type) {
           const WEEKDAYS = [
             "MON",
@@ -61,17 +60,11 @@ const StudyPlanStep = () => {
 
   const handleFinalSubmit = async (reviewType) => {
     try {
-      console.log("최종 전송 데이터:", {
-        weeksBeforeExam: formData.weeksBeforeExam,
-        reviewType: reviewType,
-      });
-
       const response = await studyRoutineApi(
         formData.weeksBeforeExam, // Step1 값
         reviewType // Step2에서 직접 전달받은 값
       );
 
-      console.log("공부 습관 저장 성공:", response.data);
       setShowCompleteModal(true);
     } catch (error) {
       console.error("공부 습관 저장 실패:", error);

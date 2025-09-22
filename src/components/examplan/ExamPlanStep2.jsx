@@ -204,9 +204,6 @@ const ExamPlanStep2 = ({
     )
       return parseInt(studyRoutineData.weeks_before_exam, 10);
 
-    console.log(
-      "weeksBeforeExam이 유효하지 않음, 기본값 1 사용"
-    );
     return 1;
   };
 

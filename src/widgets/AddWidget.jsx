@@ -8,7 +8,8 @@ const AddWidget = ({ state }) => {
 
   // refactorAddData 관리
   useEffect(() => {
-    const lastMessage = state.messages[state.messages.length - 1];
+    const lastMessage =
+      state.messages[state.messages.length - 1];
 
     if (lastMessage?.widgetProps?.scheduleData) {
       // scheduleData가 존재하면 상태에 저장
@@ -18,17 +19,17 @@ const AddWidget = ({ state }) => {
 
   // 일정 추가
   const AddSchedule = async () => {
-    console.log("refactorAddData", refactorAddData);
     const TagArr = await SplitTag(refactorAddData.tag);
     try {
-      const response = await baseAxiosInstance.post("/schedules/", {
-        title: refactorAddData.details,
-        content: refactorAddData.details,
-        scheduled_date: refactorAddData.date,
-        tag: TagArr,
-      });
-
-      console.log("일정 생성 성공:", response.data);
+      const response = await baseAxiosInstance.post(
+        "/schedules/",
+        {
+          title: refactorAddData.details,
+          content: refactorAddData.details,
+          scheduled_date: refactorAddData.date,
+          tag: TagArr,
+        }
+      );
     } catch (error) {
       console.error("일정 생성 실패:", error);
     }

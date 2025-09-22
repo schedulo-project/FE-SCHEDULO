@@ -10,13 +10,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "./../styles/calendar.module.css"; // 스타일 적용
 import "./../styles/global.css";
-import ScheduleModal from "./ScheduleModal";
 import { useAtom } from "jotai";
 import updateScheduleApi from "../api/updateScheduleApi";
 
 import {
   eventsAtoms,
-  homeSidebarAtoms,
   isModalOpenAtom,
   modalDataAtom,
 } from "../atoms/HomeAtoms";
@@ -24,10 +22,14 @@ import {
 moment.locale("ko");
 const localizer = momentLocalizer(moment);
 
-// 드래그 앤 드랍 기능이 포함된 캘린더 컴포넌트 생성
 const DragAndDropCalendar = withDragAndDrop(BigCalendar);
 
-const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
+const Calendar = ({
+  events,
+  onDateClick,
+  onEventClick,
+  onEventUpdate,
+}) => {
   const [, setIsModalOpen] = useAtom(isModalOpenAtom);
   const [modalData, setModalData] = useAtom(modalDataAtom); // 모달에 보여줄 데이터
   const [eventsList, setEventsList] = useAtom(eventsAtoms);
@@ -45,7 +47,9 @@ const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
       let allDay = true; // 모든 이벤트를 종일 이벤트로 처리
 
       if (event.deadline) {
-        const deadlineParts = event.deadline.split("T")[0].split("-");
+        const deadlineParts = event.deadline
+          .split("T")[0]
+          .split("-");
         const dlYear = parseInt(deadlineParts[0], 10);
         const dlMonth = parseInt(deadlineParts[1], 10) - 1; // 월은 0부터 시작
         const dlDay = parseInt(deadlineParts[2], 10);
@@ -98,7 +102,6 @@ const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
   };
 
   const handleShowMore = (events, date) => {
-    console.log("더보기 클릭:", date, events);
     if (onDateClick) {
       onDateClick(moment(date).format("YYYY-MM-DD"));
     }
@@ -121,10 +124,13 @@ const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
   };
 
   // 이벤트 드래그 앤 드랍 핸들러
-  const handleEventDrop = async ({ event, start, end, allDay }) => {
+  const handleEventDrop = async ({
+    event,
+    start,
+    end,
+    allDay,
+  }) => {
     try {
-      console.log("드래그 앤 드랍 이벤트:", { event, start, end, allDay });
-
       const newDate = moment(start).format("YYYY-MM-DD");
       const newDeadline = event.deadline
         ? moment(end).subtract(1, "day").format("YYYY-MM-DD")
@@ -155,13 +161,6 @@ const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
       if (onEventUpdate) {
         onEventUpdate(event.id, updateData);
       }
-
-      console.log(
-        "일정이 성공적으로 이동되었습니다:",
-        event.title,
-        "→",
-        newDate
-      );
     } catch (error) {
       console.error("일정 이동 중 오류가 발생했습니다:", error);
       // 실패 시 원래 위치로 되돌리기
@@ -172,10 +171,10 @@ const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
   // 이벤트 리사이즈 핸들러 (기간 변경)
   const handleEventResize = async ({ event, start, end }) => {
     try {
-      console.log("리사이즈 이벤트:", { event, start, end });
-
       const newDate = moment(start).format("YYYY-MM-DD");
-      const newDeadline = moment(end).subtract(1, "day").format("YYYY-MM-DD");
+      const newDeadline = moment(end)
+        .subtract(1, "day")
+        .format("YYYY-MM-DD");
 
       // API를 통해 일정 업데이트
       const updateData = {
@@ -202,16 +201,22 @@ const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
       if (onEventUpdate) {
         onEventUpdate(event.id, updateData);
       }
-
-      console.log("일정 기간이 성공적으로 변경되었습니다:", event.title);
     } catch (error) {
-      console.error("일정 기간 변경 중 오류가 발생했습니다:", error);
+      console.error(
+        "일정 기간 변경 중 오류가 발생했습니다:",
+        error
+      );
       // 실패 시 원래 위치로 되돌리기
       window.location.reload();
     }
   };
 
-  const CustomToolbar = ({ label, onNavigate, onView, view }) => {
+  const CustomToolbar = ({
+    label,
+    onNavigate,
+    onView,
+    view,
+  }) => {
     return (
       <div className="flex justify-between items-center my-4 px-4">
         <div className="flex items-center">
@@ -319,7 +324,8 @@ const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "#F0F4F8";
               e.currentTarget.style.color = "#526D82";
-              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.transform =
+                "translateY(-2px)";
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.backgroundColor = "white";
@@ -338,7 +344,8 @@ const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
               padding: "6px 12px",
               borderRadius: "4px",
               border: "1px solid #9DB2BF",
-              background: view === Views.MONTH ? "#27374D" : "white",
+              background:
+                view === Views.MONTH ? "#27374D" : "white",
               color: view === Views.MONTH ? "white" : "#27374D",
               fontWeight: view === Views.MONTH ? "600" : "500",
               fontSize: "0.9rem",
@@ -355,7 +362,8 @@ const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
               padding: "6px 12px",
               borderRadius: "4px",
               border: "1px solid #9DB2BF",
-              background: view === Views.WEEK ? "#27374D" : "white",
+              background:
+                view === Views.WEEK ? "#27374D" : "white",
               color: view === Views.WEEK ? "white" : "#27374D",
               fontWeight: view === Views.WEEK ? "600" : "500",
               fontSize: "0.9rem",
@@ -389,7 +397,8 @@ const Calendar = ({ events, onDateClick, onEventClick, onEventUpdate }) => {
     };
 
     // 하루짜리 이벤트인지 확인 (deadline이 없거나 시작일과 같을 때)
-    const isSingleDayEvent = !event.deadline || event.date === event.deadline;
+    const isSingleDayEvent =
+      !event.deadline || event.date === event.deadline;
 
     if (isSingleDayEvent) {
       // 하루짜리 이벤트는 좀 더 명확한 스타일링

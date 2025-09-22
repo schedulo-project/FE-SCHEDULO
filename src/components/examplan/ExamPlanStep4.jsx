@@ -36,7 +36,6 @@ const generateStudySchedule = (formData) => {
   // 복습 타입 매핑
   const finalReviewType =
     reviewType || studyRoutine?.review_type || "EVERYDAY";
-  console.log("복습 타입:", finalReviewType);
 
   // 복습 가능한 요일 결정
   const getValidDays = (reviewType) => {
@@ -152,7 +151,7 @@ const generateStudySchedule = (formData) => {
           id: `study-${eventId++}`,
           title: `${subjectToPlace} 공부`,
           date: currentDay,
-          content: `${examName} 대비 ${subjectToPlace} 공부`
+          content: `${examName} 대비 ${subjectToPlace} 공부`,
         });
 
         remainingSessions[subjectToPlace]--;
@@ -166,8 +165,6 @@ const generateStudySchedule = (formData) => {
       (count) => count === 0
     );
   }
-
-  console.log("최종 생성된 이벤트:", events);
 
   return {
     events,

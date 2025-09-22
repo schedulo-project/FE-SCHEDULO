@@ -9,8 +9,7 @@ export const startECampusCrawling = async (token) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    console.log("크롤링 시작:", response.data);
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error("ECampus 크롤링 시작 실패:", error);
     return { error: error.message };
@@ -30,7 +29,6 @@ export const checkECampusCrawlingStatus = async (
         params: { task_id: taskId },
       }
     );
-    console.log("크롤링 상태:", response.data);
     return response.data;
   } catch (error) {
     console.error("ECampus 상태 확인 실패:", error);

@@ -19,7 +19,6 @@ const DataVisualization = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  console.log("dsafadsfasdf", Data);
 
   //pt-5는 건드리면 안됨
 

@@ -2,12 +2,14 @@ import baseAxiosInstance from "./baseAxiosApi";
 
 const addAndPatchStudyPlan = async ({ exam, review }) => {
   try {
-    const response = await baseAxiosInstance.post(`/users/studyroutine/`, {
-      weeks_before_exam: exam,
-      review_type: review,
-    });
+    const response = await baseAxiosInstance.post(
+      `/users/studyroutine/`,
+      {
+        weeks_before_exam: exam,
+        review_type: review,
+      }
+    );
 
-    console.log("response", response);
     return response;
   } catch (error) {
     if (error.response) {
