@@ -308,7 +308,12 @@ const Calendar = ({
               />
             </svg>
           </button>
-          <div className="rbc-toolbar-label">{label}</div>
+          <div
+            className="rbc-toolbar-label"
+            style={{ width: "180px", textAlign: "center" }}
+          >
+            {label}
+          </div>
           <button
             type="button"
             onClick={() => onNavigate("NEXT")}
@@ -337,7 +342,7 @@ const Calendar = ({
             </svg>
           </button>
         </div>
-        <div className="flex">
+        <div className="flex items-center">
           <button
             type="button"
             onClick={handleAddEventClick}
