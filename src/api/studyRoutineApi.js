@@ -1,6 +1,5 @@
 import baseAxiosInstance from "./baseAxiosApi";
 
-// 공부 습관 등록 및 수정
 const createStudyRoutine = async (
   weeksBeforeExam,
   reviewType
@@ -26,7 +25,6 @@ const createStudyRoutine = async (
   }
 };
 
-// 공부 습관 조회
 const getStudyRoutine = async () => {
   try {
     const response = await baseAxiosInstance.get(

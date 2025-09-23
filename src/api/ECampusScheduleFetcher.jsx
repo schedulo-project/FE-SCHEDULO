@@ -1,6 +1,5 @@
 import baseAxiosInstance from "./baseAxiosApi";
 
-// 1. 크롤링 시작
 export const startECampusCrawling = async (token) => {
   try {
     const response = await baseAxiosInstance.get(
@@ -16,7 +15,6 @@ export const startECampusCrawling = async (token) => {
   }
 };
 
-// 2. 상태 확인
 export const checkECampusCrawlingStatus = async (
   token,
   taskId

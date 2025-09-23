@@ -10,14 +10,14 @@ import App from "./App.jsx";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5분간 캐시 유지
-      cacheTime: 10 * 60 * 1000, // 10분간 메모리 보관
-      retry: 1, // 실패시 1번 재시도
-      refetchOnWindowFocus: false, // 창 포커스시 자동 새로고침 비활성화
-      refetchOnMount: true, // 컴포넌트 마운트시 새로고침
+      staleTime: 5 * 60 * 1000,
+      cacheTime: 10 * 60 * 1000,
+      retry: 1,
+      refetchOnWindowFocus: false,
+      refetchOnMount: true,
     },
     mutations: {
-      retry: 1, // mutation 실패시 1번 재시도
+      retry: 1,
     },
   },
 });

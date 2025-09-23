@@ -2,8 +2,6 @@ import baseAxiosInstance from "./baseAxiosApi";
 
 const updateSchedules = async (data) => {
   try {
-    console.log("업데이트 요청 데이터:", data); // 디버깅용
-
     let tags = [];
 
     if (data.tag && Array.isArray(data.tag)) {
@@ -34,14 +32,14 @@ const updateSchedules = async (data) => {
         scheduled_date: data.date,
         tag: tags,
         deadline: data.deadline,
-        is_completed: data.is_completed || data.completed, // is_completed 또는 completed 필드 사용
+        is_completed: data.is_completed || data.completed,
       }
     );
 
     return response.data;
   } catch (error) {
     console.error("일정 업데이트 에러:", error);
-    throw error; // 에러를 다시 던져서 Calendar에서 처리할 수 있도록 함
+    throw error;
   }
 };
 

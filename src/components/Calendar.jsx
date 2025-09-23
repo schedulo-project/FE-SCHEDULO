@@ -159,8 +159,6 @@ const Calendar = ({
         is_completed: event.is_completed || false,
       };
 
-      console.log("드래그 후 전송 데이터:", updateData); // 디버깅용
-
       await updateScheduleApi(updateData);
 
       // 로컬 상태 업데이트
@@ -211,8 +209,6 @@ const Calendar = ({
         tagColor: originalEvent.tagColor || "",
         is_completed: event.is_completed || false,
       };
-
-      console.log("리사이즈 후 전송 데이터:", updateData); // 디버깅용
 
       await updateScheduleApi(updateData);
 

@@ -1,4 +1,3 @@
-// 일정 조회 api
 import baseAxiosInstance from "./baseAxiosApi";
 
 const fetchSchedules = async (firstDate, lastDate) => {
@@ -15,22 +14,21 @@ const fetchSchedules = async (firstDate, lastDate) => {
 
     const schedulesData = response.data?.schedules ?? {};
 
-    // API 응답 데이터를 events 형식으로 변환
     return Object.entries(schedulesData).flatMap(
       ([date, schedules]) =>
         (schedules ?? []).map((schedule) => ({
           id: schedule.id,
-          title: schedule.title || "제목 없음", // 일정의 제목 설정 (없으면 "제목 없음")
+          title: schedule.title || "제목 없음",
           tagName: (schedule.tag ?? [])
             .map((tag) => tag.name)
-            .join(", "), // 태그 이름 합치기
+            .join(", "),
           tagColor: (schedule.tag ?? [])
             .map((tag) => tag.color)
-            .join(", "), // 태그 색상 합치기
-          date: date, // 날짜 설정
+            .join(", "),
+          date: date,
           is_completed: schedule.is_completed,
-          content: schedule.content || "", // content 추가 (없으면 빈 문자열)
-          deadline: schedule.deadline || null, // deadline 추가 (없으면 null)
+          content: schedule.content || "",
+          deadline: schedule.deadline || null,
         }))
     );
   } catch (error) {
