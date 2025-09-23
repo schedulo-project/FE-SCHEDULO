@@ -11,6 +11,7 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "./../styles/calendar.module.css"; // 스타일 적용
 import "./../styles/global.css";
 import { useAtom } from "jotai";
+import { useState } from "react";
 import updateScheduleApi from "../api/updateScheduleApi";
 
 import {
@@ -33,6 +34,7 @@ const Calendar = ({
   const [, setIsModalOpen] = useAtom(isModalOpenAtom);
   const [modalData, setModalData] = useAtom(modalDataAtom); // 모달에 보여줄 데이터
   const [eventsList, setEventsList] = useAtom(eventsAtoms);
+  const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태 추가
 
   const formattedEvents =
     events?.map((event) => {
@@ -75,6 +77,9 @@ const Calendar = ({
     }) || [];
 
   const handleSlotSelect = ({ start, end }) => {
+    // 선택된 날짜 상태 업데이트
+    setSelectedDate(moment(start).toDate());
+
     if (onDateClick) {
       onDateClick(moment(start).format("YYYY-MM-DD"));
     }
@@ -102,6 +107,9 @@ const Calendar = ({
   };
 
   const handleShowMore = (events, date) => {
+    // 선택된 날짜 상태 업데이트
+    setSelectedDate(date);
+
     if (onDateClick) {
       onDateClick(moment(date).format("YYYY-MM-DD"));
     }
@@ -136,6 +144,9 @@ const Calendar = ({
         ? moment(end).subtract(1, "day").format("YYYY-MM-DD")
         : null;
 
+      // 원본 이벤트 데이터에서 tagName과 tagColor 추출 - resource에 저장된 원본 데이터 사용
+      const originalEvent = event.resource || event;
+
       // API를 통해 일정 업데이트
       const updateData = {
         id: event.id,
@@ -143,16 +154,26 @@ const Calendar = ({
         content: event.content || "",
         date: newDate,
         deadline: newDeadline,
-        tagName: event.tagName || "",
+        tagName: originalEvent.tagName || "",
+        tagColor: originalEvent.tagColor || "",
         is_completed: event.is_completed || false,
       };
+
+      console.log("드래그 후 전송 데이터:", updateData); // 디버깅용
 
       await updateScheduleApi(updateData);
 
       // 로컬 상태 업데이트
       const updatedEvents = eventsList.map((item) =>
         item.id === event.id
-          ? { ...item, date: newDate, deadline: newDeadline }
+          ? {
+              ...item,
+              date: newDate,
+              deadline: newDeadline,
+              // 태그 정보 유지
+              tagName: originalEvent.tagName || item.tagName,
+              tagColor: originalEvent.tagColor || item.tagColor,
+            }
           : item
       );
       setEventsList(updatedEvents);
@@ -176,6 +197,9 @@ const Calendar = ({
         .subtract(1, "day")
         .format("YYYY-MM-DD");
 
+      // 원본 이벤트 데이터에서 tagName과 tagColor 추출 - resource에 저장된 원본 데이터 사용
+      const originalEvent = event.resource || event;
+
       // API를 통해 일정 업데이트
       const updateData = {
         id: event.id,
@@ -183,16 +207,26 @@ const Calendar = ({
         content: event.content || "",
         date: newDate,
         deadline: newDeadline,
-        tagName: event.tagName || "",
+        tagName: originalEvent.tagName || "",
+        tagColor: originalEvent.tagColor || "",
         is_completed: event.is_completed || false,
       };
+
+      console.log("리사이즈 후 전송 데이터:", updateData); // 디버깅용
 
       await updateScheduleApi(updateData);
 
       // 로컬 상태 업데이트
       const updatedEvents = eventsList.map((item) =>
         item.id === event.id
-          ? { ...item, date: newDate, deadline: newDeadline }
+          ? {
+              ...item,
+              date: newDate,
+              deadline: newDeadline,
+              // 태그 정보 유지
+              tagName: originalEvent.tagName || item.tagName,
+              tagColor: originalEvent.tagColor || item.tagColor,
+            }
           : item
       );
       setEventsList(updatedEvents);
@@ -217,12 +251,18 @@ const Calendar = ({
     onView,
     view,
   }) => {
+    // Today 버튼 클릭 시 오늘 날짜 선택
+    const handleTodayClick = () => {
+      setSelectedDate(new Date());
+      onNavigate("TODAY");
+    };
+
     return (
       <div className="flex justify-between items-center my-4 px-4">
         <div className="flex items-center">
           <button
             type="button"
-            onClick={() => onNavigate("TODAY")}
+            onClick={handleTodayClick}
             style={{
               marginRight: "10px",
               border: "none",
@@ -422,18 +462,48 @@ const Calendar = ({
   // 날짜 셀 스타일링 함수
   const dayPropGetter = (date) => {
     const today = new Date();
-    if (
+    const isToday =
       date.getDate() === today.getDate() &&
       date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    ) {
+      date.getFullYear() === today.getFullYear();
+
+    // 선택된 날짜인지 확인
+    const isSelected =
+      selectedDate &&
+      date.getDate() === selectedDate.getDate() &&
+      date.getMonth() === selectedDate.getMonth() &&
+      date.getFullYear() === selectedDate.getFullYear();
+
+    if (isToday && isSelected) {
+      // 오늘이면서 선택된 날짜일 경우
+      return {
+        className: "rbc-today",
+        style: {
+          backgroundColor: "rgba(82, 109, 130, 0.3)",
+          border: "2px solid #27374D",
+          borderRadius: "8px",
+        },
+      };
+    } else if (isToday) {
+      // 오늘일 경우
       return {
         className: "rbc-today",
         style: {
           backgroundColor: "rgba(82, 109, 130, 0.15)",
         },
       };
+    } else if (isSelected) {
+      // 선택된 날짜일 경우
+      return {
+        className: "rbc-selected-date",
+        style: {
+          backgroundColor: "rgba(82, 109, 130, 0.1)",
+          border: "2px solid #27374D",
+          borderRadius: "8px",
+        },
+      };
     }
+
     return {};
   };
 

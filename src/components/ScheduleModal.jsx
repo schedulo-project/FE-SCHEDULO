@@ -110,14 +110,45 @@ const ScheduleModal = () => {
         setContent(data.content || "");
         setDate(data.date || today);
 
-        // 태그 데이터를 초기화할 때는 객체가 아닌 문자열로 저장 (편집 모드에서는 객체로 변환)
-        // 편집 모드로 전환할 때 올바른 형식으로 변환하기 위해 원본 형태로 유지
-        setSelectedTags([]);
+        if (data.tagName) {
+          // 태그 데이터가 문자열 형태로 왔다면 파싱해서 객체 형태로 변환
+          try {
+            const tagNames =
+              typeof data.tagName === "string"
+                ? data.tagName
+                    .split(",")
+                    .map((tag) => tag.trim())
+                : Array.isArray(data.tagName)
+                ? data.tagName
+                : [];
+
+            const tagColors = data.tagColor
+              ? typeof data.tagColor === "string"
+                ? data.tagColor
+                    .split(",")
+                    .map((color) => color.trim())
+                : []
+              : [];
+
+            const formattedTags = tagNames.map(
+              (name, index) => ({
+                value: name,
+                label: name,
+                color: tagColors[index] || "#526D82",
+              })
+            );
+
+            setSelectedTags(formattedTags);
+          } catch (error) {
+            console.error("태그 파싱 에러:", error);
+            setSelectedTags([]);
+          }
+        } else {
+          setSelectedTags([]);
+        }
 
         setCompleted(data.is_completed || false);
-        setIsEditMode(false);
-
-        // 기존 일정의 날짜 범위 설정
+        setIsEditMode(false); // 기존 일정의 날짜 범위 설정
         const startDate = new Date(data.date || today);
         const endDate = data.deadline
           ? new Date(data.deadline)
