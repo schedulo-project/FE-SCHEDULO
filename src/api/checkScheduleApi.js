@@ -13,16 +13,18 @@ const fetchSchedules = async (firstDate, lastDate) => {
       }
     );
 
+    const schedulesData = response.data?.schedules ?? {};
+
     // API 응답 데이터를 events 형식으로 변환
-    return Object.entries(response.data.schedules).flatMap(
+    return Object.entries(schedulesData).flatMap(
       ([date, schedules]) =>
-        schedules.map((schedule) => ({
+        (schedules ?? []).map((schedule) => ({
           id: schedule.id,
           title: schedule.title || "제목 없음", // 일정의 제목 설정 (없으면 "제목 없음")
-          tagName: schedule.tag
+          tagName: (schedule.tag ?? [])
             .map((tag) => tag.name)
             .join(", "), // 태그 이름 합치기
-          tagColor: schedule.tag
+          tagColor: (schedule.tag ?? [])
             .map((tag) => tag.color)
             .join(", "), // 태그 색상 합치기
           date: date, // 날짜 설정

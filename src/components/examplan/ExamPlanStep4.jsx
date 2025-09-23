@@ -199,7 +199,7 @@ const ExamPlanStep4 = ({
       setEvents(scheduleData.events);
       setScheduleInfo(scheduleData);
     }
-  }, []);
+  }, [formData]);
 
   // 이벤트 삭제
   const handleRemove = (eventId) => {
