@@ -9,16 +9,19 @@ const config = {
   initialMessages: [
     createChatBotMessage("안녕하세요 Dulo입니다! 😊"),
   ],
-  botName: botName,
+  botName,
   customStyles: {
     botMessageBox: {
-      backgroundColor: "#376B7E",
+      backgroundColor: "#F5F7FA", // 밝은 톤으로 맞춤
+      borderRadius: "12px",
+      color: "#000",
     },
-    // 봇에 대한 스타일링
     chatButton: {
       backgroundColor: "#5ccc9d",
+      borderRadius: "50%",
+      width: "48px",
+      height: "48px",
     },
-    // 채팅 버튼에 대한 스타일링
   },
   customComponents: {
     botAvatar: (props) => (
@@ -28,15 +31,14 @@ const config = {
           alt="bot avatar"
           style={{
             objectFit: "cover",
-            width: "105px",
-            height: "50px",
+            width: "48px",
+            height: "48px",
             borderRadius: "50%",
             border: "1px solid #27374d",
           }}
         />
       </div>
     ),
-    // 봇 아바타 커스텀 컴포넌트
   },
   widgets: [
     {
