@@ -136,6 +136,9 @@ const Calendar = ({
         ? moment(end).subtract(1, "day").format("YYYY-MM-DD")
         : null;
 
+      // 원본 이벤트 데이터에서 tagName과 tagColor 추출 - resource에 저장된 원본 데이터 사용
+      const originalEvent = event.resource || event;
+
       // API를 통해 일정 업데이트
       const updateData = {
         id: event.id,
@@ -143,16 +146,26 @@ const Calendar = ({
         content: event.content || "",
         date: newDate,
         deadline: newDeadline,
-        tagName: event.tagName || "",
+        tagName: originalEvent.tagName || "",
+        tagColor: originalEvent.tagColor || "",
         is_completed: event.is_completed || false,
       };
+
+      console.log("드래그 후 전송 데이터:", updateData); // 디버깅용
 
       await updateScheduleApi(updateData);
 
       // 로컬 상태 업데이트
       const updatedEvents = eventsList.map((item) =>
         item.id === event.id
-          ? { ...item, date: newDate, deadline: newDeadline }
+          ? {
+              ...item,
+              date: newDate,
+              deadline: newDeadline,
+              // 태그 정보 유지
+              tagName: originalEvent.tagName || item.tagName,
+              tagColor: originalEvent.tagColor || item.tagColor,
+            }
           : item
       );
       setEventsList(updatedEvents);
@@ -176,6 +189,9 @@ const Calendar = ({
         .subtract(1, "day")
         .format("YYYY-MM-DD");
 
+      // 원본 이벤트 데이터에서 tagName과 tagColor 추출 - resource에 저장된 원본 데이터 사용
+      const originalEvent = event.resource || event;
+
       // API를 통해 일정 업데이트
       const updateData = {
         id: event.id,
@@ -183,16 +199,26 @@ const Calendar = ({
         content: event.content || "",
         date: newDate,
         deadline: newDeadline,
-        tagName: event.tagName || "",
+        tagName: originalEvent.tagName || "",
+        tagColor: originalEvent.tagColor || "",
         is_completed: event.is_completed || false,
       };
+
+      console.log("리사이즈 후 전송 데이터:", updateData); // 디버깅용
 
       await updateScheduleApi(updateData);
 
       // 로컬 상태 업데이트
       const updatedEvents = eventsList.map((item) =>
         item.id === event.id
-          ? { ...item, date: newDate, deadline: newDeadline }
+          ? {
+              ...item,
+              date: newDate,
+              deadline: newDeadline,
+              // 태그 정보 유지
+              tagName: originalEvent.tagName || item.tagName,
+              tagColor: originalEvent.tagColor || item.tagColor,
+            }
           : item
       );
       setEventsList(updatedEvents);
