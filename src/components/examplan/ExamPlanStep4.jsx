@@ -275,25 +275,74 @@ const ExamPlanStep4 = ({
 
   // 일정 저장
   const handleSave = async () => {
-    const payload = events.map((event) => ({
-      title: event.title,
-      content: event.content,
-      scheduled_date: event.date,
-      deadline: event.date,
-    }));
-
     try {
-      const response = await baseAxiosInstance.post(
-        "/schedules/bulk/",
-        payload
+      // 1️. 기존 태그 조회
+      const tagsRes = await baseAxiosInstance.get(
+        "/schedules/tags/"
       );
+      const existingTags = tagsRes.data;
 
-      updateFormData({ ...formData, finalSchedule: events });
+      const createdSchedules = [];
+
+      for (const event of events) {
+        // 일정 단일 생성
+        const scheduleRes = await baseAxiosInstance.post(
+          "/schedules/",
+          {
+            title: event.title,
+            content: event.content,
+            scheduled_date: event.date,
+            deadline: event.date,
+          }
+        );
+        const scheduleData = scheduleRes.data;
+
+        // 2️. 수업명만 추출
+        const className = event.title.replace(/ 공부$/, "");
+
+        // 3️. 태그 존재 확인
+        let tagName = className;
+        const foundTag = existingTags.find(
+          (t) => t.name === className
+        );
+
+        if (!foundTag) {
+          // 새 태그 생성
+          const newTagRes = await baseAxiosInstance.post(
+            "/schedules/tags/",
+            {
+              name: className,
+            }
+          );
+          existingTags.push(newTagRes.data);
+        }
+
+        // 4️. 태그 연결 (id 기반)
+        await baseAxiosInstance.put(
+          `/schedules/${scheduleData.id}/`,
+          {
+            ...scheduleData,
+            tag: [tagName],
+          }
+        );
+
+        createdSchedules.push({
+          ...scheduleData,
+          tag: [tagName],
+        });
+      }
+
+      // 5️. 폼 데이터 업데이트
+      updateFormData({
+        ...formData,
+        finalSchedule: createdSchedules,
+      });
       localStorage.setItem("planSetupCompleted", "true");
+
       alert("일정이 저장되었습니다.");
       navigate("/");
     } catch (error) {
-      console.error("저장 중 오류:", error);
+      console.error("일정 저장 중 오류:", error);
       alert("일정 저장 중 문제가 발생했습니다.");
     }
   };
