@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { useState } from "react";
 import { useAtom } from "jotai";
 import { tagModalAtom } from "../atoms/TagAtoms";
@@ -5,6 +6,8 @@ import { tagIdListAtom } from "../atoms/HomeAtoms";
 import addTag from "../api/addTagApi";
 
 const TagAddModal = () => {
+  const modalRoot = document.getElementById("modal-root");
+
   const [isModalOpen, setIsModalOpen] = useAtom(tagModalAtom);
   const [inputValue, setinputValue] = useState("");
   const [allTags, setAllTags] = useAtom(tagIdListAtom);
@@ -33,7 +36,7 @@ const TagAddModal = () => {
     onClose();
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
       onClick={onClose}
@@ -55,7 +58,8 @@ const TagAddModal = () => {
           작성이 완료되면 엔터를 눌러주세요.
         </span>
       </form>
-    </div>
+    </div>,
+    modalRoot
   );
 };
 
