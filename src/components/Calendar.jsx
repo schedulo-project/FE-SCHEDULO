@@ -510,13 +510,14 @@ const Calendar = ({
 
   return (
     <div
+      className="h-full min-h-[600px]"
       style={{
-        height: "600px",
         borderRadius: "16px",
         overflow: "hidden",
         boxShadow: "0 10px 25px rgba(39, 55, 77, 0.08)",
         border: "1px solid #DDE6ED",
         padding: "0",
+        height: "calc(100vh - 180px)", // 화면 높이에 따라 자동 조정
       }}
     >
       <DragAndDropCalendar
