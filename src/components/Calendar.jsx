@@ -11,7 +11,7 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "./../styles/calendar.module.css"; // 스타일 적용
 import "./../styles/global.css";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import updateScheduleApi from "../api/updateScheduleApi";
 
 import {
@@ -246,12 +246,65 @@ const Calendar = ({
     onNavigate,
     onView,
     view,
+    date,
   }) => {
     // Today 버튼 클릭 시 오늘 날짜 선택
     const handleTodayClick = () => {
       setSelectedDate(new Date());
       onNavigate("TODAY");
     };
+
+    // 현재 표시된 날짜에서 연도와 월 추출
+    const currentDate = new Date(date);
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    const [isMonthSelectOpen, setIsMonthSelectOpen] =
+      useState(false);
+    const monthSelectRef = useRef(null);
+
+    // 외부 클릭 감지하여 드롭다운 닫기
+    useEffect(() => {
+      function handleClickOutside(event) {
+        if (
+          monthSelectRef.current &&
+          !monthSelectRef.current.contains(event.target)
+        ) {
+          setIsMonthSelectOpen(false);
+        }
+      }
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener(
+          "mousedown",
+          handleClickOutside
+        );
+      };
+    }, [monthSelectRef]);
+
+    // 월 선택 핸들러
+    const handleMonthSelect = (month) => {
+      const newDate = new Date(currentYear, month, 1);
+      setSelectedDate(newDate);
+      onNavigate("DATE", newDate);
+      setIsMonthSelectOpen(false);
+    };
+
+    // 모든 월 이름 배열
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
 
     return (
       <div className="flex justify-between items-center my-4 px-4">
@@ -280,7 +333,7 @@ const Calendar = ({
             Today
           </button>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center relative">
           <button
             type="button"
             onClick={() => onNavigate("PREV")}
@@ -309,11 +362,52 @@ const Calendar = ({
             </svg>
           </button>
           <div
-            className="rbc-toolbar-label"
-            style={{ width: "180px", textAlign: "center" }}
+            className="rbc-toolbar-label cursor-pointer"
+            style={{
+              width: "180px",
+              textAlign: "center",
+              position: "relative",
+            }}
+            onClick={() =>
+              setIsMonthSelectOpen(!isMonthSelectOpen)
+            }
           >
             {label}
+            {/* 클릭 유도를 위한 작은 삼각형 화살표 추가 */}
+            <span
+              style={{ marginLeft: "5px", fontSize: "10px" }}
+            >
+              ▼
+            </span>
           </div>
+          {isMonthSelectOpen && (
+            <div
+              ref={monthSelectRef}
+              className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white shadow-lg rounded-md z-50"
+              style={{
+                width: "220px",
+                border: "1px solid #DDE6ED",
+                maxHeight: "300px",
+                overflowY: "auto",
+              }}
+            >
+              <div className="p-2 grid grid-cols-3 gap-2">
+                {months.map((month, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 text-center cursor-pointer rounded-md hover:bg-gray-100 ${
+                      currentMonth === index
+                        ? "bg-blue-100 font-medium"
+                        : ""
+                    }`}
+                    onClick={() => handleMonthSelect(index)}
+                  >
+                    {month}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           <button
             type="button"
             onClick={() => onNavigate("NEXT")}
@@ -548,7 +642,9 @@ const Calendar = ({
         max={new Date(0, 0, 0, 0, 0, 0)} // 최대 시간도 0시로 설정하여 시간 슬롯 영역 최소화
         defaultAllDay={true} // 모든 이벤트를 종일 이벤트로 처리
         components={{
-          toolbar: CustomToolbar,
+          toolbar: (toolbarProps) => (
+            <CustomToolbar {...toolbarProps} />
+          ),
           // 주간 뷰에서도 종일 이벤트처럼 표시하기 위한 커스텀 컴포넌트
           timeGutterHeader: () => null, // 시간 헤더 숨기기
           timeGutterWrapper: () => null, // 시간 열 숨기기
