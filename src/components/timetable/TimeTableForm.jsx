@@ -178,7 +178,6 @@ const normalizeManualSchedule = (data) => {
       } else {
         // 현재 그룹을 merged에 푸시
         merged.push({
-          id: currentOriginals[0]?.id ?? null,
           originalData: [...currentOriginals],
           name: subject,
           day,
