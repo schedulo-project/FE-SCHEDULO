@@ -1,6 +1,6 @@
 import TagItem from "../components/TagItem";
 import { useAtom } from "jotai";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { eventsAtoms, tagIdListAtom } from "../atoms/HomeAtoms";
 import { useEffect } from "react";
 import fetchSchedules from "../api/checkScheduleApi";
@@ -80,6 +80,9 @@ const Tag = () => {
   const [, setTagModalOpen] = useAtom(tagModalAtom);
   const [, setTagList] = useAtom(tagListAtom);
 
+  //로딩
+  const [isLoading, setIsLoading] = useState(true);
+
   const groupedList = useMemo(
     () => groupBy(allEvents, allTags),
     [allEvents, allTags]
@@ -88,8 +91,9 @@ const Tag = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const tags = await getTagList(); // 실제 API 호출
-        setAllTags(tags); // 응답 결과 저장
+        setIsLoading(true); // 로딩 시작
+        const tags = await getTagList();
+        setAllTags(tags);
         const newTags = tags
           .map((tag) => tag.name)
           .map((name) => ({
@@ -104,15 +108,14 @@ const Tag = () => {
     fetchTags();
   }, []);
 
-  // 페이지가 처음 로드될 때만 데이터를 불러오도록 useEffect 사용 이미 있으면 통신 안 함
   useEffect(() => {
     if (allEvents.length > 0) {
-      // 이미 데이터가 있으면 통신 안 함
+      setIsLoading(false); // 데이터 있으면 로딩 끝
       return;
     }
-
     const loadSchedules = async () => {
       try {
+        setIsLoading(true); // 로딩 시작
         const transformedEvents = await fetchSchedules(
           "2025-02-28",
           "2025-12-30"
@@ -120,6 +123,8 @@ const Tag = () => {
         setEvents(transformedEvents);
       } catch (error) {
         console.error("Error loading schedules", error);
+      } finally {
+        setIsLoading(false); // 로딩 끝
       }
     };
     loadSchedules();
@@ -130,27 +135,35 @@ const Tag = () => {
       <TagAddModal />
       <ScheduleModal />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-h-[30rem]">
-        {groupedList.map((group) => (
-          <TagItem
-            key={group.tagId ?? "no-tag"}
-            eventsList={group}
-          />
-        ))}
-        <div
-          className="flex justify-center items-center w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8 hover:cursor-pointer hover:bg-gray-200"
-          onClick={() => {
-            setTagModalOpen(true);
-          }}
-        >
-          <img
-            src={plusBtn}
-            className="w-12 h-12"
-            width={48}
-            height={48}
-            alt="태그 추가"
-            fetchPriority="high"
-          />
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8">
+            로딩중...
+          </div>
+        ) : (
+          groupedList.map((group) => (
+            <TagItem
+              key={group.tagId ?? "no-tag"}
+              eventsList={group}
+            />
+          ))
+        )}
+        {!isLoading && (
+          <div
+            className="flex justify-center items-center w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8 hover:cursor-pointer hover:bg-gray-200"
+            onClick={() => {
+              setTagModalOpen(true);
+            }}
+          >
+            <img
+              src={plusBtn}
+              className="w-12 h-12"
+              width={48}
+              height={48}
+              alt="태그 추가"
+              fetchPriority="high"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
