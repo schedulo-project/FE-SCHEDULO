@@ -48,7 +48,7 @@ function CheckSchedule({ selectedDateEvents, selectedDate }) {
     <div
       className="pt-[0.75rem] pb-[0.75rem] pr-[0.8125rem] pl-[0.8125rem] 
                 bg-[#EDEDED] rounded-[0.294rem] border-[#E0E0E0] 
-                border-1 w-full h-full max-h-[34.9rem] [&::-webkit-scrollbar]:hidden overflow-auto"
+                border-1 w-full h-full [&::-webkit-scrollbar]:hidden overflow-auto"
     >
       <section className="flex justify-between items-center">
         <span className="text-[#1A1A1A] text-[0.8rem] font-semibold font-[Inter]">
