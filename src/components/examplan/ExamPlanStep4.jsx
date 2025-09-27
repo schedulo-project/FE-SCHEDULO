@@ -242,6 +242,7 @@ const ExamPlanStep4 = ({
         <button
           onClick={() => handleRemove(eventInfo.event.id)}
           className="flex flex-col items-center opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-[#27374D]"
+          aria-label="삭제"
         >
           <Minus
             size={18}
@@ -262,6 +263,7 @@ const ExamPlanStep4 = ({
         <button
           onClick={() => handleDuplicate(eventInfo.event.id)}
           className="flex flex-col items-center opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-[#27374D]"
+          aria-label="복제"
         >
           <Plus
             size={18}
@@ -354,6 +356,7 @@ const ExamPlanStep4 = ({
         type="button"
         onClick={prevStep}
         className="fixed top-1/2 -translate-y-1/2 left-4 lg:left-[calc(11.75rem+1.5rem)] z-50 text-[#27374D]"
+        aria-label="이전 단계로 이동"
       >
         <ChevronLeft size={49} />
       </button>
@@ -378,6 +381,7 @@ const ExamPlanStep4 = ({
           <button
             onClick={handleSave}
             className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl self-end"
+            aria-label="저장"
           >
             저장
           </button>

@@ -28,7 +28,11 @@ const ExamPlanStep3 = ({
     if (formData.isSubjectRatiosSaved) {
       setIsSaved(true);
     }
-  }, [formData.subjects, formData.subjectRatios, formData.isSubjectRatiosSaved]);
+  }, [
+    formData.subjects,
+    formData.subjectRatios,
+    formData.isSubjectRatiosSaved,
+  ]);
 
   const handleRatioChange = (subject, value) => {
     setRatios((prev) => ({
@@ -65,7 +69,7 @@ const ExamPlanStep3 = ({
       alert("비율 설정이 저장되었습니다.");
       updateFormData({
         subjectRatios: ratios,
-        isSubjectRatiosSaved: true, 
+        isSubjectRatiosSaved: true,
       });
       setIsSaved(true);
     }
@@ -170,6 +174,7 @@ const ExamPlanStep3 = ({
               <button
                 onClick={handleSaveRatioSetting}
                 className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl"
+                aria-label="저장"
               >
                 저장
               </button>
@@ -182,6 +187,7 @@ const ExamPlanStep3 = ({
           type="button"
           onClick={prevStep}
           className="fixed top-1/2 -translate-y-1/2 left-2 lg:left-[calc(11.75rem+1.5rem)] z-50 text-[#27374D]"
+          aria-label="이전 단계로 이동"
         >
           <ChevronLeft size={49} />
         </button>
@@ -189,6 +195,7 @@ const ExamPlanStep3 = ({
           type="button"
           onClick={handleNext}
           className="fixed top-1/2 -translate-y-1/2 right-2 lg:right-10 z-50 text-[#27374D]"
+          aria-label="다음 단계로 이동"
         >
           <ChevronRight size={49} />
         </button>

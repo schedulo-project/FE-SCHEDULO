@@ -166,7 +166,7 @@ const ExamPlanStep1 = ({
                 />
               </div>
               {showCalendar && !isReadonly && (
-                <div className="absolute z-10 top-full left-1/2 transform -translate-x-1/2" >
+                <div className="absolute z-10 top-full left-1/2 transform -translate-x-1/2">
                   <DateRange
                     editableDateInputs={true}
                     onChange={handleDateChange}
@@ -186,6 +186,7 @@ const ExamPlanStep1 = ({
           type="button"
           onClick={handleNext}
           className="fixed top-1/2 -translate-y-1/2 right-2 lg:right-10 z-50 text-[#27374D]"
+          aria-label="다음 단계로 이동"
         >
           <ChevronRight size={49} />
         </button>

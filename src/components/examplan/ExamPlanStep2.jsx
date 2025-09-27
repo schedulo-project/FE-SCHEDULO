@@ -440,6 +440,7 @@ const ExamPlanStep2 = ({
                         ? "opacity-50 cursor-not-allowed"
                         : ""
                     }`}
+                    aria-label="이전 단계로 이동"
                   >
                     <Minus size={24} />
                   </button>
@@ -459,6 +460,7 @@ const ExamPlanStep2 = ({
                         ? "opacity-50 cursor-not-allowed"
                         : ""
                     }`}
+                    aria-label="다음 단계로 이동"
                   >
                     <Plus size={24} />
                   </button>
@@ -469,6 +471,7 @@ const ExamPlanStep2 = ({
                   <button
                     onClick={handleSaveDetailSetting}
                     className="w-[80px] h-[32px] bg-[#27374D] text-white rounded-3xl absolute bottom-0 left-1/2 transform -translate-x-1/2"
+                    aria-label="저장"
                   >
                     저장
                   </button>

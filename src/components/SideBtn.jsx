@@ -35,7 +35,7 @@ const SideBtn = ({ type, isActive, onClick }) => {
     "flex gap-[0.56rem] items-center py-[0.46625rem] px-[0.93256rem] w-[8.76rem] h-[2.05rem] rounded-[0.46625rem]";
   const activeStyle = isActive
     ? "bg-[#27374D] text-[#DDE6ED] font-semibold"
-    : "text-[#526D82] font-semibold hover:bg-[#E0E0E0]";
+    : "text-[#27374d] font-semibold hover:bg-[#E0E0E0]";
 
   return (
     <button
