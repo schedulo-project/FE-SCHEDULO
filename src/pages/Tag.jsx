@@ -145,7 +145,10 @@ const Tag = () => {
           <img
             src={plusBtn}
             className="w-12 h-12"
+            width={48}
+            height={48}
             alt="태그 추가"
+            fetchPriority="high"
           />
         </div>
       </div>
