@@ -49,6 +49,7 @@ const ExamPlanStep = () => {
         <button
           onClick={handleClose}
           className="absolute right-4 text-white text-[1.5rem] font-semibold z-20"
+          aria-label="시험공부 계획 설정 닫기"
         >
           ✕
         </button>
