@@ -44,6 +44,7 @@ const Login = () => {
           src={logoimage}
           alt="로고 이미지"
           className="w-48 h-auto"
+          fetchPriority="high"
         />
       </div>
 

@@ -58,6 +58,7 @@ const SideBox = ({ closeSidebar }) => {
           onClick={() => nav("/")}
           src={logoimage}
           alt="로고"
+          fetchPriority="high"
         />
       </section>
 

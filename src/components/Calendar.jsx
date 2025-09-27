@@ -336,6 +336,7 @@ const Calendar = ({
         <div className="flex items-center relative">
           <button
             type="button"
+            aria-label="이전 달로 이동"
             onClick={() => onNavigate("PREV")}
             style={{
               display: "flex",
@@ -410,6 +411,7 @@ const Calendar = ({
           )}
           <button
             type="button"
+            aria-label="다음 달로 이동"
             onClick={() => onNavigate("NEXT")}
             style={{
               display: "flex",

@@ -12,6 +12,7 @@ const ChatbotBtn = () => {
       <div className="absolute top-[-2rem] left-[-2rem] w-[4.42288rem] h-[4.42288rem] bg-[#ffffff14] rounded-full"></div>
       <img
         src={logo}
+        alt="챗봇 아이콘"
         className="z-10 absolute flex items-center top-[-1rem] justify-center w-[2.5rem] h-[2.5rem] bg-[#141522] rounded-full border-[2.64px] border-white text-white text-[1.157rem] font-bold font-[Satoshi]"
       />
       <div className="z-0 relative top-[-7px] bg-[#608BC1] blur-[15.87px] w-[1.983rem] h-[1.818rem]"></div>
