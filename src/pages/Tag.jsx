@@ -1,5 +1,6 @@
 import TagItem from "../components/TagItem";
 import { useAtom } from "jotai";
+import { useMemo } from "react";
 import { eventsAtoms, tagIdListAtom } from "../atoms/HomeAtoms";
 import { useEffect } from "react";
 import fetchSchedules from "../api/checkScheduleApi";
@@ -12,6 +13,62 @@ import plusBtn from "../assets/tag/plusBtn.svg";
 import ScheduleModal from "../components/ScheduleModal";
 import { tagModalAtom } from "../atoms/TagAtoms";
 import { tagListAtom } from "../atoms/HomeAtoms";
+const groupBy = (list, tagList) => {
+  const tagMap = new Map(tagList.map((tag) => [tag.name, tag]));
+
+  // 태그별 그룹 미리 빈 배열로 초기화
+  const tagGroups = new Map();
+  tagList.forEach((tag) => {
+    tagGroups.set(tag.id, {
+      tagId: tag.id,
+      tag: tag.name,
+      color: tag.color,
+      task: [],
+    });
+  });
+
+  const noTagGroup = [];
+
+  list.forEach((task) => {
+    if (!task.tagName) {
+      noTagGroup.push(task);
+      return;
+    }
+
+    // 콤마로 구분된 모든 태그 이름 배열
+    const tagsInTask = task.tagName
+      .split(",")
+      .map((t) => t.trim());
+
+    // 이 일정이 속한 태그를 하나도 못 찾으면 noTagGroup에 넣기 위한 플래그
+    let matched = false;
+
+    tagsInTask.forEach((tagName) => {
+      const tag = tagMap.get(tagName);
+      if (tag) {
+        matched = true;
+        tagGroups.get(tag.id).task.push(task);
+      }
+    });
+
+    if (!matched) {
+      noTagGroup.push(task);
+    }
+  });
+
+  const result = [...tagGroups.values()];
+  if (noTagGroup.length > 0) {
+    result.push({
+      tagId: null,
+      tag: "태그 없음",
+      color: "#9CA3AF",
+      //기본 색상
+      task: noTagGroup,
+    });
+  }
+
+  return result;
+};
 
 const Tag = () => {
   // 일정 데이터 불러오기(api)
@@ -23,6 +80,10 @@ const Tag = () => {
   const [, setTagModalOpen] = useAtom(tagModalAtom);
   const [, setTagList] = useAtom(tagListAtom);
 
+  const groupedList = useMemo(
+    () => groupBy(allEvents, allTags),
+    [allEvents, allTags]
+  );
   //페이지가 처음 로드 될 때 태그 목록을 가져온다.
   useEffect(() => {
     const fetchTags = async () => {
@@ -64,83 +125,28 @@ const Tag = () => {
     loadSchedules();
   }, [allEvents, setEvents]);
 
-  const groupBy = (list, tagList) => {
-    const tagMap = new Map(
-      tagList.map((tag) => [tag.name, tag])
-    );
-
-    // 태그별 그룹 미리 빈 배열로 초기화
-    const tagGroups = new Map();
-    tagList.forEach((tag) => {
-      tagGroups.set(tag.id, {
-        tagId: tag.id,
-        tag: tag.name,
-        color: tag.color,
-        task: [],
-      });
-    });
-
-    const noTagGroup = [];
-
-    list.forEach((task) => {
-      if (!task.tagName) {
-        noTagGroup.push(task);
-        return;
-      }
-
-      // 콤마로 구분된 모든 태그 이름 배열
-      const tagsInTask = task.tagName
-        .split(",")
-        .map((t) => t.trim());
-
-      // 이 일정이 속한 태그를 하나도 못 찾으면 noTagGroup에 넣기 위한 플래그
-      let matched = false;
-
-      tagsInTask.forEach((tagName) => {
-        const tag = tagMap.get(tagName);
-        if (tag) {
-          matched = true;
-          tagGroups.get(tag.id).task.push(task);
-        }
-      });
-
-      if (!matched) {
-        noTagGroup.push(task);
-      }
-    });
-
-    const result = [...tagGroups.values()];
-    if (noTagGroup.length > 0) {
-      result.push({
-        tagId: null,
-        tag: "태그 없음",
-        color: "#9CA3AF",
-        //기본 색상
-        task: noTagGroup,
-      });
-    }
-
-    return result;
-  };
-
   return (
     <div className="flex justify-center">
       <TagAddModal />
       <ScheduleModal />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {groupBy(allEvents, allTags).map((group) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-h-[30rem]">
+        {groupedList.map((group) => (
           <TagItem
             key={group.tagId ?? "no-tag"}
             eventsList={group}
           />
         ))}
         <div
-          className="flex justify-center items-center w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8"
+          className="flex justify-center items-center w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8 hover:cursor-pointer hover:bg-gray-200"
           onClick={() => {
             setTagModalOpen(true);
           }}
         >
-          <img src={plusBtn} />
+          <img
+            src={plusBtn}
+            className="w-12 h-12"
+            alt="태그 추가"
+          />
         </div>
       </div>
     </div>
