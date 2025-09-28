@@ -27,7 +27,7 @@ const fetchSchedules = async (firstDate, lastDate) => {
             .join(", "),
           date: date,
           is_completed: schedule.is_completed,
-          content: schedule.content || "",
+          content: schedule.content || null,
           deadline: schedule.deadline || null,
         }))
     );
