@@ -28,7 +28,7 @@ const updateSchedules = async (data) => {
       `/schedules/${data.id}/`,
       {
         title: data.title,
-        content: data.content,
+        content: data.content || null,
         scheduled_date: data.date,
         tag: tags,
         deadline: data.deadline,
