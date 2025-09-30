@@ -1,18 +1,21 @@
 import TagItem from "../components/TagItem";
 import { useAtom } from "jotai";
-import { useMemo, useState } from "react";
-import { eventsAtoms, tagIdListAtom } from "../atoms/HomeAtoms";
-import { useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
+import {
+  eventsAtoms,
+  tagIdListAtom,
+  tagListAtom,
+} from "../atoms/HomeAtoms";
 import fetchSchedules from "../api/checkScheduleApi";
 import getTagList from "../api/getTagsListApi";
 import TagAddModal from "../components/TagAddModal";
 
 import plusBtn from "../assets/tag/plusBtn.svg";
 
-//모달
+// 모달
 import ScheduleModal from "../components/ScheduleModal";
 import { tagModalAtom } from "../atoms/TagAtoms";
-import { tagListAtom } from "../atoms/HomeAtoms";
+
 const groupBy = (list, tagList) => {
   const tagMap = new Map(tagList.map((tag) => [tag.name, tag]));
 
@@ -40,9 +43,7 @@ const groupBy = (list, tagList) => {
       .split(",")
       .map((t) => t.trim());
 
-    // 이 일정이 속한 태그를 하나도 못 찾으면 noTagGroup에 넣기 위한 플래그
     let matched = false;
-
     tagsInTask.forEach((tagName) => {
       const tag = tagMap.get(tagName);
       if (tag) {
@@ -61,8 +62,7 @@ const groupBy = (list, tagList) => {
     result.push({
       tagId: null,
       tag: "태그 없음",
-      color: "#9CA3AF",
-      //기본 색상
+      color: "#9CA3AF", // 기본 색상
       task: noTagGroup,
     });
   }
@@ -74,45 +74,47 @@ const Tag = () => {
   // 일정 데이터 불러오기(api)
   const [allEvents, setEvents] = useAtom(eventsAtoms);
 
-  //태그 리스트 불러오기(api)
+  // 태그 리스트 불러오기(api)
   const [allTags, setAllTags] = useAtom(tagIdListAtom);
 
   const [, setTagModalOpen] = useAtom(tagModalAtom);
   const [, setTagList] = useAtom(tagListAtom);
 
-  //로딩
+  // 로딩
   const [isLoading, setIsLoading] = useState(true);
+  // 무한 로딩 방지용
+  const [hasFetched, setHasFetched] = useState(false);
 
   const groupedList = useMemo(
     () => groupBy(allEvents, allTags),
     [allEvents, allTags]
   );
-  //페이지가 처음 로드 될 때 태그 목록을 가져온다.
+
+  // 페이지가 처음 로드 될 때 태그 목록을 가져온다.
   useEffect(() => {
     const fetchTags = async () => {
       try {
         setIsLoading(true); // 로딩 시작
         const tags = await getTagList();
         setAllTags(tags);
-        const newTags = tags
-          .map((tag) => tag.name)
-          .map((name) => ({
-            value: name,
-            label: name,
-          }));
+        const newTags = tags.map((tag) => ({
+          value: tag.name,
+          label: tag.name,
+        }));
         setTagList(newTags);
       } catch (error) {
         console.error("태그 불러오기 실패:", error);
+      } finally {
+        setIsLoading(false); // 태그 불러오기 끝
       }
     };
     fetchTags();
-  }, []);
+  }, [setAllTags, setTagList]);
 
+  // 일정 데이터 불러오기 (한 번만 실행)
   useEffect(() => {
-    if (allEvents.length > 0) {
-      setIsLoading(false); // 데이터 있으면 로딩 끝
-      return;
-    }
+    if (hasFetched) return; // 이미 불러왔으면 실행 안 함
+
     const loadSchedules = async () => {
       try {
         setIsLoading(true); // 로딩 시작
@@ -125,10 +127,12 @@ const Tag = () => {
         console.error("Error loading schedules", error);
       } finally {
         setIsLoading(false); // 로딩 끝
+        setHasFetched(true); // 무한 루프 방지
       }
     };
+
     loadSchedules();
-  }, [allEvents, setEvents]);
+  }, [hasFetched, setEvents]);
 
   return (
     <div className="flex justify-center">
@@ -136,7 +140,7 @@ const Tag = () => {
       <ScheduleModal />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-h-[30rem]">
         {isLoading ? (
-          <div className="flex justify-center items-center w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8">
+          <div className="flex justify-center items-center w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.76px_3.76px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8">
             로딩중...
           </div>
         ) : (
@@ -148,20 +152,22 @@ const Tag = () => {
           ))
         )}
         {!isLoading && (
-          <div
-            className="flex justify-center items-center w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.759999990463257px_3.759999990463257px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8 hover:cursor-pointer hover:bg-gray-200"
-            onClick={() => {
-              setTagModalOpen(true);
-            }}
-          >
-            <img
-              src={plusBtn}
-              className="w-12 h-12"
-              width={48}
-              height={48}
-              alt="태그 추가"
-              fetchPriority="high"
-            />
+          <div className="flex justify-center items-center">
+            <div
+              className="flex justify-center items-center w-[16rem] h-[24rem] bg-[#F0F0F0] shadow-[0px_3.76px_3.76px_0px_rgba(0,0,0,0.25)] border-[0.47px] border-stone-500 rounded-2xl p-8 hover:cursor-pointer hover:bg-gray-200"
+              onClick={() => {
+                setTagModalOpen(true);
+              }}
+            >
+              <img
+                src={plusBtn}
+                className="w-12 h-12"
+                width={48}
+                height={48}
+                alt="태그 추가"
+                fetchPriority="high"
+              />
+            </div>
           </div>
         )}
       </div>

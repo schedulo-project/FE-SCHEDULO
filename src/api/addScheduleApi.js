@@ -8,7 +8,7 @@ const addSchedules = async (data) => {
       `/schedules/`,
       {
         title: data.title,
-        content: data.content,
+        content: data.content || null,
         scheduled_date: data.date,
         tag: tag,
         deadline: data.deadline,
