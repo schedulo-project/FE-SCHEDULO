@@ -665,7 +665,7 @@ const TimeTableForm = () => {
         <button
           onClick={handleFetchCrawled}
           disabled={isLoading || isPolling}
-          className="w-[120px] text-[#27374D] text-sm bg-[#DDE6ED] py-2 px-4 rounded-2xl disabled:opacity-50 whitespace-nowrap"
+          className="w-[120px flex items-center justify-center text-[#27374D] text-sm bg-[#DDE6ED] py-2 px-4 rounded-2xl disabled:opacity-50 whitespace-nowrap"
         >
           {isPolling ? "불러오는 중..." : "시간표 불러오기"}
         </button>
